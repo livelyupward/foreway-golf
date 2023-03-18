@@ -4,27 +4,11 @@
     <thead>
       <tr>
         <th>Hole</th>
-        <th>1</th>
-        <th>2</th>
-        <th>3</th>
-        <th>4</th>
-        <th>5</th>
-        <th>6</th>
-        <th>7</th>
-        <th>8</th>
-        <th>9</th>
+        <th v-for="hole in props.holes.slice(0, 9)">{{ hole.number }}</th>
       </tr>
       <tr>
-        <th>Yard</th>
-        <th>400</th>
-        <th>487</th>
-        <th>375</th>
-        <th>128</th>
-        <th>425</th>
-        <th>148</th>
-        <th>356</th>
-        <th>352</th>
-        <th>407</th>
+        <th>Yards</th>
+        <th v-for="hole in props.holes.slice(0, 9)">{{ hole.yardage }}</th>
       </tr>
     </thead>
     <tbody>
@@ -47,27 +31,11 @@
     <thead>
       <tr>
         <th>Hole</th>
-        <th>10</th>
-        <th>11</th>
-        <th>12</th>
-        <th>13</th>
-        <th>14</th>
-        <th>15</th>
-        <th>16</th>
-        <th>17</th>
-        <th>18</th>
+        <th v-for="hole in props.holes.slice(9, 18)">{{ hole.number }}</th>
       </tr>
       <tr>
-        <th>Yard</th>
-        <th>315</th>
-        <th>612</th>
-        <th>358</th>
-        <th>148</th>
-        <th>402</th>
-        <th>480</th>
-        <th>318</th>
-        <th>171</th>
-        <th>326</th>
+        <th>Yards</th>
+        <th v-for="hole in props.holes.slice(9, 18)">{{ hole.yardage }}</th>
       </tr>
     </thead>
     <tbody>
@@ -89,6 +57,10 @@
 
 <script setup lang="ts">
 import { NTable } from 'naive-ui';
+
+const props = defineProps({
+  holes: Array,
+});
 </script>
 
 <style lang="scss" scoped>

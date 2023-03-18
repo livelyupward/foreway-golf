@@ -1,5 +1,5 @@
 <template>
-  <h1>Golf Club of Illinois Scorecard</h1>
+  <h1>{{ course.name }}</h1>
   <hr />
   <n-tabs
     class="card-tabs"
@@ -11,17 +11,20 @@
   >
     <n-tab-pane name="record-hole" tab="Record Hole">
       <div class="record-hole-container">
-        <n-select id="hole-score-selector" v-model:value="selectedHole" :options="options" />
+        <n-select id="hole-score-selector" v-model:value="selectedHole" :options="newOptions" />
         <article v-if="selectedHole" class="hole-score-form">
           <n-card>
-            <h3 class="score-title">Score</h3>
+            <h3 class="score-title">
+              <small class="score-title-hole">Hole #{{ selectedHole.number }}</small>
+              Score
+            </h3>
             <input class="score-input" type="tel" />
             <label class="score-label" for="gir"><input id="gir" class="score-checkbox" type="checkbox" />GIR</label>
             <label class="score-label" for="fh"><input id="fh" class="score-checkbox" type="checkbox" />FH</label>
             <div class="hole-score-form-info">
-              <p class="hole-score-form-info-item"><span>Par: </span>3</p>
-              <p class="hole-score-form-info-item"><span>Yards: </span>123</p>
-              <p class="hole-score-form-info-item"><span>Handicap: </span>14</p>
+              <p class="hole-score-form-info-item"><span>Par: </span>{{ selectedHole.par }}</p>
+              <p class="hole-score-form-info-item"><span>Yards: </span>{{ selectedHole.yardage }}</p>
+              <p class="hole-score-form-info-item"><span>Handicap: </span>{{ selectedHole.handicap }}</p>
             </div>
           </n-card>
           <n-button :justify="'center'" class="hole-score-form-button">Save score</n-button>
@@ -29,7 +32,7 @@
       </div>
     </n-tab-pane>
     <n-tab-pane name="view-scorecard" tab="View Scorecard">
-      <CourseScorecard />
+      <CourseScorecard :holes="course.holes" />
     </n-tab-pane>
   </n-tabs>
 </template>
@@ -38,33 +41,33 @@
 import { NButton, NTabs, NTabPane, NSelect, NCard } from 'naive-ui';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import { ref, Ref } from 'vue';
+import { mainStore } from '../store';
+
+const store = mainStore();
+
+const courseFetch = await fetch(`http://localhost:4000/api/courses/${store.getCurrentRound.value.courseId}?holes=true`);
+const course = await courseFetch.json();
 
 const selectedHole: Ref<string> = ref('');
-const options: object[] = [
-  {
-    label: 'Hole 1',
-    value: 'song0',
-  },
-  {
-    label: 'Hole 2',
-    value: 'song1',
-  },
-];
+const newOptions = course.holes.map((hole: Hole, index: number) => {
+  return {
+    label: `Hole ${hole.number}`,
+    key: `hole-${hole.number}-${hole.courseId}-${hole.tees}`,
+    value: course.holes[index],
+  };
+});
 
-const holes: object[] = [
-  {
-    yard: 123,
-    handicap: 14,
-    par: 3,
-    score: null,
-  },
-  {
-    yard: 425,
-    handicap: 2,
-    par: 4,
-    score: null,
-  },
-];
+interface Hole {
+  id: number;
+  number: number;
+  yardage: number;
+  par: number;
+  tees: string;
+  handicap: number;
+  courseId: number;
+  createdAt: string;
+  updatedAt: string;
+}
 </script>
 
 <style lang="scss">
@@ -78,6 +81,10 @@ const holes: object[] = [
     margin-bottom: 10px;
     margin-top: 0;
     text-align: center;
+  }
+
+  .score-title-hole {
+    display: block;
   }
 
   .score-input {

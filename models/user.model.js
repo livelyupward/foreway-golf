@@ -8,6 +8,9 @@ export default (sequelize, Sequelize) => {
       email: {
         type: Sequelize.STRING,
       },
+      currentRound: {
+        type: Sequelize.INTEGER,
+      },
     },
     {
       timestamps: true,

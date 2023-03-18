@@ -2,20 +2,22 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
-    name: 'Home',
     path: '/',
     // @ts-ignore
-    component: () => import('./views/Home.vue'),
+    component: () => import('./views/MyView.vue'),
   },
   {
-    name: 'Round',
     path: '/round',
     component: () => import('./views/StartRound.vue'),
   },
   {
-    path: '/test-round',
+    path: '/rounds/:id',
     component: () => import('./views/CurrentRound.vue'),
   },
+  // {
+  //   path: '/test-round',
+  //   component: () => import('./views/CurrentRound.vue'),
+  // },
   {
     path: '/authback',
     component: () => import('./views/AuthCallback.vue'),

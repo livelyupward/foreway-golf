@@ -1,15 +1,17 @@
 import Express from 'express';
 import cors from 'cors';
-const app = Express();
 import seedGCI from './models/gci.seed.js';
 import seedDave from './models/user.seed.js';
 import { OAuth2Client } from 'google-auth-library';
+import bodyParser from 'body-parser';
 
+const app = Express();
 const port = 4000;
 
 import db from './models/index.js';
 
 app.use(cors());
+app.use(bodyParser.json());
 
 db.sequelize
   .sync({ force: true })
@@ -45,14 +47,19 @@ app.post('/authback', (req, res) => {
     .then(() => {
       res.send(userToSend);
     })
-    .catch(console.error);
+    .catch((error) => {
+      res.status(403).send({ error });
+      console.error('err: ', Object.keys(error));
+    });
 });
 
 import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
+import roundRoutes from './routes/round.routes.js';
 
 courseRoutes(app);
 userRoutes(app);
+roundRoutes(app);
 
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);

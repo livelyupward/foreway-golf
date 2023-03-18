@@ -1,43 +1,29 @@
 import db from '../models/index.js';
-const Course = db.courses;
-const { Op } = db.Sequelize;
+const Round = db.rounds;
 
-// Create and Save a new Course
+// Create and Save a new Round
 export const create = (req, res) => {
-  // Validate request
-  if (!req.body.title) {
-    res.status(400).send({
-      message: 'Content can not be empty!',
-    });
-    return;
-  }
-
-  // Create a Course
-  const course = {
-    name: req.body.name,
-    holes: req.body.holes,
-    holeCount: req.body.holeCount,
+  // Create a Round
+  const round = {
+    courseId: req.body.courseId,
+    userId: req.body.userId,
   };
 
-  // Save Course in the database
-  Course.create(course)
+  // Save Round in the database
+  Round.create(round)
     .then((data) => {
       res.send(data);
     })
     .catch((err) => {
       res.status(500).send({
-        message: err.message || 'Some error occurred while creating the Course.',
+        message: err.message || 'Some error occurred while creating the Round.',
       });
     });
 };
 
 // Retrieve all Courses from the database.
 export const findAll = (req, res) => {
-  const title = req.query.title;
-  const holes = req.query.holes;
-  const condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-
-  Course.findAll({ where: condition, include: holes ? ['holes'] : '' })
+  Round.findAll()
     .then((data) => {
       res.send(data);
     })
@@ -48,11 +34,11 @@ export const findAll = (req, res) => {
     });
 };
 
-// Find a single Course with an id
+// Find a single Round with an id
 export const findOne = (req, res) => {
   const id = req.params.id;
 
-  Course.findByPk(id, { include: ['holes'] })
+  Round.findByPk(id)
     .then((data) => {
       if (data) {
         res.send(data);
@@ -69,11 +55,11 @@ export const findOne = (req, res) => {
     });
 };
 
-// Update a Course by the id in the request
+// Update a Round by the id in the request
 export const update = (req, res) => {
   const id = req.params.id;
 
-  Course.update(req.body, {
+  Round.update(req.body, {
     where: { id: id },
   })
     .then((num) => {
@@ -94,11 +80,11 @@ export const update = (req, res) => {
     });
 };
 
-// Delete a Course with the specified id in the request
+// Delete a Round with the specified id in the request
 export const deleteOne = (req, res) => {
   const id = req.params.id;
 
-  Course.destroy({
+  Round.destroy({
     where: { id: id },
   })
     .then((num) => {
@@ -121,7 +107,7 @@ export const deleteOne = (req, res) => {
 
 // Delete all Courses from the database.
 export const deleteAll = (req, res) => {
-  Course.destroy({
+  Round.destroy({
     where: {},
     truncate: false,
   })

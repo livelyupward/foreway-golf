@@ -1,5 +1,8 @@
 <template>
-  <aside id="side-panel">
+  <aside id="side-panel" :class="getDrawerState ? 'open' : ''">
+    <button class="side-panel-mobile-toggle" @click="toggleDrawer">
+      <MenuIcon />
+    </button>
     <n-menu :options="menuOptions" />
   </aside>
 </template>
@@ -9,7 +12,11 @@ import { h, Component } from 'vue';
 import { RouterLink } from 'vue-router';
 import { NMenu, NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
-import { GolfOutline as GolfIcon, HomeOutline as HomeIcon } from '@vicons/ionicons5';
+import { GolfOutline as GolfIcon, HomeOutline as HomeIcon, MenuOutline as MenuIcon } from '@vicons/ionicons5';
+import { mainStore } from '../store';
+
+const store = mainStore();
+const { getDrawerState, toggleDrawer } = store;
 
 const menuOptions: MenuOption[] = [
   {
@@ -72,3 +79,43 @@ function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });
 }
 </script>
+
+<style lang="scss">
+#side-panel {
+  background-color: #fff;
+  max-width: 250px;
+  width: 100%;
+
+  &.open {
+    transform: translateX(0%);
+  }
+
+  @media screen and (max-width: 600px) {
+    border-left: 1px solid #333;
+    box-sizing: border-box;
+    height: 100vh;
+    right: 0;
+    position: fixed;
+    top: 0;
+    transform: translateX(100%);
+    z-index: 10;
+  }
+
+  .side-panel-mobile-toggle {
+    background-color: #fff;
+    border: 1px solid #bbb;
+    border-bottom-left-radius: 4px;
+    border-right: none;
+    border-top: none;
+    cursor: pointer;
+    position: relative;
+    transform: translateX(-100%);
+    z-index: 15;
+
+    svg {
+      display: block;
+      width: 40px;
+    }
+  }
+}
+</style>
