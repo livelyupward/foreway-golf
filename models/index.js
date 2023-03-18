@@ -1,7 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize('golffam', 'root', '', {
-  host: 'localhost',
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
   dialect: 'mysql',
 
   pool: {
@@ -19,11 +22,13 @@ import courseModel from './course.model.js';
 import holeModel from './hole.model.js';
 import roundModel from './round.model.js';
 import scoreModel from './score.model.js';
+import userModel from './user.model.js';
 
 db.courses = courseModel(sequelize, Sequelize);
 db.holes = holeModel(sequelize, Sequelize);
 db.rounds = roundModel(sequelize, Sequelize);
 db.scores = scoreModel(sequelize, Sequelize);
+db.users = userModel(sequelize, Sequelize);
 
 // course and hole relations
 db.courses.hasMany(db.holes, { as: 'holes' });
@@ -37,6 +42,13 @@ db.rounds.hasMany(db.scores, { as: 'scores' });
 db.scores.belongsTo(db.rounds, {
   foreignKey: 'roundId',
   as: 'round',
+});
+
+// user and score relations
+db.users.hasMany(db.scores, { as: 'scores' });
+db.scores.belongsTo(db.users, {
+  foreignKey: 'userId',
+  as: 'user',
 });
 
 export default db;

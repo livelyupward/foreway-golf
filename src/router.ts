@@ -16,6 +16,10 @@ const routes = [
     path: '/test-round',
     component: () => import('./views/CurrentRound.vue'),
   },
+  {
+    path: '/authback',
+    component: () => import('./views/AuthCallback.vue'),
+  },
 ];
 
 export const router = createRouter({
