@@ -1,0 +1,22 @@
+{
+  "singleQuote": true,
+  "arrowParens": "always",
+  "proseWrap": "preserve",
+  "htmlWhitespaceSensitivity": "css",
+  "trailingComma": "es5",
+  "quoteProps": "as-needed",
+  "jsxBracketSameLine": false,
+  "bracketSpacing": true,
+  "jsxSingleQuote": true,
+  "tabWidth": 2,
+  "printWidth": 120,
+  "semi": true,
+  "overrides": [
+    {
+      "files": ["**/*.css", "**/*.scss", "**/*.html"],
+      "options": {
+        "singleQuote": false
+      }
+    }
+  ]
+}
