@@ -56,10 +56,12 @@ app.post('/authback', (req, res) => {
 import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
+import scoreRoutes from './routes/score.routes.js';
 
 courseRoutes(app);
 userRoutes(app);
 roundRoutes(app);
+scoreRoutes(app);
 
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);

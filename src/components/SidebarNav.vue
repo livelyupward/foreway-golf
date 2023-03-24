@@ -66,7 +66,7 @@ const menuOptions: MenuOption[] = [
       h(
         RouterLink,
         {
-          to: '/test-round',
+          to: '/round',
         },
         { default: () => 'Resume my round' }
       ),
