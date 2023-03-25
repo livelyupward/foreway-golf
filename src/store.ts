@@ -92,7 +92,7 @@ export const mainStore = defineStore('main', () => {
         /**
          * send cached token to Google auth
          */
-        const cachedTokenSend = await fetch(`http://localhost:4000/authback?cred=${localStorage.getItem('gg_token')}`, {
+        const cachedTokenSend = await fetch(`http://localhost:4000/auth?cred=${localStorage.getItem('gg_token')}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ export const mainStore = defineStore('main', () => {
         if (cachedTokenSend.status === 403) {
           localStorage.removeItem('gg_token');
           resetUser();
-          await router.push('/authback');
+          await router.push('/auth');
         }
 
         const cachedTokenResponse = await cachedTokenSend.json();

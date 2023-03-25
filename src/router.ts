@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, onBeforeRouteUpdate } from 'vue-router';
+import { createRouter, createWebHistory } from 'vue-router';
 import { mainStore } from './store';
 
 const routes = [
@@ -15,14 +15,25 @@ const routes = [
     component: () => import('./views/CurrentRound.vue'),
   },
   {
-    path: '/authback',
-    component: () => import('./views/AuthCallback.vue'),
+    name: 'Auth',
+    path: '/auth',
+    component: () => import('./views/Auth.vue'),
   },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from) => {
+  const store = mainStore();
+  const { getUser } = store;
+
+  if (getUser.value === null && to.path !== '/auth') {
+    console.log('hello');
+    return { name: 'Auth' };
+  }
 });
 
 router.beforeResolve((to, from) => {

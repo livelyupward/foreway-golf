@@ -16,6 +16,10 @@
 import { NConfigProvider, GlobalThemeOverrides, NMessageProvider } from 'naive-ui';
 import Home from './views/Home.vue';
 import SidebarNav from './components/SidebarNav.vue';
+import {watch} from "vue";
+import {mainStore} from "./store";
+const store = mainStore()
+const {getUser} = store;
 
 const themeOverrides: GlobalThemeOverrides = {
   common: {
@@ -26,6 +30,10 @@ const themeOverrides: GlobalThemeOverrides = {
     textColor: '#3d5afe',
   },
 };
+
+watch(getUser, () => {
+  console.log('user is logged in')
+})
 </script>
 
 <style lang="scss">

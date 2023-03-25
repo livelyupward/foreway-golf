@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
   res.send('Hi world');
 });
 
-app.post('/authback', (req, res) => {
+app.post('/auth', (req, res) => {
   const token = req.query.cred;
   let userToSend;
 
