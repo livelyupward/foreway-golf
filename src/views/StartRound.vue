@@ -51,7 +51,7 @@ async function startNewRound() {
     courseId: selectedCourse.value.id,
     userId: getUser.value.id,
   });
-  console.log('res: ', startRound);
+  import.meta.env.MODE !== 'production' && console.log('res: ', startRound);
   return await goToRound(startRound.id);
 }
 

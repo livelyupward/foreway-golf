@@ -52,7 +52,7 @@ const scoreData: Ref<Score> = ref({
 });
 
 async function submitScoreForHole() {
-  console.log('hello');
+  import.meta.env.MODE !== 'production' && console.log('hello');
   if (scoreData.value.roundId && scoreData.value.holeId && scoreData.value.userId) {
     const newScore = await submitScore(scoreData.value);
     if (!newScore.error) message.success('Score saved!');

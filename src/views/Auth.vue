@@ -1,16 +1,17 @@
 <template>
-  <h1>Login with your Google account</h1>
-  <GoogleLogin :callback="googleAuthCallback" />
+  <section id="auth-view">
+    <div class="auth-view_container">
+      <h1>Login with your Google account</h1>
+      <GoogleLogin :callback="googleAuthCallback" />
+    </div>
+  </section>
 </template>
 
 <script setup lang="ts">
 import router from '../router';
 import { mainStore } from '../store';
 const store = mainStore();
-const { setUser, authAndGetUserFromDB } = store;
-
-// TODO: this is new from store. ensure this is working correctly
-await authAndGetUserFromDB();
+const { setUser } = store;
 
 const googleAuthCallback = async (response: GoogleResponse) => {
   // This callback will be triggered when the user selects or login to their Google account from the popup
@@ -51,4 +52,13 @@ interface GoogleResponse {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+#auth-view {
+  @media screen and (max-width: 600px) {
+    align-items: center;
+    display: flex;
+    height: 85%;
+    text-align: center;
+  }
+}
+</style>

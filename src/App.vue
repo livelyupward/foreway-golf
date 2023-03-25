@@ -4,7 +4,9 @@
       <Suspense>
         <div id="app-container">
           <SidebarNav id="side-panel" />
-          <Home />
+          <main id="main-panel">
+            <router-view></router-view>
+          </main>
         </div>
         <template #fallback> Loading... </template>
       </Suspense>
@@ -13,27 +15,16 @@
 </template>
 
 <script setup lang="ts">
-import { NConfigProvider, GlobalThemeOverrides, NMessageProvider } from 'naive-ui';
-import Home from './views/Home.vue';
+import { NConfigProvider, NMessageProvider } from 'naive-ui';
 import SidebarNav from './components/SidebarNav.vue';
-import {watch} from "vue";
-import {mainStore} from "./store";
-const store = mainStore()
-const {getUser} = store;
+import { onBeforeMount } from 'vue';
+import { mainStore } from './store';
+const store = mainStore();
+const { authAndGetUserFromDB } = store;
 
-const themeOverrides: GlobalThemeOverrides = {
-  common: {
-    primaryColor: '#3d5afe',
-    fontSize: '18px',
-  },
-  Button: {
-    textColor: '#3d5afe',
-  },
-};
-
-watch(getUser, () => {
-  console.log('user is logged in')
-})
+onBeforeMount(async () => {
+  await authAndGetUserFromDB();
+});
 </script>
 
 <style lang="scss">
@@ -54,6 +45,10 @@ watch(getUser, () => {
   border-left: 1px solid darkslategrey;
   grid-area: main;
   padding: 30px;
+
+  .homepage-title {
+    margin-top: 0;
+  }
 }
 
 #side-panel {

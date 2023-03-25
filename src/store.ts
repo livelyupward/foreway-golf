@@ -56,7 +56,18 @@ export const mainStore = defineStore('main', () => {
     newRoundResponse.scores = new Map();
     currentRound.value = newRoundResponse;
 
-    return newRoundResponse;
+    const userRoundRequest = await fetch(
+      `http://localhost:4000/api/users/${getUser.value.value.id}?roundId=${newRoundResponse.id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    const userRoundResponse = await userRoundRequest.json();
+
+    return { round: newRoundResponse, user: userRoundResponse };
   }
 
   async function goToRound(roundId: number) {
@@ -73,7 +84,7 @@ export const mainStore = defineStore('main', () => {
         body: JSON.stringify(payload),
       });
 
-      console.log('ROUND:: ', currentRound);
+      import.meta.env.MODE !== 'production' && console.log('ROUND:: ', currentRound);
       const newSavedScore = await newScoreRequest.json();
 
       // TODO: check if attempt to remove holeId from object is working. next move is to make sure scores are showing in current round.
@@ -84,7 +95,6 @@ export const mainStore = defineStore('main', () => {
       console.error({ error });
     }
   }
-  // TODO: continue refactor of auth into store. was previously handled on load in Home.vue
   async function authAndGetUserFromDB() {
     // if token is saved in DB
     if (localStorage.getItem('gg_token')) {
@@ -110,6 +120,13 @@ export const mainStore = defineStore('main', () => {
         const userDbResponse: object[] = await userDbFetch.json();
 
         setUser(userDbResponse[0]);
+
+        if (getUser.value.value.currentRound) {
+          const getRoundRequest = await fetch(`http://localhost:4000/api/round/${getUser.value.value.currentRound}`);
+          currentRound.value = await getRoundRequest.json();
+        }
+
+        return userDbResponse[0];
       } catch (error) {
         localStorage.removeItem('gg_token');
         console.error(error);

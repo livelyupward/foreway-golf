@@ -74,10 +74,14 @@ export const findOne = (req, res) => {
 // Update a Course by the id in the request
 export const update = (req, res) => {
   const id = req.params.id;
+  const roundId = req.query.roundId;
 
-  User.update(req.body, {
-    where: { id: id },
-  })
+  User.update(
+    { currentRound: roundId },
+    {
+      where: { id: id },
+    }
+  )
     .then((num) => {
       if (num === 1) {
         res.send({

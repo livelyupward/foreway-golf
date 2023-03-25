@@ -1,36 +1,39 @@
 <template>
-  <h1>{{ course.name }}</h1>
-  <hr />
-  <n-tabs
-    class="card-tabs"
-    default-value="record-hole"
-    size="large"
-    animated
-    style="margin: 0 -4px"
-    pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
-  >
-    <n-tab-pane name="record-hole" tab="Record Hole">
-      <div class="record-hole-container">
-        <n-select id="hole-score-selector" v-model:value="selectedHole" :options="newOptions" />
-        <ScoreForm :course="course" :selected-hole="selectedHole" />
-      </div>
-    </n-tab-pane>
-    <n-tab-pane name="view-scorecard" tab="View Scorecard">
-      <CourseScorecard :holes="course.holes" />
-    </n-tab-pane>
-  </n-tabs>
+  <div id="current-round" v-if="course && getUser">
+    <h1>{{ course.name }}</h1>
+    <hr />
+    <n-tabs
+      class="card-tabs"
+      default-value="record-hole"
+      size="large"
+      animated
+      style="margin: 0 -4px"
+      pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
+    >
+      <n-tab-pane name="record-hole" tab="Record Hole">
+        <div class="record-hole-container">
+          <n-select id="hole-score-selector" v-model:value="selectedHole" :options="newOptions" />
+          <ScoreForm :course="course" :selected-hole="parseInt(selectedHole)" />
+        </div>
+      </n-tab-pane>
+      <n-tab-pane name="view-scorecard" tab="View Scorecard">
+        <CourseScorecard :holes="course.holes" />
+      </n-tab-pane>
+    </n-tabs>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
 import { mainStore } from '../store';
-import { NTabs, NTabPane, NSelect, useMessage } from 'naive-ui';
+import { NTabs, NTabPane, NSelect } from 'naive-ui';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
 
 const store = mainStore();
+const { getUser, getCurrentRound } = store;
 
-const courseFetch = await fetch(`http://localhost:4000/api/courses/${store.getCurrentRound.value.courseId}?holes=true`);
+const courseFetch = await fetch(`http://localhost:4000/api/courses/${getCurrentRound.value.courseId}?holes=true`);
 const course = await courseFetch.json();
 
 const selectedHole: Ref<string> = ref('');
