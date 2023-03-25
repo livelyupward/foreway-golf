@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref, Ref } from 'vue';
-import { router } from './router';
+import router from './router';
 
 export const mainStore = defineStore('main', () => {
   const currentRound: Ref<Round> = ref({
@@ -53,6 +53,7 @@ export const mainStore = defineStore('main', () => {
     });
 
     const newRoundResponse = await newRoundRequest.json();
+    newRoundResponse.scores = new Map();
     currentRound.value = newRoundResponse;
 
     return newRoundResponse;
@@ -72,18 +73,52 @@ export const mainStore = defineStore('main', () => {
         body: JSON.stringify(payload),
       });
 
+      console.log('ROUND:: ', currentRound);
       const newSavedScore = await newScoreRequest.json();
 
       // TODO: check if attempt to remove holeId from object is working. next move is to make sure scores are showing in current round.
-      currentRound.value.scores.set(newSavedScore.holeId, { holeId: _, ...newSavedScore });
+      currentRound.value.scores.set(newSavedScore.holeId, newSavedScore);
 
-      return await newScoreRequest.json();
+      return newSavedScore;
     } catch (error) {
       console.error({ error });
     }
   }
+  // TODO: continue refactor of auth into store. was previously handled on load in Home.vue
+  async function authAndGetUserFromDB() {
+    // if token is saved in DB
+    if (localStorage.getItem('gg_token')) {
+      try {
+        /**
+         * send cached token to Google auth
+         */
+        const cachedTokenSend = await fetch(`http://localhost:4000/authback?cred=${localStorage.getItem('gg_token')}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (cachedTokenSend.status === 403) {
+          localStorage.removeItem('gg_token');
+          resetUser();
+          await router.push('/authback');
+        }
+
+        const cachedTokenResponse = await cachedTokenSend.json();
+        const userDbFetch = await fetch(`http://localhost:4000/api/users/${cachedTokenResponse.email}`);
+        const userDbResponse: object[] = await userDbFetch.json();
+
+        setUser(userDbResponse[0]);
+      } catch (error) {
+        localStorage.removeItem('gg_token');
+        console.error(error);
+      }
+    }
+  }
 
   return {
+    authAndGetUserFromDB,
     getCurrentRound,
     getUser,
     getDrawerState,

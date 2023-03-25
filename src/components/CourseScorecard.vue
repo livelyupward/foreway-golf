@@ -4,25 +4,17 @@
     <thead>
       <tr>
         <th>Hole</th>
-        <th v-for="hole in props.holes.slice(0, 9)">{{ hole.number }}</th>
+        <th v-for="(hole, index) in props.holes.slice(0, 9)">{{ hole.number }}</th>
       </tr>
       <tr>
         <th>Yards</th>
-        <th v-for="hole in props.holes.slice(0, 9)">{{ hole.yardage }}</th>
+        <th v-for="(hole, index) in props.holes.slice(0, 9)">{{ hole.yardage }}</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>Score</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td v-for="(hole, index) in props.holes.slice(0, 9)">{{ getCurrentRound.scores[index] }}</td>
       </tr>
     </tbody>
   </n-table>
@@ -31,25 +23,17 @@
     <thead>
       <tr>
         <th>Hole</th>
-        <th v-for="hole in props.holes.slice(9, 18)">{{ hole.number }}</th>
+        <th v-for="(hole, index) in props.holes.slice(9, 18)">{{ hole.number }}</th>
       </tr>
       <tr>
         <th>Yards</th>
-        <th v-for="hole in props.holes.slice(9, 18)">{{ hole.yardage }}</th>
+        <th v-for="(hole, index) in props.holes.slice(9, 18)">{{ hole.yardage }}</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td>Score</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
+        <td v-for="(hole, index) in props.holes.slice(9, 18)">{{ getCurrentRound.scores[index] }}</td>
       </tr>
     </tbody>
   </n-table>
@@ -57,6 +41,10 @@
 
 <script setup lang="ts">
 import { NTable } from 'naive-ui';
+import { mainStore } from '../store';
+
+const store = mainStore();
+const { getCurrentRound } = store;
 
 const props = defineProps({
   holes: Array,

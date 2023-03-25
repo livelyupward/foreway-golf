@@ -84,10 +84,12 @@ function renderIcon(icon: Component) {
 #side-panel {
   background-color: #fff;
   max-width: 250px;
+  transition: transform 250ms ease-out;
   width: 100%;
 
   &.open {
     transform: translateX(0%);
+    transition: transform 250ms ease-out;
   }
 
   @media screen and (max-width: 600px) {

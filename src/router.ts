@@ -1,9 +1,9 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, onBeforeRouteUpdate } from 'vue-router';
+import { mainStore } from './store';
 
 const routes = [
   {
     path: '/',
-    // @ts-ignore
     component: () => import('./views/MyView.vue'),
   },
   {
@@ -14,17 +14,21 @@ const routes = [
     path: '/rounds/:id',
     component: () => import('./views/CurrentRound.vue'),
   },
-  // {
-  //   path: '/test-round',
-  //   component: () => import('./views/CurrentRound.vue'),
-  // },
   {
     path: '/authback',
     component: () => import('./views/AuthCallback.vue'),
   },
 ];
 
-export const router = createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeResolve((to, from) => {
+  const store = mainStore();
+
+  store.closeDrawer();
+});
+
+export default router;
