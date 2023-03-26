@@ -2,6 +2,7 @@ import Express from 'express';
 import cors from 'cors';
 import seedGCI from './models/gci.seed.js';
 import seedDave from './models/user.seed.js';
+import seedStreamwoodOaks from './models/streamwood-oaks.seed.js';
 import { OAuth2Client } from 'google-auth-library';
 import bodyParser from 'body-parser';
 
@@ -18,6 +19,10 @@ db.sequelize
   .then(() => {
     seedGCI(db);
     console.log('Seeded GCI');
+  })
+  .then(() => {
+    seedStreamwoodOaks(db);
+    console.log('Seeded Streamwood Oaks');
   })
   .then(() => {
     seedDave(db);

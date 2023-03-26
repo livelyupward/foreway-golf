@@ -5,6 +5,9 @@ export default (sequelize, Sequelize) => {
       strokes: {
         type: Sequelize.INTEGER,
       },
+      putts: {
+        type: Sequelize.INTEGER,
+      },
       gir: {
         type: Sequelize.BOOLEAN,
       },

@@ -54,7 +54,7 @@ async function startNewRound() {
   });
   import.meta.env.MODE !== 'production' && console.log('res: ', startRound);
   message.success('Round created!');
-  return await goToRound(startRound.id);
+  return await goToRound(startRound.round.id);
 }
 
 interface CourseInfo {

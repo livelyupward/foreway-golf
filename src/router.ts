@@ -19,7 +19,7 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
         /**
          * user could not be authed. send to the auth page to start auth process
          */
-        return next({ name: 'Auth' });
+        return { name: 'Auth' };
       });
   }
 
@@ -30,29 +30,6 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
   if (getUser.value === null) {
     isDebug() && console.log('force to auth');
     return next({ name: 'Auth' });
-  } else {
-    next();
-  }
-}
-
-async function verifyOwnership(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
-  const store = mainStore();
-  const { getUser } = store;
-
-  const requestRoundFromParam = await fetch(`http://localhost:4000/api/round/${to.params.id}`);
-  const roundResponse = await requestRoundFromParam.json();
-
-  console.log('verifyOwnership fired');
-  // if user in state has same id as userId in passed roundId
-  if (getUser.value && roundResponse.userId === getUser.value.id) {
-    isDebug() && console.log('round response: ', roundResponse);
-    isDebug() && console.log('user from state.value: ', getUser.value);
-    isDebug() &&
-      console.log('round user and getUser id match: ', getUser.value && roundResponse.userId === getUser.value.id);
-    return next();
-  } else {
-    isDebug() && console.log('user and round do not match');
-    return false;
   }
 }
 

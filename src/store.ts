@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { computed, ref, Ref } from 'vue';
 import router from './router';
+import isDebug from './plugins/debugConsole';
 
 export const mainStore = defineStore('main', () => {
   const currentRound: Ref<Round> = ref({
@@ -85,13 +86,13 @@ export const mainStore = defineStore('main', () => {
       });
 
       const newSavedScore = await newScoreRequest.json();
-      import.meta.env.MODE !== 'production' && console.log('ROUND:: ', currentRound.value.scores);
+      isDebug() && console.log('ROUND:: ', currentRound.value.scores);
 
       currentRound.value.scores[+newSavedScore.holeId] = newSavedScore;
 
       return newSavedScore;
     } catch (error) {
-      console.error({ error });
+      isDebug() && console.error({ error });
     }
   }
   async function authAndGetUserFromDB() {
@@ -128,7 +129,7 @@ export const mainStore = defineStore('main', () => {
         return userDbResponse[0];
       } catch (error) {
         localStorage.removeItem('gg_token');
-        console.error(error);
+        isDebug() && console.error(error);
       }
     }
   }
@@ -157,6 +158,7 @@ interface Round {
 
 interface Score {
   strokes: number | null;
+  putts: number | null;
   gir: boolean;
   fairway: boolean;
   roundId: number | null;
