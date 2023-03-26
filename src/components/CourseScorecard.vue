@@ -15,7 +15,9 @@
             <th>{{ hole.number }}</th>
             <td>{{ hole.yardage }}</td>
             <td>{{ hole.par }}</td>
-            <td>{{ getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : '' }}</td>
+            <td @click="openScoreModal">
+              {{ getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : '' }}
+            </td>
           </tr>
         </tbody>
       </n-table>
@@ -28,7 +30,7 @@ import { NTable } from 'naive-ui';
 import { mainStore } from '../store';
 
 const store = mainStore();
-const { getCurrentRound } = store;
+const { getCurrentRound, openScoreModal } = store;
 
 const props = defineProps({
   holes: Array,

@@ -11,6 +11,10 @@ export const mainStore = defineStore('main', () => {
   });
   const user: Ref<object | null> = ref(null);
   const drawerOpen: Ref<boolean> = ref(false);
+  const scoreModalOpen: Ref<boolean> = ref(false);
+  const computedScoreModal = computed(() => {
+    return scoreModalOpen.value;
+  });
 
   const getCurrentRound = computed(() => {
     return currentRound;
@@ -34,6 +38,13 @@ export const mainStore = defineStore('main', () => {
 
   function toggleDrawer() {
     drawerOpen.value = !drawerOpen.value;
+  }
+
+  function openScoreModal() {
+    scoreModalOpen.value = true;
+  }
+  function closeScoreModal() {
+    scoreModalOpen.value = false;
   }
 
   function setUser(userPayload: object) {
@@ -136,6 +147,9 @@ export const mainStore = defineStore('main', () => {
 
   return {
     authAndGetUserFromDB,
+    computedScoreModal,
+    openScoreModal,
+    closeScoreModal,
     getCurrentRound,
     getUser,
     getDrawerState,
