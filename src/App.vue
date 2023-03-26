@@ -1,5 +1,5 @@
 <template>
-  <n-config-provider :theme-overrides="themeOverrides">
+  <n-config-provider>
     <n-message-provider>
       <Suspense>
         <div id="app-container">
@@ -36,14 +36,17 @@ onBeforeMount(async () => {
   overflow-x: hidden;
 
   @media screen and (max-width: 600px) {
-    grid-template-columns: 1fr auto;
-    grid-template-areas: 'main sidebar';
+    display: block;
+    max-width: 100%;
+    position: absolute;
+    width: 100%;
   }
 }
 
 #main-panel {
   border-left: 1px solid darkslategrey;
   grid-area: main;
+  min-height: 100vh;
   padding: 30px;
 
   .homepage-title {

@@ -12,7 +12,12 @@ import { h, Component } from 'vue';
 import { RouterLink } from 'vue-router';
 import { NMenu, NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
-import { GolfOutline as GolfIcon, HomeOutline as HomeIcon, MenuOutline as MenuIcon } from '@vicons/ionicons5';
+import {
+  GolfOutline as GolfIcon,
+  HomeOutline as HomeIcon,
+  MenuOutline as MenuIcon,
+  FlagOutline as FlagIcon,
+} from '@vicons/ionicons5';
 import { mainStore } from '../store';
 
 const store = mainStore();
@@ -71,7 +76,7 @@ const menuOptions: MenuOption[] = [
         { default: () => 'Resume my round' }
       ),
     key: 'resume-my-round',
-    icon: renderIcon(GolfIcon),
+    icon: renderIcon(FlagIcon),
   },
 ];
 
@@ -92,7 +97,7 @@ function renderIcon(icon: Component) {
     transition: transform 250ms ease-out;
   }
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 900px) {
     border-left: 1px solid #333;
     box-sizing: border-box;
     height: 100vh;

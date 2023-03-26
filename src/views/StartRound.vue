@@ -30,11 +30,12 @@
 
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
-import { NButton, NModal, NCard } from 'naive-ui';
+import { NButton, NModal, NCard, useMessage } from 'naive-ui';
 import { mainStore } from '../store';
 
 const store = mainStore();
 const { getUser, createNewRound, goToRound } = store;
+const message = useMessage();
 
 const selectedCourse: Ref<CourseInfo | null> = ref(null);
 const showModal: Ref<boolean> = ref(false);
@@ -52,6 +53,7 @@ async function startNewRound() {
     userId: getUser.value.id,
   });
   import.meta.env.MODE !== 'production' && console.log('res: ', startRound);
+  message.success('Round created!');
   return await goToRound(startRound.id);
 }
 

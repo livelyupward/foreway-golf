@@ -38,7 +38,7 @@ export const findAll = (req, res) => {
 export const findOne = (req, res) => {
   const id = req.params.id;
 
-  Round.findByPk(id)
+  Round.findByPk(id, { include: ['scores'] })
     .then((data) => {
       if (data) {
         res.send(data);

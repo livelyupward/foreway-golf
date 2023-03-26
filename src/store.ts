@@ -6,7 +6,7 @@ export const mainStore = defineStore('main', () => {
   const currentRound: Ref<Round> = ref({
     courseId: null,
     userId: null,
-    scores: new Map(),
+    scores: [],
   });
   const user: Ref<object | null> = ref(null);
   const drawerOpen: Ref<boolean> = ref(false);
@@ -84,11 +84,10 @@ export const mainStore = defineStore('main', () => {
         body: JSON.stringify(payload),
       });
 
-      import.meta.env.MODE !== 'production' && console.log('ROUND:: ', currentRound);
       const newSavedScore = await newScoreRequest.json();
+      import.meta.env.MODE !== 'production' && console.log('ROUND:: ', currentRound.value.scores);
 
-      // TODO: check if attempt to remove holeId from object is working. next move is to make sure scores are showing in current round.
-      currentRound.value.scores.set(newSavedScore.holeId, newSavedScore);
+      currentRound.value.scores[+newSavedScore.holeId] = newSavedScore;
 
       return newSavedScore;
     } catch (error) {
@@ -153,7 +152,7 @@ export const mainStore = defineStore('main', () => {
 interface Round {
   courseId: number | null;
   userId: number | null;
-  scores: Map<number, Score>;
+  scores: Array<Score>;
 }
 
 interface Score {

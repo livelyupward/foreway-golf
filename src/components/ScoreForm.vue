@@ -1,67 +1,114 @@
 <template>
-  <form @submit.prevent="submitScoreForHole" v-if="selectedHole" class="hole-score-form">
-    <n-card>
-      <h3 class="score-title">
-        <small class="score-title-hole">Hole #{{ getHoleFromSelect.number }}</small>
-        Score
-      </h3>
-      <input class="score-input" type="tel" v-model.number.lazy="scoreData.strokes" />
-      <label class="score-label" for="gir"
-        ><input id="gir" class="score-checkbox" type="checkbox" v-model="scoreData.gir" />GIR</label
+  <n-form
+    @submit.prevent="submitScoreForHole"
+    v-if="getHoleFromSelect !== null"
+    label-placement="left"
+    require-mark-placement="right-hanging"
+    label-width="auto"
+    :style="{
+      maxWidth: '640px',
+    }"
+    class="hole-score_form-card"
+  >
+    <n-form-item label="Strokes" path="inputValue">
+      <n-input v-model:value.number="scoreData.strokes" placeholder="# of strokes" />
+    </n-form-item>
+    <n-form-item label="Putts" path="inputValue">
+      <n-input v-model:value.number="scoreData.putts" placeholder="# of putts" />
+    </n-form-item>
+    <n-form-item label="Green in Reg." path="checkboxGroupValue">
+      <n-space>
+        <n-checkbox v-model:value="scoreData.gir" :checked-value="true" :unchecked-value="false"></n-checkbox>
+      </n-space>
+    </n-form-item>
+    <n-form-item label="Fairway Hit" path="checkboxGroupValue">
+      <n-space>
+        <n-checkbox v-model:value="scoreData.fairway" :checked-value="true" :unchecked-value="false"></n-checkbox>
+      </n-space>
+    </n-form-item>
+    <n-list class="hole-score-form-info">
+      <n-list-item class="hole-score-form-info-item"><span>Par: </span>{{ getHoleFromSelect.par }}</n-list-item>
+      <n-list-item class="hole-score-form-info-item"><span>Yards: </span>{{ getHoleFromSelect.yardage }}</n-list-item>
+      <n-list-item class="hole-score-form-info-item"
+        ><span>Handicap: </span>{{ getHoleFromSelect.handicap }}</n-list-item
       >
-      <label class="score-label" for="fh"
-        ><input id="fh" class="score-checkbox" type="checkbox" v-model="scoreData.fairway" />FH</label
-      >
-      <n-list class="hole-score-form-info">
-        <n-list-item class="hole-score-form-info-item"><span>Par: </span>{{ getHoleFromSelect.par }}</n-list-item>
-        <n-list-item class="hole-score-form-info-item"><span>Yards: </span>{{ getHoleFromSelect.yardage }}</n-list-item>
-        <n-list-item class="hole-score-form-info-item"
-          ><span>Handicap: </span>{{ getHoleFromSelect.handicap }}</n-list-item
-        >
-      </n-list>
-    </n-card>
+    </n-list>
     <n-button attr-type="submit" :justify="'center'" class="hole-score-form-button">Save score</n-button>
-  </form>
+  </n-form>
 </template>
 
 <script setup lang="ts">
-import { NButton, NCard, NList, NListItem, useMessage } from 'naive-ui';
+import { NButton, NSpace, NList, NListItem, useMessage } from 'naive-ui';
 import { computed, ref, Ref } from 'vue';
 import { mainStore } from '../store';
+import isDebug from '../plugins/debugConsole';
 
 const message = useMessage();
 const store = mainStore();
-const { submitScore } = store;
+const { getUser, submitScore } = store;
+import { NFormItem, NInput, NForm, NCheckbox, NCheckboxGroup } from 'naive-ui';
 
 const props = defineProps({
   course: Object,
   selectedHole: Number,
 });
 
+const holeFromSelect = computed(() => {
+  return props.selectedHole;
+});
+// TODO: find why Map isn't listing the arrays in correct order. Might have to avoid Map and use arrays.
 const getHoleFromSelect = computed(() => {
-  return props.course.holes[parseInt(props.selectedHole.value)];
+  isDebug() && console.log('course holes in ScoreForm:: ', props.course.holes);
+  return props.selectedHole > 0 ? props.course.holes[props.selectedHole - 1] : null;
 });
 
 const scoreData: Ref<Score> = ref({
-  strokes: null,
+  strokes: undefined,
   gir: false,
   fairway: false,
   roundId: store.getCurrentRound.value.id,
-  holeId: 1,
-  userId: 1,
+  holeId: holeFromSelect,
+  userId: getUser.value.id,
 });
 
 async function submitScoreForHole() {
-  import.meta.env.MODE !== 'production' && console.log('hello');
-  if (scoreData.value.roundId && scoreData.value.holeId && scoreData.value.userId) {
+  isDebug() && console.log('hello');
+  if (scoreData.value.roundId && scoreData.value.holeId !== undefined && scoreData.value.userId) {
     const newScore = await submitScore(scoreData.value);
     if (!newScore.error) message.success('Score saved!');
 
     return newScore;
   } else {
+    isDebug() && console.log('sent from scoreData: ', scoreData.value);
+    // TODO: error coming from here on submit of a score, recently changed the scoreData structure to be dynamic
     console.error('Error: please provide a hole, a round, and a user id.');
   }
 }
+
+interface Score {
+  strokes?: number;
+  putts?: number;
+  gir?: boolean;
+  fairway?: boolean;
+  roundId?: number;
+  holeId?: number;
+  userId?: number;
+}
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.score-title {
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+.hole-score_form-card {
+  margin-top: 15px;
+
+  label {
+    span {
+      font-size: 16px;
+    }
+  }
+}
+</style>

@@ -4,20 +4,26 @@
     <hr />
     <n-tabs
       class="card-tabs"
-      default-value="record-hole"
+      default-value="view-scorecard"
+      type="segment"
       size="large"
       animated
       style="margin: 0 -4px"
       pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
     >
-      <n-tab-pane name="record-hole" tab="Record Hole">
-        <div class="record-hole-container">
-          <n-select id="hole-score-selector" v-model:value="selectedHole" :options="newOptions" />
-          <ScoreForm :course="course" :selected-hole="parseInt(selectedHole)" />
-        </div>
-      </n-tab-pane>
       <n-tab-pane name="view-scorecard" tab="View Scorecard">
         <CourseScorecard :holes="course.holes" />
+      </n-tab-pane>
+      <n-tab-pane name="record-score" tab="Record Score">
+        <div class="record-score-container">
+          <n-select
+            id="hole-score-selector"
+            v-model:value="selectedHole"
+            :options="holeDropdownOptions"
+            placeholder="Select a hole"
+          />
+          <ScoreForm :course="course" :selected-hole="parseInt(+selectedHole)" />
+        </div>
       </n-tab-pane>
     </n-tabs>
   </div>
@@ -36,12 +42,12 @@ const { getUser, getCurrentRound } = store;
 const courseFetch = await fetch(`http://localhost:4000/api/courses/${getCurrentRound.value.courseId}?holes=true`);
 const course = await courseFetch.json();
 
-const selectedHole: Ref<string> = ref('');
-const newOptions = course.holes.map((hole: Hole, index: number) => {
+const selectedHole: Ref<string | null> = ref(null);
+const holeDropdownOptions = course.holes.map((hole: Hole, index: number) => {
   return {
     label: `Hole ${hole.number}`,
     key: `hole-${hole.number}-${hole.courseId}-${hole.tees}`,
-    value: index,
+    value: index + 1,
   };
 });
 
@@ -56,33 +62,11 @@ interface Hole {
   createdAt: string;
   updatedAt: string;
 }
-
-interface Score {
-  strokes: number | null;
-  gir: boolean;
-  fairway: boolean;
-  roundId: number | null;
-  holeId: number | null;
-  userId: number | null;
-}
 </script>
 
 <style lang="scss">
-.record-hole-container {
+.record-score-container {
   max-width: 350px;
-
-  .score-title {
-    color: #3d5afe;
-    font-size: 48px;
-    line-height: 1.25;
-    margin-bottom: 10px;
-    margin-top: 0;
-    text-align: center;
-  }
-
-  .score-title-hole {
-    display: block;
-  }
 
   .score-input {
     border: 1px solid #ddd;
