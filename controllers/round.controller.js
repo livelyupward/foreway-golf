@@ -3,6 +3,11 @@ const Round = db.rounds;
 
 // Create and Save a new Round
 export const create = (req, res) => {
+  if (!req.body.courseId)
+    return res.status(400).send({ error: 'No course id found. Please provide a course id to create a new round.' });
+
+  if (!req.body.userId)
+    return res.status(400).send({ error: 'No user id found. Please provide a user id to create a new round.' });
   // Create a Round
   const round = {
     courseId: req.body.courseId,

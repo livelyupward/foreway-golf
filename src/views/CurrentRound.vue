@@ -1,28 +1,54 @@
 <template>
   <div id="current-round" v-if="course && getUser">
-    <h1>{{ course.name }}</h1>
-    <hr />
+    <h1 class="current-round_title">{{ course.name }}</h1>
+    <div class="current-round_info">
+      <p class="current-round_info-date">Date: {{ friendlyCreatedDate }}</p>
+    </div>
     <CourseScorecard :holes="course.holes" />
-    <n-modal v-model:show="computedScoreModal">
-      <ScoreForm :course="course" :selected-hole="parseInt(+selectedHole)" />
+    <n-modal v-model:show="computedScoreModal" @update:show="toggleScoreModal">
+      <n-card
+        style="width: 600px"
+        :title="`Hole ${currentHoleInScoreModal}`"
+        :bordered="false"
+        size="huge"
+        role="dialog"
+        aria-modal="true"
+      >
+        <template #header-extra>
+          <CloseIcon @click="closeScoreModal" />
+        </template>
+        <ScoreForm :course="course" :selected-hole="currentHoleInScoreModal" />
+      </n-card>
     </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, Ref } from 'vue';
 import { mainStore } from '../store';
-import { NModal } from 'naive-ui';
+import { NModal, NCard } from 'naive-ui';
+import { CloseSharp as CloseIcon } from '@vicons/ionicons5';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
+import { storeToRefs } from 'pinia';
+import isDebug from '../plugins/debugConsole';
+import { computed } from 'vue';
 
 const store = mainStore();
-const { getUser, getCurrentRound, computedScoreModal } = store;
+const { toggleScoreModal, closeScoreModal } = store;
+const { getUser, getCurrentRound, computedScoreModal, currentHoleInScoreModal } = storeToRefs(store);
+
+isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
 const courseFetch = await fetch(`http://localhost:4000/api/courses/${getCurrentRound.value.courseId}?holes=true`);
 const course = await courseFetch.json();
 
-const selectedHole: Ref<string | null> = ref(null);
+const friendlyCreatedDate = computed(() => {
+  const dateString = course.createdAt;
+  const date = new Date(dateString);
+  const options = { timeZone: 'UTC' };
+
+  return date.toLocaleDateString('en-US', options);
+});
 
 interface Hole {
   id: number;
@@ -38,6 +64,14 @@ interface Hole {
 </script>
 
 <style lang="scss">
+.current-round_title {
+  margin-bottom: 0;
+}
+
+.current-round_info-date {
+  margin-top: 0;
+}
+
 .record-score-container {
   max-width: 350px;
 

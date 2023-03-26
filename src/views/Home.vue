@@ -14,14 +14,18 @@
 <script setup lang="ts">
 import { NButton } from 'naive-ui';
 import { mainStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 const store = mainStore();
-const { getUser, authAndGetUserFromDB, goToRound } = store;
+const { authAndGetUserFromDB, goToRound } = store;
+const { getUser } = storeToRefs(store);
 const userCheck = await authAndGetUserFromDB();
 console.log('User check on Home render: ', userCheck);
 
 function goToCurrentRound() {
-  goToRound(getUser.value.currentRound);
+  if (getUser.value !== null) {
+    goToRound(getUser.value.currentRound);
+  }
 }
 </script>
 

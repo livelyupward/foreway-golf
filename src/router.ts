@@ -27,7 +27,7 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
    * if there is no user in state send to auth page only
    * else send to route that was intended
    */
-  if (getUser.value === null) {
+  if (getUser === null) {
     isDebug() && console.log('force to auth');
     return next({ name: 'Auth' });
   }

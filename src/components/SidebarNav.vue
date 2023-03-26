@@ -19,9 +19,11 @@ import {
   FlagOutline as FlagIcon,
 } from '@vicons/ionicons5';
 import { mainStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 const store = mainStore();
-const { getDrawerState, toggleDrawer } = store;
+const { getDrawerState } = storeToRefs(store);
+const { toggleDrawer } = store;
 
 const menuOptions: MenuOption[] = [
   {
@@ -66,18 +68,18 @@ const menuOptions: MenuOption[] = [
       },
     },
   },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        {
-          to: '/round',
-        },
-        { default: () => 'Resume my round' }
-      ),
-    key: 'resume-my-round',
-    icon: renderIcon(FlagIcon),
-  },
+  // {
+  //   label: () =>
+  //     h(
+  //       RouterLink,
+  //       {
+  //         to: '/round',
+  //       },
+  //       { default: () => 'Resume my round' }
+  //     ),
+  //   key: 'resume-my-round',
+  //   icon: renderIcon(FlagIcon),
+  // },
 ];
 
 function renderIcon(icon: Component) {
@@ -87,12 +89,13 @@ function renderIcon(icon: Component) {
 
 <style lang="scss">
 #side-panel {
-  background-color: #fff;
+  background-color: #333;
   max-width: 250px;
   transition: transform 250ms ease-out;
   width: 100%;
 
   &.open {
+    border-left: 1px solid #bbbbbb;
     transform: translateX(0%);
     transition: transform 250ms ease-out;
   }
@@ -109,11 +112,12 @@ function renderIcon(icon: Component) {
   }
 
   .side-panel-mobile-toggle {
-    background-color: #fff;
+    background-color: #333;
     border: 1px solid #bbb;
     border-bottom-left-radius: 4px;
     border-right: none;
     border-top: none;
+    color: #bbbbbb;
     cursor: pointer;
     position: relative;
     transform: translateX(-100%);

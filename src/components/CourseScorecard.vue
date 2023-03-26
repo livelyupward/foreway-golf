@@ -1,5 +1,5 @@
 <template>
-  <div id="course-scorecard" v-if="holes.length">
+  <div id="course-scorecard" v-if="holes?.length">
     <div class="scorecard-table_container">
       <n-table class="scorecard-table front" :bordered="true" :single-line="false" size="large">
         <thead>
@@ -15,8 +15,12 @@
             <th>{{ hole.number }}</th>
             <td>{{ hole.yardage }}</td>
             <td>{{ hole.par }}</td>
-            <td @click="openScoreModal">
-              {{ getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : '' }}
+            <td @click="activateScoreFormFromScorecard(hole.number)">
+              {{
+                getCurrentRound.scores[index] && getCurrentRound.scores[index].holeId === hole.number
+                  ? getCurrentRound.scores[index].strokes
+                  : ''
+              }}
             </td>
           </tr>
         </tbody>
@@ -28,13 +32,20 @@
 <script setup lang="ts">
 import { NTable } from 'naive-ui';
 import { mainStore } from '../store';
+import { storeToRefs } from 'pinia';
 
 const store = mainStore();
-const { getCurrentRound, openScoreModal } = store;
+const { openScoreModal, setHoleInScoreModal } = store;
+const { getCurrentRound } = storeToRefs(store);
 
 const props = defineProps({
   holes: Array,
 });
+
+async function activateScoreFormFromScorecard(holeNumber: number): Promise<void> {
+  await setHoleInScoreModal(holeNumber);
+  await openScoreModal();
+}
 
 console.log('Scorecard holes length: ', props.holes);
 </script>

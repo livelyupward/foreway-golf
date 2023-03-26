@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import Express from 'express';
 import cors from 'cors';
+import eSession from 'express-session';
 import seedGCI from './models/gci.seed.js';
 import seedDave from './models/user.seed.js';
 import seedStreamwoodOaks from './models/streamwood-oaks.seed.js';
@@ -13,6 +16,11 @@ import db from './models/index.js';
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(
+  eSession({
+    secret: process.env.SESSION_SECRET,
+  })
+);
 
 db.sequelize
   .sync({ force: true })

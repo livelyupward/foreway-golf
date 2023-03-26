@@ -1,7 +1,9 @@
 html,
 body {
   -webkit-font-smoothing: antialiased;
+  background-color: #333333;
   box-sizing: border-box;
+  color: #fff;
   font-size: 16px;
   max-width: 100%;
   overflow-x: hidden;

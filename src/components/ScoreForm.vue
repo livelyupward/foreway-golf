@@ -1,37 +1,43 @@
 <template>
   <n-form
     @submit.prevent="submitScoreForHole"
-    v-if="getHoleFromSelect !== null"
-    label-placement="left"
-    require-mark-placement="right-hanging"
+    v-if="currentHoleInScoreModal !== null"
     label-width="auto"
     :style="{
       maxWidth: '640px',
     }"
     class="hole-score_form-card"
   >
-    <n-form-item label="Strokes" path="inputValue">
-      <n-input v-model:value.number="scoreData.strokes" placeholder="# of strokes" />
-    </n-form-item>
-    <n-form-item label="Putts" path="inputValue">
-      <n-input v-model:value.number="scoreData.putts" placeholder="# of putts" />
-    </n-form-item>
-    <n-form-item label="Green in Reg." path="checkboxGroupValue">
-      <n-space>
-        <n-checkbox v-model:value="scoreData.gir" :checked-value="true" :unchecked-value="false"></n-checkbox>
-      </n-space>
-    </n-form-item>
-    <n-form-item label="Fairway Hit" path="checkboxGroupValue">
-      <n-space>
-        <n-checkbox v-model:value="scoreData.fairway" :checked-value="true" :unchecked-value="false"></n-checkbox>
-      </n-space>
-    </n-form-item>
+    <div class="hole-score_form-group">
+      <n-form-item label="Strokes" path="inputValue">
+        <n-input v-model:value.number="scoreData.strokes" placeholder="# of strokes" />
+      </n-form-item>
+      <n-form-item label="Putts" path="inputValue">
+        <n-input v-model:value.number="scoreData.putts" placeholder="# of putts" />
+      </n-form-item>
+    </div>
+    <div class="hole-score_form-group">
+      <n-checkbox-group v-model:value="scoreData.gir">
+        <n-form-item label="Green in Reg." path="checkboxGroupValue">
+          <n-space>
+            <n-checkbox></n-checkbox>
+          </n-space>
+        </n-form-item>
+      </n-checkbox-group>
+      <n-checkbox-group v-model:value="scoreData.fairway">
+        <n-form-item label="Fairway Hit" path="checkboxGroupValue">
+          <n-space>
+            <n-checkbox></n-checkbox>
+          </n-space>
+        </n-form-item>
+      </n-checkbox-group>
+    </div>
     <n-list class="hole-score-form-info">
       <n-list-item class="hole-score-form-info-item"><span>Par: </span>{{ getHoleFromSelect.par }}</n-list-item>
       <n-list-item class="hole-score-form-info-item"><span>Yards: </span>{{ getHoleFromSelect.yardage }}</n-list-item>
-      <n-list-item class="hole-score-form-info-item"
-        ><span>Handicap: </span>{{ getHoleFromSelect.handicap }}</n-list-item
-      >
+      <n-list-item class="hole-score-form-info-item">
+        <span>Handicap: </span>{{ getHoleFromSelect.handicap }}
+      </n-list-item>
     </n-list>
     <n-button attr-type="submit" :justify="'center'" class="hole-score-form-button">Save score</n-button>
   </n-form>
@@ -41,12 +47,14 @@
 import { NButton, NSpace, NList, NListItem, useMessage } from 'naive-ui';
 import { computed, ref, Ref } from 'vue';
 import { mainStore } from '../store';
+import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
 
 const message = useMessage();
 const store = mainStore();
-const { getUser, submitScore } = store;
-import { NFormItem, NInput, NForm, NCheckbox, NCheckboxGroup } from 'naive-ui';
+const { submitScore } = store;
+const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store);
+import { NFormItem, NInput, NForm, NCheckbox } from 'naive-ui';
 
 const props = defineProps({
   course: Object,
@@ -66,7 +74,7 @@ const scoreData: Ref<Score> = ref({
   strokes: undefined,
   gir: false,
   fairway: false,
-  roundId: store.getCurrentRound.value.id,
+  roundId: getCurrentRound.value.id,
   holeId: holeFromSelect,
   userId: getUser.value.id,
 });
@@ -105,7 +113,16 @@ interface Score {
 .hole-score_form-card {
   margin-top: 15px;
 
+  .hole-score_form-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+  }
+
   label {
+    &.n-form-item-label {
+    }
+
     span {
       font-size: 16px;
     }

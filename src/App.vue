@@ -1,5 +1,5 @@
 <template>
-  <n-config-provider>
+  <n-config-provider :theme="darkTheme">
     <n-message-provider>
       <Suspense>
         <div id="app-container">
@@ -16,9 +16,11 @@
 
 <script setup lang="ts">
 import { NConfigProvider, NMessageProvider } from 'naive-ui';
+import { darkTheme } from 'naive-ui';
 import SidebarNav from './components/SidebarNav.vue';
 import { onBeforeMount } from 'vue';
 import { mainStore } from './store';
+
 const store = mainStore();
 const { authAndGetUserFromDB } = store;
 
@@ -35,7 +37,7 @@ onBeforeMount(async () => {
   min-height: 100vh;
   overflow-x: hidden;
 
-  @media screen and (max-width: 600px) {
+  @media screen and (max-width: 900px) {
     display: block;
     max-width: 100%;
     position: absolute;

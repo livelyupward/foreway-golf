@@ -32,17 +32,16 @@
 import { Ref, ref } from 'vue';
 import { NButton, NModal, NCard, useMessage } from 'naive-ui';
 import { mainStore } from '../store';
+import { storeToRefs } from 'pinia';
+import isDebug from '../plugins/debugConsole';
 
 const store = mainStore();
-const { getUser, createNewRound, goToRound } = store;
+const { createNewRound, goToRound } = store;
+const { getUser } = storeToRefs(store);
 const message = useMessage();
 
 const selectedCourse: Ref<CourseInfo | null> = ref(null);
 const showModal: Ref<boolean> = ref(false);
-const courseInfoToSend: Ref<object> = ref({
-  userId: getUser.value ? getUser.value.id : '',
-  courseId: selectedCourse.value ? selectedCourse.value.id : '',
-});
 
 const courses: Response = await fetch(`http://localhost:4000/api/courses`);
 const courseResponse: object[] = await courses.json();
@@ -52,7 +51,7 @@ async function startNewRound() {
     courseId: selectedCourse.value.id,
     userId: getUser.value.id,
   });
-  import.meta.env.MODE !== 'production' && console.log('res: ', startRound);
+  isDebug() && console.log('res: ', startRound);
   message.success('Round created!');
   return await goToRound(startRound.round.id);
 }

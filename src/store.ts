@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref, Ref } from 'vue';
+import { computed, ComputedRef, ref, Ref } from 'vue';
 import router from './router';
 import isDebug from './plugins/debugConsole';
 
@@ -9,23 +9,24 @@ export const mainStore = defineStore('main', () => {
     userId: null,
     scores: [],
   });
-  const user: Ref<object | null> = ref(null);
+  const user: Ref<User | null> = ref(null);
   const drawerOpen: Ref<boolean> = ref(false);
+  const currentHoleInScoreModal: Ref<number | null> = ref(null);
   const scoreModalOpen: Ref<boolean> = ref(false);
   const computedScoreModal = computed(() => {
     return scoreModalOpen.value;
   });
 
   const getCurrentRound = computed(() => {
-    return currentRound;
+    return currentRound.value;
   });
 
-  const getUser = computed(() => {
-    return user;
+  const getUser: ComputedRef<User | null> = computed(() => {
+    return user.value;
   });
 
   const getDrawerState = computed(() => {
-    return drawerOpen;
+    return drawerOpen.value;
   });
 
   function closeDrawer() {
@@ -37,22 +38,30 @@ export const mainStore = defineStore('main', () => {
   }
 
   function toggleDrawer() {
-    drawerOpen.value = !drawerOpen.value;
+    return (drawerOpen.value = !drawerOpen.value);
   }
 
-  function openScoreModal() {
-    scoreModalOpen.value = true;
+  async function openScoreModal() {
+    return (scoreModalOpen.value = true);
   }
-  function closeScoreModal() {
-    scoreModalOpen.value = false;
+  async function closeScoreModal() {
+    return (scoreModalOpen.value = false);
   }
 
-  function setUser(userPayload: object) {
+  async function toggleScoreModal() {
+    return (scoreModalOpen.value = !scoreModalOpen.value);
+  }
+
+  async function setUser(userPayload: User) {
     return (user.value = userPayload);
   }
 
   function resetUser() {
     return (user.value = null);
+  }
+
+  async function setHoleInScoreModal(holeNumberToSet: number) {
+    return (currentHoleInScoreModal.value = holeNumberToSet);
   }
 
   async function createNewRound(courseInfoObject: object) {
@@ -69,7 +78,7 @@ export const mainStore = defineStore('main', () => {
     currentRound.value = newRoundResponse;
 
     const userRoundRequest = await fetch(
-      `http://localhost:4000/api/users/${getUser.value.value.id}?roundId=${newRoundResponse.id}`,
+      `http://localhost:4000/api/users/${getUser.value.id}?roundId=${newRoundResponse.id}`,
       {
         method: 'PUT',
         headers: {
@@ -130,10 +139,10 @@ export const mainStore = defineStore('main', () => {
         const userDbFetch = await fetch(`http://localhost:4000/api/users/${cachedTokenResponse.email}`);
         const userDbResponse: object[] = await userDbFetch.json();
 
-        setUser(userDbResponse[0]);
+        await setUser(userDbResponse[0]);
 
-        if (getUser.value.value.currentRound) {
-          const getRoundRequest = await fetch(`http://localhost:4000/api/round/${getUser.value.value.currentRound}`);
+        if (getUser?.value.currentRound) {
+          const getRoundRequest = await fetch(`http://localhost:4000/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
         }
 
@@ -150,6 +159,9 @@ export const mainStore = defineStore('main', () => {
     computedScoreModal,
     openScoreModal,
     closeScoreModal,
+    toggleScoreModal,
+    setHoleInScoreModal,
+    currentHoleInScoreModal,
     getCurrentRound,
     getUser,
     getDrawerState,
@@ -178,4 +190,13 @@ interface Score {
   roundId: number | null;
   holeId: number | null;
   userId: number | null;
+}
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  currentRound?: number;
+  createdAt: string;
+  updatedAt: string;
 }
