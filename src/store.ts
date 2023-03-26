@@ -78,6 +78,7 @@ export const mainStore = defineStore('main', () => {
     currentRound.value = newRoundResponse;
 
     const userRoundRequest = await fetch(
+      // @ts-ignore
       `http://localhost:4000/api/users/${getUser.value.id}?roundId=${newRoundResponse.id}`,
       {
         method: 'PUT',
@@ -136,16 +137,19 @@ export const mainStore = defineStore('main', () => {
         }
 
         const cachedTokenResponse = await cachedTokenSend.json();
-        const userDbFetch = await fetch(`http://localhost:4000/api/users/${cachedTokenResponse.email}`);
-        const userDbResponse: object[] = await userDbFetch.json();
+        const userDbFetch: Response = await fetch(`http://localhost:4000/api/users/${cachedTokenResponse.email}`);
+        const userDbResponse: Promise<object> = await userDbFetch.json();
 
+        // @ts-ignore
         await setUser(userDbResponse[0]);
 
+        // @ts-ignore
         if (getUser?.value.currentRound) {
           const getRoundRequest = await fetch(`http://localhost:4000/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
         }
 
+        // @ts-ignore
         return userDbResponse[0];
       } catch (error) {
         localStorage.removeItem('gg_token');
