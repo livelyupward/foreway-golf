@@ -3,20 +3,26 @@
     <div class="scorecard-table_container">
       <n-table class="scorecard-table front" :bordered="true" :single-line="false" size="large">
         <thead>
-          <tr class="scorecard-table_row hole-number">
-            <th>Hole</th>
-            <th>Yards</th>
-            <th>Par</th>
-            <th>Score</th>
+          <tr class="scorecard-table_row heading">
+            <th class="scorecard-table_row-header">Hole</th>
+            <th class="scorecard-table_row-header">Yards</th>
+            <th class="scorecard-table_row-header">Par</th>
+            <th class="scorecard-table_row-header">Score</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(hole, index) in props.holes">
-            <th>{{ hole.number }}</th>
-            <td>{{ hole.yardage }}</td>
-            <td>{{ hole.par }}</td>
-            <td @click="activateScoreFormFromScorecard(hole.number)">
-              {{ getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : '' }}
+          <tr v-for="(hole, index) in props.holes" class="scorecard-table_row">
+            <th class="scorecard-table_row-header">{{ hole.number }}</th>
+            <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
+            <td class="scorecard-table_row-item">{{ hole.par }}</td>
+            <td
+              @click="activateScoreFormFromScorecard(hole.number)"
+              class="scorecard-table_row-item score"
+              :class="strokeCalculate(getCurrentRound.scores[index]?.strokes, hole.par)"
+            >
+              <span class="scorecard-table_row-item_span">{{
+                getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : ''
+              }}</span>
             </td>
           </tr>
         </tbody>
@@ -43,19 +49,63 @@ async function activateScoreFormFromScorecard(holeNumber: number): Promise<void>
   await openScoreModal();
 }
 
+const strokeCalculate = (score: number, par: number) => {
+  if (score - par >= 2) {
+    return 'double-bogey';
+  } else if (score - par === 1) {
+    return 'bogey';
+  } else if (score - par === 0) {
+    return 'par';
+  } else if (score - par === -1) {
+    return 'birdie';
+  } else if (score - par <= -2) {
+    return 'eagle';
+  }
+};
+
 console.log('Scorecard holes length: ', props.holes);
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .scorecard-table_container {
   overflow-x: auto;
 
   .scorecard-table_row {
+    font-size: 18px;
+
     th {
       font-weight: 400;
     }
 
-    &.hole-number {
+    td.scorecard-table_row-item.score {
+      font-weight: 700;
+
+      &.double-bogey {
+        .scorecard-table_row-item_span {
+          border: 1px solid #fff;
+          outline: 1px solid #fff;
+          outline-offset: 4px;
+          padding: 2px 6px;
+        }
+      }
+
+      &.bogey {
+        .scorecard-table_row-item_span {
+          border: 1px solid #fff;
+          padding: 2px 6px;
+        }
+      }
+
+      &.birdie {
+        .scorecard-table_row-item_span {
+          border: 1px solid #fff;
+          border-radius: 50%;
+          padding: 2px 6px;
+        }
+      }
+    }
+
+    &.heading {
       th {
         color: #18a058;
         font-weight: 700;
