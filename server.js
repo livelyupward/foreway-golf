@@ -58,11 +58,11 @@ app.post('/auth', (req, res) => {
   }
   verify()
     .then(() => {
-      res.send(userToSend);
+      return res.send(userToSend);
     })
     .catch((error) => {
-      res.status(403).send({ error });
       console.error('err: ', Object.keys(error));
+      return res.status(403).send({ error });
     });
 });
 

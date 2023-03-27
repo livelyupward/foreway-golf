@@ -46,16 +46,29 @@ export const findOne = (req, res) => {
   Round.findByPk(id, { include: ['scores'] })
     .then((data) => {
       if (data) {
-        res.send(data);
+        let sortedScoresArray = [];
+        let convertedDataModel = data.toJSON();
+
+        if (convertedDataModel.scores.length > 0) {
+          convertedDataModel.scores.forEach((scoreObject) => {
+            sortedScoresArray[scoreObject.holeId - 1] = scoreObject;
+          });
+
+          convertedDataModel.scores = sortedScoresArray;
+          return res.send(convertedDataModel);
+        } else {
+          return res.send(data);
+        }
       } else {
         res.status(404).send({
-          message: `Cannot find Tutorial with id=${id}.`,
+          message: `Cannot find Round with id=${id}.`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving Tutorial with id=' + id,
+        error: err,
+        message: 'Error retrieving Round with id=' + id,
       });
     });
 };

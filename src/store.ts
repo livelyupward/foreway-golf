@@ -74,7 +74,7 @@ export const mainStore = defineStore('main', () => {
     });
 
     const newRoundResponse = await newRoundRequest.json();
-    newRoundResponse.scores = new Map();
+    newRoundResponse.scores = [];
     currentRound.value = newRoundResponse;
 
     const userRoundRequest = await fetch(
@@ -107,9 +107,10 @@ export const mainStore = defineStore('main', () => {
       });
 
       const newSavedScore = await newScoreRequest.json();
-      isDebug() && console.log('ROUND:: ', currentRound.value.scores);
 
-      currentRound.value.scores[+newSavedScore.holeId] = newSavedScore;
+      isDebug() && console.log('currentRound after submitScore() before splice:: ', currentRound.value);
+      currentRound.value.scores[newSavedScore.holeId - 1] = newSavedScore;
+      isDebug() && console.log('currentRound after submitScore() after splice:: ', currentRound.value);
 
       return newSavedScore;
     } catch (error) {

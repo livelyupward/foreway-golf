@@ -16,11 +16,7 @@
             <td>{{ hole.yardage }}</td>
             <td>{{ hole.par }}</td>
             <td @click="activateScoreFormFromScorecard(hole.number)">
-              {{
-                getCurrentRound.scores[index] && getCurrentRound.scores[index].holeId === hole.number
-                  ? getCurrentRound.scores[index].strokes
-                  : ''
-              }}
+              {{ getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : '' }}
             </td>
           </tr>
         </tbody>

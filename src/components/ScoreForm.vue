@@ -17,20 +17,12 @@
       </n-form-item>
     </div>
     <div class="hole-score_form-group">
-      <n-checkbox-group v-model:value="scoreData.gir">
-        <n-form-item label="Green in Reg." path="checkboxGroupValue">
-          <n-space>
-            <n-checkbox></n-checkbox>
-          </n-space>
-        </n-form-item>
-      </n-checkbox-group>
-      <n-checkbox-group v-model:value="scoreData.fairway">
-        <n-form-item label="Fairway Hit" path="checkboxGroupValue">
-          <n-space>
-            <n-checkbox></n-checkbox>
-          </n-space>
-        </n-form-item>
-      </n-checkbox-group>
+      <n-space>
+        <n-checkbox v-model:checked="scoreData.gir">GIR</n-checkbox>
+      </n-space>
+      <n-space>
+        <n-checkbox v-model:checked="scoreData.fairway">Fairway</n-checkbox>
+      </n-space>
     </div>
     <n-list class="hole-score-form-info">
       <n-list-item class="hole-score-form-info-item"><span>Par: </span>{{ getHoleFromSelect.par }}</n-list-item>
@@ -52,7 +44,7 @@ import isDebug from '../plugins/debugConsole';
 
 const message = useMessage();
 const store = mainStore();
-const { submitScore } = store;
+const { submitScore, closeScoreModal } = store;
 const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store);
 import { NFormItem, NInput, NForm, NCheckbox } from 'naive-ui';
 
@@ -72,6 +64,7 @@ const getHoleFromSelect = computed(() => {
 
 const scoreData: Ref<Score> = ref({
   strokes: undefined,
+  putts: undefined,
   gir: false,
   fairway: false,
   roundId: getCurrentRound.value.id,
@@ -83,7 +76,10 @@ async function submitScoreForHole() {
   isDebug() && console.log('hello');
   if (scoreData.value.roundId && scoreData.value.holeId !== undefined && scoreData.value.userId) {
     const newScore = await submitScore(scoreData.value);
-    if (!newScore.error) message.success('Score saved!');
+    if (!newScore.error) {
+      message.success('Score saved!');
+      await closeScoreModal();
+    }
 
     return newScore;
   } else {
