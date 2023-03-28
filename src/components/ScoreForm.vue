@@ -9,11 +9,11 @@
     class="hole-score_form-card"
   >
     <div class="hole-score_form-group">
-      <n-form-item label="Strokes" path="inputValue">
-        <n-input v-model:value.number="scoreData.strokes" placeholder="# of strokes" />
+      <n-form-item label="Strokes">
+        <n-input v-model:value="scoreData.strokes" placeholder="# of strokes" />
       </n-form-item>
-      <n-form-item label="Putts" path="inputValue">
-        <n-input v-model:value.number="scoreData.putts" placeholder="# of putts" />
+      <n-form-item label="Putts">
+        <n-input v-model:value="scoreData.putts" placeholder="# of putts" />
       </n-form-item>
     </div>
     <div class="hole-score_form-group">
@@ -44,10 +44,12 @@ import isDebug from '../plugins/debugConsole';
 
 const message = useMessage();
 const store = mainStore();
-const { submitScore, closeScoreModal } = store;
+const { submitScore, submitEditedScore, closeScoreModal } = store;
 const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store);
 import { NFormItem, NInput, NForm, NCheckbox } from 'naive-ui';
+import type { Score } from '../store';
 
+let existingScore: Ref<boolean> = ref(false);
 const props = defineProps({
   course: Object,
   selectedHole: Number,
@@ -56,27 +58,36 @@ const props = defineProps({
 const holeFromSelect = computed(() => {
   return props.selectedHole;
 });
-// TODO: find why Map isn't listing the arrays in correct order. Might have to avoid Map and use arrays.
+
 const getHoleFromSelect = computed(() => {
   isDebug() && console.log('course holes in ScoreForm:: ', props.course.holes);
+  // @ts-ignore
   return props.selectedHole > 0 ? props.course.holes[props.selectedHole - 1] : null;
 });
 
 const scoreData: Ref<Score> = ref({
-  strokes: undefined,
-  putts: undefined,
+  strokes: null,
+  putts: null,
   gir: false,
   fairway: false,
   roundId: getCurrentRound.value.id,
   holeId: holeFromSelect,
-  userId: getUser.value.id,
+  userId: getUser!.value.id,
 });
+
+if (props.selectedHole && getCurrentRound.value.scores[props.selectedHole - 1]?.strokes) {
+  existingScore.value = true;
+  scoreData.value = getCurrentRound.value.scores[props.selectedHole - 1];
+}
 
 async function submitScoreForHole() {
   isDebug() && console.log('hello');
-  if (scoreData.value.roundId && scoreData.value.holeId !== undefined && scoreData.value.userId) {
-    const newScore = await submitScore(scoreData.value);
+  if (scoreData.value.roundId && scoreData.value.holeId !== null && scoreData.value.userId) {
+    const newScore = existingScore.value
+      ? await submitEditedScore(scoreData.value)
+      : await submitScore(scoreData.value);
     if (!newScore.error) {
+      existingScore.value = false;
       message.success('Score saved!');
       await closeScoreModal();
     }
@@ -84,19 +95,8 @@ async function submitScoreForHole() {
     return newScore;
   } else {
     isDebug() && console.log('sent from scoreData: ', scoreData.value);
-    // TODO: error coming from here on submit of a score, recently changed the scoreData structure to be dynamic
     console.error('Error: please provide a hole, a round, and a user id.');
   }
-}
-
-interface Score {
-  strokes?: number;
-  putts?: number;
-  gir?: boolean;
-  fairway?: boolean;
-  roundId?: number;
-  holeId?: number;
-  userId?: number;
 }
 </script>
 

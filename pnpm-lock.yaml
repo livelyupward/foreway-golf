@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@vicons/ionicons5': ^0.12.0
+  '@vicons/tabler': ^0.12.0
   '@vicons/utils': ^0.1.4
   '@vitejs/plugin-vue': ^4.1.0
   body-parser: ^1.20.2
@@ -41,6 +42,7 @@ dependencies:
 
 devDependencies:
   '@vicons/ionicons5': 0.12.0
+  '@vicons/tabler': 0.12.0
   '@vicons/utils': 0.1.4_vue@3.2.47
   '@vitejs/plugin-vue': 4.1.0_vite@4.2.0+vue@3.2.47
   concurrently: 7.6.0
@@ -316,6 +318,10 @@ packages:
 
   /@vicons/ionicons5/0.12.0:
     resolution: {integrity: sha512-Iy1EUVRpX0WWxeu1VIReR1zsZLMc4fqpt223czR+Rpnrwu7pt46nbnC2ycO7ItI/uqDLJxnbcMC7FujKs9IfFA==}
+    dev: true
+
+  /@vicons/tabler/0.12.0:
+    resolution: {integrity: sha512-3+wUFuxb7e8OzZ8Wryct1pzfA2vyoF4lwW98O9s27ZrfCGaJGNmqG+q8A7vQ92Mf+COCgxpK+rhNPTtTvaU6qw==}
     dev: true
 
   /@vicons/utils/0.1.4_vue@3.2.47:

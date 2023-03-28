@@ -7,20 +7,20 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
   const { getUser, authAndGetUserFromDB } = store;
 
   if (localStorage.getItem('gg_token')) {
-    await authAndGetUserFromDB()
-      .then(() => {
-        /**
-         * auth passes and allow user into the route
-         */
-        return next();
-      })
-      .catch((err) => {
-        console.error(err);
-        /**
-         * user could not be authed. send to the auth page to start auth process
-         */
-        return { name: 'Auth' };
-      });
+    try {
+      /**
+       * with token in localStorage, attempt to use token and get auth
+       * if fails then send to auth path to get a new token
+       */
+      await authAndGetUserFromDB();
+      return next();
+    } catch (error) {
+      /**
+       * user could not be authed. send to the auth page to start auth process
+       */
+      console.error(error);
+      return { name: 'Auth' };
+    }
   }
 
   /**
@@ -35,16 +35,19 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
 
 const routes = [
   {
+    name: 'Home',
     path: '/',
     component: () => import('./views/Home.vue'),
     beforeEnter: checkAuth,
   },
   {
+    name: 'Start',
     path: '/round',
     component: () => import('./views/StartRound.vue'),
     beforeEnter: checkAuth,
   },
   {
+    name: 'Current round',
     path: '/rounds/:id',
     component: () => import('./views/CurrentRound.vue'),
     beforeEnter: checkAuth,
@@ -64,6 +67,9 @@ const router = createRouter({
 router.beforeResolve((to, from) => {
   const store = mainStore();
 
+  /**
+   * before nav make sure to close the drawer for mobile
+   */
   store.closeDrawer();
 });
 

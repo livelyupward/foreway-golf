@@ -8,24 +8,20 @@
 </template>
 
 <script setup lang="ts">
-import { h, Component } from 'vue';
+import { h, Component, onMounted, Ref, ref } from 'vue';
 import { RouterLink } from 'vue-router';
 import { NMenu, NIcon } from 'naive-ui';
 import type { MenuOption } from 'naive-ui';
-import {
-  GolfOutline as GolfIcon,
-  HomeOutline as HomeIcon,
-  MenuOutline as MenuIcon,
-  FlagOutline as FlagIcon,
-} from '@vicons/ionicons5';
+import { GolfOutline as GolfIcon, HomeOutline as HomeIcon, MenuOutline as MenuIcon } from '@vicons/ionicons5';
+import { Pencil as ResumeIcon } from '@vicons/tabler';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 
 const store = mainStore();
-const { getDrawerState } = storeToRefs(store);
+const { getDrawerState, getUser } = storeToRefs(store);
 const { toggleDrawer } = store;
 
-const menuOptions: MenuOption[] = [
+let menuOptions: Ref<MenuOption[]> = ref([
   {
     label: () =>
       h(
@@ -68,19 +64,28 @@ const menuOptions: MenuOption[] = [
       },
     },
   },
-  // {
-  //   label: () =>
-  //     h(
-  //       RouterLink,
-  //       {
-  //         to: '/round',
-  //       },
-  //       { default: () => 'Resume my round' }
-  //     ),
-  //   key: 'resume-my-round',
-  //   icon: renderIcon(FlagIcon),
-  // },
-];
+]);
+
+// onMounted(() => {
+//   if (getUser.value !== null && getUser.value.currentRound) {
+//     console.log('user round found in mounted');
+//     menuOptions.value = [
+//       ...menuOptions.value,
+//       {
+//         label: () =>
+//           h(
+//             RouterLink,
+//             {
+//               to: `/round/${getUser.value.currentRound.id}`,
+//             },
+//             { default: () => 'Resume My Round' }
+//           ),
+//         key: 'go-home',
+//         icon: renderIcon(ResumeIcon),
+//       },
+//     ];
+//   }
+// });
 
 function renderIcon(icon: Component) {
   return () => h(NIcon, null, { default: () => h(icon) });

@@ -15,6 +15,7 @@ export const create = (req, res) => {
   // Create a Score
   const score = {
     strokes: req.body.strokes,
+    putts: req.body.putts,
     gir: req.body.gir,
     fairway: req.body.fairway,
     roundId: req.body.roundId,

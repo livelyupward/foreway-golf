@@ -17,7 +17,7 @@ export const mainStore = defineStore('main', () => {
     return scoreModalOpen.value;
   });
 
-  const getCurrentRound = computed(() => {
+  const getCurrentRound: ComputedRef<Round> = computed(() => {
     return currentRound.value;
   });
 
@@ -92,7 +92,7 @@ export const mainStore = defineStore('main', () => {
     return { round: newRoundResponse, user: userRoundResponse };
   }
 
-  async function goToRound(roundId: number) {
+  async function goToRound(roundId: number | undefined) {
     return await router.push(`/rounds/${roundId}`);
   }
 
@@ -117,6 +117,29 @@ export const mainStore = defineStore('main', () => {
       isDebug() && console.error({ error });
     }
   }
+
+  async function submitEditedScore(payload: Score) {
+    try {
+      const newScoreEditedRequest = await fetch(`http://localhost:4000/api/scores/${payload.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const newSavedEditedScore = await newScoreEditedRequest.json();
+
+      isDebug() && console.log('currentRound after submitEditedScore() before splice:: ', currentRound.value);
+      currentRound.value.scores[newSavedEditedScore.holeId - 1] = newSavedEditedScore;
+      isDebug() && console.log('currentRound after submitEditedScore() after splice:: ', currentRound.value);
+
+      return newSavedEditedScore;
+    } catch (error) {
+      isDebug() && console.error({ error });
+    }
+  }
+
   async function authAndGetUserFromDB() {
     // if token is saved in DB
     if (localStorage.getItem('gg_token')) {
@@ -178,16 +201,19 @@ export const mainStore = defineStore('main', () => {
     goToRound,
     resetUser,
     submitScore,
+    submitEditedScore,
   };
 });
 
 interface Round {
+  id: number;
   courseId: number | null;
   userId: number | null;
   scores: Array<Score>;
 }
 
-interface Score {
+export interface Score {
+  id: number | null;
   strokes: number | null;
   putts: number | null;
   gir: boolean;
