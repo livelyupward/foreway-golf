@@ -7,6 +7,7 @@ export const mainStore = defineStore('main', () => {
   const currentRound: Ref<Round> = ref({
     courseId: null,
     userId: null,
+    closed: false,
     scores: [],
   });
   const user: Ref<User | null> = ref(null);
@@ -140,6 +141,12 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function markRoundComplete() {
+    // TODO: finish adding steps to completing a round or just build it
+    // edit round to be complete
+    // remove round id from user
+  }
+
   async function authAndGetUserFromDB() {
     // if token is saved in DB
     if (localStorage.getItem('gg_token')) {
@@ -183,32 +190,31 @@ export const mainStore = defineStore('main', () => {
   }
 
   return {
-    authAndGetUserFromDB,
     computedScoreModal,
-    openScoreModal,
-    closeScoreModal,
-    toggleScoreModal,
-    setHoleInScoreModal,
     currentHoleInScoreModal,
     getCurrentRound,
     getUser,
     getDrawerState,
+    authAndGetUserFromDB,
+    openScoreModal,
+    closeScoreModal,
+    toggleScoreModal,
+    setHoleInScoreModal,
     closeDrawer,
-    openDrawer,
     toggleDrawer,
     setUser,
     createNewRound,
     goToRound,
-    resetUser,
     submitScore,
     submitEditedScore,
   };
 });
 
 interface Round {
-  id: number;
+  id?: number;
   courseId: number | null;
   userId: number | null;
+  closed: boolean;
   scores: Array<Score>;
 }
 

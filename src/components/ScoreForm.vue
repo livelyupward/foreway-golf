@@ -37,7 +37,7 @@
 
 <script setup lang="ts">
 import { NButton, NSpace, NList, NListItem, useMessage } from 'naive-ui';
-import { computed, ref, Ref } from 'vue';
+import { computed, ComputedRef, ref, Ref, PropType } from 'vue';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
@@ -49,20 +49,16 @@ const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store)
 import { NFormItem, NInput, NForm, NCheckbox } from 'naive-ui';
 import type { Score } from '../store';
 
-let existingScore: Ref<boolean> = ref(false);
-const props = defineProps({
-  course: Object,
-  selectedHole: Number,
-});
+const props = defineProps<ScoreProps>();
 
-const holeFromSelect = computed(() => {
+let existingScore: Ref<boolean> = ref(false);
+const holeFromSelect: ComputedRef<number | undefined> = computed((): number | undefined => {
   return props.selectedHole;
 });
 
-const getHoleFromSelect = computed(() => {
-  isDebug() && console.log('course holes in ScoreForm:: ', props.course.holes);
-  // @ts-ignore
-  return props.selectedHole > 0 ? props.course.holes[props.selectedHole - 1] : null;
+const getHoleFromSelect: ComputedRef<number | null> = computed((): number | null => {
+  isDebug() && console.log('course holes in ScoreForm:: ', props!.course.holes);
+  return props!.selectedHole > 0 ? props!.course.holes[props.selectedHole - 1] : null;
 });
 
 const scoreData: Ref<Score> = ref({
@@ -97,6 +93,11 @@ async function submitScoreForHole() {
     isDebug() && console.log('sent from scoreData: ', scoreData.value);
     console.error('Error: please provide a hole, a round, and a user id.');
   }
+}
+
+interface ScoreProps {
+  course?: object;
+  selectedHole?: number;
 }
 </script>
 

@@ -8,6 +8,9 @@ export default (sequelize, Sequelize) => {
       userId: {
         type: Sequelize.INTEGER,
       },
+      closed: {
+        type: Sequelize.BOOLEAN,
+      },
     },
     { timestamps: true }
   );
