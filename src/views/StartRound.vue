@@ -1,15 +1,31 @@
 <template>
-  <h1>Start a new round</h1>
-  <hr />
-  <label class="course-picker-label" for="course-picker">Select a course</label>
+  <label class="course-picker_label" for="course-picker">Choose a course for your round</label>
   <select id="course-picker" v-model="selectedCourse" v-if="courseResponse">
     <option v-for="course in courseResponse" :value="course">{{ course.name }}</option>
   </select>
   <div v-if="selectedCourse">
-    <p>City: {{ selectedCourse.city }}</p>
+    <h2 class="course-picker_course-name">{{ selectedCourse.name }}</h2>
+    <div class="course-picker_hero">
+      <img class="course-picker_hero-image" :src="selectedCourse.courseImage" alt="" />
+    </div>
+    <div class="course-picker_actions">
+      <n-button v-if="selectedCourse" @click="showModal = true" type="info">
+        <RoundIcon class="course-picker_actions-icon" />
+        Start Round
+      </n-button>
+      <n-button tag="a" :tel="selectedCourse.phoneNumber" type="primary">
+        <PhoneIcon class="course-picker_actions-icon" />
+        Call
+      </n-button>
+      <n-button tag="a" strong secondary :href="selectedCourse.webpage" target="_blank" type="tertiary">
+        <WebsiteIcon class="course-picker_actions-icon" />
+        Website
+      </n-button>
+    </div>
+    <address>{{ selectedCourse.address }}</address>
+    <address>{{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}</address>
     <p>Holes: {{ selectedCourse.holeCount }}</p>
   </div>
-  <n-button v-if="selectedCourse" @click="showModal = true">Start Round</n-button>
   <n-modal v-model:show="showModal">
     <n-card
       class="start-modal-card"
@@ -31,6 +47,8 @@
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
 import { NButton, NModal, NCard, useMessage } from 'naive-ui';
+import { CallOutline as PhoneIcon } from '@vicons/ionicons5';
+import { ScreenShare as WebsiteIcon, Golf as RoundIcon } from '@vicons/tabler';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
@@ -60,15 +78,42 @@ interface CourseInfo {
   id: number;
   name: string;
   city: string;
+  address: string;
   state: string;
+  zip: string;
   holeCount: number;
+  phoneNumber: string;
+  webpage: string;
+  courseImage: string;
   createdAt: string;
   updatedAt: string;
 }
 </script>
 
 <style lang="scss">
-.course-picker-label {
+.course-picker_hero {
+  img {
+    aspect-ratio: 16/5;
+    object-fit: cover;
+    object-position: bottom;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+.course-picker_actions {
+  display: flex;
+
+  @media screen and (max-width: 900px) {
+    justify-content: space-between;
+  }
+}
+
+.course-picker_actions-icon {
+  margin-right: 5px;
+}
+
+.course-picker_label {
   font-size: 18px;
 }
 

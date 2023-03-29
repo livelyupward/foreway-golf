@@ -1,9 +1,14 @@
 export default async (db) => {
   await db.courses.create({
     name: 'Golf Club of Illinois',
+    address: '1575 Edgewood Dr',
     city: 'Algonquin',
     state: 'IL',
+    zip: '60102',
     holeCount: 18,
+    phoneNumber: '8476584400',
+    webpage: 'https://golfclubofil.com/',
+    courseImage: 'https://golfclubofil.com/wp-content/uploads/2021/12/20210926_085539-768x768.jpg',
   });
   await db.holes.create({
     number: 1,

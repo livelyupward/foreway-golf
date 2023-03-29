@@ -51,6 +51,10 @@ onBeforeMount(async () => {
   min-height: 100vh;
   padding: 30px;
 
+  @media screen and (max-width: 900px) {
+    padding: 15px;
+  }
+
   .homepage-title {
     margin-top: 0;
   }

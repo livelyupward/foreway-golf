@@ -10,14 +10,29 @@ export default (sequelize, Sequelize) => {
       name: {
         type: Sequelize.STRING,
       },
+      address: {
+        type: Sequelize.STRING,
+      },
       city: {
         type: Sequelize.STRING,
       },
       state: {
         type: Sequelize.STRING,
       },
+      zip: {
+        type: Sequelize.STRING,
+      },
       holeCount: {
         type: Sequelize.INTEGER,
+      },
+      phoneNumber: {
+        type: Sequelize.STRING,
+      },
+      webpage: {
+        type: Sequelize.STRING,
+      },
+      courseImage: {
+        type: Sequelize.STRING,
       },
     },
     {

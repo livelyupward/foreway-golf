@@ -1,9 +1,14 @@
 export default async (db) => {
   await db.courses.create({
     name: 'Streamwood Oaks',
+    address: '565 Madison Dr',
     city: 'Streamwood',
     state: 'IL',
+    zip: '60107',
     holeCount: 9,
+    phoneNumber: '6304831881',
+    webpage: 'https://streamwoodoaksgolf.com/',
+    courseImage: 'https://streamwoodoaksgolf.com/wp-content/uploads/2023/03/Sunshine-9th-tee-scaled.jpg',
   });
   await db.holes.create({
     number: 1,
