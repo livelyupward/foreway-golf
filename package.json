@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "go": "concurrently \"pnpm run dev --host\" \"nodemon server.js\" \"vitest\""
+    "go": "concurrently \"pnpm run dev --host\" \"nodemon server.js\" \"vitest\"",
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "body-parser": "^1.20.2",
