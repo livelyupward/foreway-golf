@@ -20,9 +20,9 @@ jobs:
 
   say-goodbye:
     docker:
-      - image: cimg/base:stable
+      - image: node
     steps:
-      - run: vitest
+      - run: npm run vitest
 
 
 # Orchestrate jobs using workflows
