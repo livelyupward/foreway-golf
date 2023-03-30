@@ -25,6 +25,9 @@ export default (sequelize, Sequelize) => {
       holeCount: {
         type: Sequelize.INTEGER,
       },
+      tees: {
+        type: Sequelize.JSON,
+      },
       phoneNumber: {
         type: Sequelize.STRING,
       },

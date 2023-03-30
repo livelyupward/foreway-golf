@@ -14,3 +14,11 @@ svg {
   min-height: 20px;
   min-width: 20px;
 }
+
+.n-select:not(.no-cap) {
+  text-transform: capitalize;
+}
+
+.n-base-select-option {
+  text-transform: capitalize;
+}

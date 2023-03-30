@@ -1,22 +1,33 @@
 <template>
-  <label class="course-picker_label" for="course-picker">Choose a course for your round</label>
-  <select id="course-picker" v-model="selectedCourse" v-if="courseResponse">
-    <option v-for="course in courseResponse" :value="course">{{ course.name }}</option>
-  </select>
-  <div v-if="selectedCourse">
-    <h2 class="course-picker_course-name">{{ selectedCourse.name }}</h2>
+  <h1 class="course-picker_title">Round Setup</h1>
+  <n-form>
+    <n-form-item class="course-picker_input-component" label="Course" :show-feedback="false">
+      <n-select v-model:value="courseIndexFromSelect" :options="courseOptions" v-if="courseResponse" />
+    </n-form-item>
+    <n-form-item
+      v-if="courseIndexFromSelect !== null"
+      class="course-picker_input-component"
+      label="Tees"
+      :show-feedback="false"
+    >
+      <n-select v-model:value="teesToPlay" :options="teesOptions" />
+    </n-form-item>
+  </n-form>
+  <hr />
+  <div class="course-picker_course-info" v-if="selectedCourse">
+    <h3 class="course-picker_course-name">{{ selectedCourse.name }}</h3>
     <div class="course-picker_hero">
       <img class="course-picker_hero-image" :src="selectedCourse.courseImage" alt="" />
     </div>
     <div class="course-picker_actions">
       <n-button v-if="selectedCourse" @click="showModal = true" type="info">
-        <RoundIcon class="course-picker_actions-icon" />
+        <RoundIcon class="course-picker_actions-icon" /><!-- TODO: Move Start Round to bottom of screen, fixed -->
         Start Round
       </n-button>
       <n-button tag="a" :tel="selectedCourse.phoneNumber" type="primary">
         <PhoneIcon class="course-picker_actions-icon" />
-        Call
-      </n-button>
+        Call </n-button
+      ><!-- TODO: make call and website side by side buttons that span equal width window -->
       <n-button tag="a" strong secondary :href="selectedCourse.webpage" target="_blank" type="tertiary">
         <WebsiteIcon class="course-picker_actions-icon" />
         Website
@@ -45,8 +56,8 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
-import { NButton, NModal, NCard, useMessage } from 'naive-ui';
+import { computed, ComputedRef, Ref, ref } from 'vue';
+import { NForm, NSelect, NFormItem, NButton, NModal, NCard, useMessage } from 'naive-ui';
 import { CallOutline as PhoneIcon } from '@vicons/ionicons5';
 import { ScreenShare as WebsiteIcon, Golf as RoundIcon } from '@vicons/tabler';
 import { mainStore } from '../store';
@@ -58,11 +69,35 @@ const { createNewRound, goToRound } = store;
 const { getUser } = storeToRefs(store);
 const message = useMessage();
 
-const selectedCourse: Ref<CourseInfo | null> = ref(null);
-const showModal: Ref<boolean> = ref(false);
-
 const courses: Response = await fetch(`http://localhost:4000/api/courses`);
-const courseResponse: object[] = await courses.json();
+const courseResponse: CourseInfo[] = await courses.json();
+
+const showModal: Ref<boolean> = ref(false);
+const courseIndexFromSelect: Ref<number | null> = ref(null);
+const teesToPlay: Ref<string | null> = ref(null);
+
+const selectedCourse: ComputedRef<CourseInfo | null> = computed(() => {
+  return courseIndexFromSelect.value !== null ? courseResponse[courseIndexFromSelect.value] : null;
+});
+
+const teesForSelectedCourse: ComputedRef<string[]> = computed(() => {
+  return selectedCourse.value !== null ? JSON.parse(selectedCourse.value.tees) : null;
+});
+
+const courseOptions = courseResponse.map((courseItem, index) => {
+  return {
+    label: courseItem.name,
+    value: index,
+  };
+});
+
+const teesOptions = computed(() => {
+  return teesForSelectedCourse.value !== null
+    ? teesForSelectedCourse.value.map((tee) => {
+        return { label: tee, value: tee };
+      })
+    : [];
+});
 
 async function startNewRound() {
   const startRound = await createNewRound({
@@ -82,6 +117,7 @@ interface CourseInfo {
   state: string;
   zip: string;
   holeCount: number;
+  tees: string[];
   phoneNumber: string;
   webpage: string;
   courseImage: string;
@@ -91,6 +127,12 @@ interface CourseInfo {
 </script>
 
 <style lang="scss">
+.course-picker_title {
+  label {
+    font-size: 2rem;
+  }
+}
+
 .course-picker_hero {
   img {
     aspect-ratio: 16/5;
