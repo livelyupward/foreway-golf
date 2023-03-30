@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
-      - run: npm run
+      - run: npm run test
 
 
 # Orchestrate jobs using workflows
