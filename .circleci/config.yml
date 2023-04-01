@@ -19,9 +19,10 @@ jobs:
 workflows:
   golf-app-workflow:
     jobs:
-      run-vitest:
-      pull-and-build:
-        needs: run-vitest
+      - run-vitest
+      - pull-and-build:
+        requires:
+          - run-vitest
         filters:
           branches:
             only:
