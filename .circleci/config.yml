@@ -21,7 +21,7 @@ workflows:
     jobs:
       - run-vitest
       - pull-and-build:
-        filters:
-          branches:
-            only:
-              - main
+          filters:
+            branches:
+              only:
+                - main
