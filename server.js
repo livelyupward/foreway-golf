@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 import cors from 'cors';
+import path from 'path';
 import eSession from 'express-session';
 import seedGCI from './models/gci.seed.js';
 import seedDave from './models/user.seed.js';
@@ -24,21 +25,21 @@ app.use(
 
 db.sequelize
   .sync({ force: true })
-  .then(() => {
-    seedGCI(db);
-    console.log('Seeded GCI');
+  .then(async () => {
+    await seedGCI(db);
+    await seedStreamwoodOaks(db);
+    await seedDave(db);
+    console.log('Seeds run successfully');
   })
   .then(() => {
-    seedStreamwoodOaks(db);
-    console.log('Seeded Streamwood Oaks');
-  })
-  .then(() => {
-    seedDave(db);
     console.log('Drop and re-sync db.');
+  })
+  .catch((error) => {
+    console.error(error);
   });
 
 app.get('/', (req, res) => {
-  res.send('Hi world');
+  res.sendFile(__dirname, '/dist/index.html');
 });
 
 app.post('/auth', (req, res) => {
@@ -53,15 +54,12 @@ app.post('/auth', (req, res) => {
     });
     const payload = ticket.getPayload();
     const userid = (userToSend = payload);
-    // If request specified a G Suite domain:
-    // const domain = payload['hd'];
   }
   verify()
     .then(() => {
       return res.send(userToSend);
     })
     .catch((error) => {
-      console.error('err: ', Object.keys(error));
       return res.status(403).send({ error });
     });
 });

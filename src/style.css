@@ -4,6 +4,7 @@ body {
   background-color: #333333;
   box-sizing: border-box;
   color: #fff;
+  font-family: 'Noto Sans', sans-serif;
   font-size: 16px;
   max-width: 100%;
   overflow-x: hidden;
@@ -13,6 +14,10 @@ body {
 svg {
   min-height: 20px;
   min-width: 20px;
+}
+
+.router-link:visited {
+  color: #18a058;
 }
 
 .n-select:not(.no-cap) {

@@ -12,7 +12,7 @@ export const mainStore = defineStore('main', () => {
   });
   const user: Ref<User | null> = ref(null);
   const drawerOpen: Ref<boolean> = ref(false);
-  const currentHoleInScoreModal: Ref<number | null> = ref(null);
+  const currentHoleInScoreModal: Ref<number | undefined> = ref(undefined);
   const scoreModalOpen: Ref<boolean> = ref(false);
   const computedScoreModal = computed(() => {
     return scoreModalOpen.value;
@@ -53,7 +53,7 @@ export const mainStore = defineStore('main', () => {
     return (scoreModalOpen.value = !scoreModalOpen.value);
   }
 
-  async function setUser(userPayload: User) {
+  async function setUser(userPayload: any) {
     return (user.value = userPayload);
   }
 
@@ -116,12 +116,13 @@ export const mainStore = defineStore('main', () => {
       return newSavedScore;
     } catch (error) {
       isDebug() && console.error({ error });
+      return { error };
     }
   }
 
   async function submitEditedScore(payload: Score) {
     try {
-      const newScoreEditedRequest = await fetch(`http://localhost:4000/api/scores/${payload.id}`, {
+      const newScoreEditedRequest: Response = await fetch(`http://localhost:4000/api/scores/${payload.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -129,15 +130,14 @@ export const mainStore = defineStore('main', () => {
         body: JSON.stringify(payload),
       });
 
-      const newSavedEditedScore = await newScoreEditedRequest.json();
+      const newSavedEditedScore: EditedScore = await newScoreEditedRequest.json();
 
-      isDebug() && console.log('currentRound after submitEditedScore() before splice:: ', currentRound.value);
       currentRound.value.scores[newSavedEditedScore.holeId - 1] = newSavedEditedScore;
-      isDebug() && console.log('currentRound after submitEditedScore() after splice:: ', currentRound.value);
 
       return newSavedEditedScore;
     } catch (error) {
       isDebug() && console.error({ error });
+      return { error };
     }
   }
 
@@ -147,19 +147,22 @@ export const mainStore = defineStore('main', () => {
     // remove round id from user
   }
 
-  async function authAndGetUserFromDB() {
+  async function authAndGetUserFromDB(): Promise<any> {
     // if token is saved in DB
     if (localStorage.getItem('gg_token')) {
       try {
         /**
          * send cached token to Google auth
          */
-        const cachedTokenSend = await fetch(`http://localhost:4000/auth?cred=${localStorage.getItem('gg_token')}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        const cachedTokenSend: Response = await fetch(
+          `http://localhost:4000/auth?cred=${localStorage.getItem('gg_token')}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
 
         if (cachedTokenSend.status === 403) {
           localStorage.removeItem('gg_token');
@@ -169,14 +172,14 @@ export const mainStore = defineStore('main', () => {
 
         const cachedTokenResponse = await cachedTokenSend.json();
         const userDbFetch: Response = await fetch(`http://localhost:4000/api/users/${cachedTokenResponse.email}`);
-        const userDbResponse: Promise<object> = await userDbFetch.json();
+        const userDbResponse: object[] = await userDbFetch.json();
 
-        // @ts-ignore
         await setUser(userDbResponse[0]);
 
-        // @ts-ignore
-        if (getUser?.value.currentRound) {
-          const getRoundRequest = await fetch(`http://localhost:4000/api/round/${getUser.value.currentRound}`);
+        if (getUser.value && getUser.value.currentRound) {
+          const getRoundRequest: Response = await fetch(
+            `http://localhost:4000/api/round/${getUser.value.currentRound}`
+          );
           currentRound.value = await getRoundRequest.json();
         }
 
@@ -189,12 +192,25 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function getRecentUserRounds(): Promise<any> {
+    if (getUser.value !== null) {
+      try {
+        const recentRoundsRequest: Response = await fetch(`http://localhost:4000/api/round/${getUser.value.id}/recent`);
+
+        return recentRoundsRequest.json();
+      } catch (error) {
+        return { error };
+      }
+    }
+  }
+
   return {
     computedScoreModal,
     currentHoleInScoreModal,
     getCurrentRound,
     getUser,
     getDrawerState,
+    getRecentUserRounds,
     authAndGetUserFromDB,
     openScoreModal,
     closeScoreModal,
@@ -210,23 +226,35 @@ export const mainStore = defineStore('main', () => {
   };
 });
 
-interface Round {
+export interface Round {
   id?: number;
   courseId: number | null;
   userId: number | null;
   closed: boolean;
   scores: Array<Score>;
+  holes?: Array<Hole>;
 }
 
 export interface Score {
-  id: number | null;
+  id?: number;
   strokes: number | null;
   putts: number | null;
   gir: boolean;
   fairway: boolean;
-  roundId: number | null;
-  holeId: number | null;
-  userId: number | null;
+  roundId?: number;
+  holeId?: number;
+  userId?: number;
+}
+
+interface EditedScore {
+  id: number;
+  strokes: number;
+  putts: number | null;
+  gir: boolean;
+  fairway: boolean;
+  roundId: number;
+  holeId: number;
+  userId: number;
 }
 
 interface User {
@@ -236,4 +264,31 @@ interface User {
   currentRound?: number;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface Hole {
+  id: number;
+  number: number;
+  yardage: number;
+  par: number;
+  tees: string[];
+  handicap: number;
+  courseId: number;
+}
+
+export interface Course {
+  id?: number;
+  name: string;
+  address: string;
+  city: string;
+  state: string;
+  zip: string;
+  phoneNumber?: string;
+  webpage?: string;
+  courseImage?: string;
+  holeCount: number;
+  tees: string[];
+  holes: Hole[];
+  createdAt?: string;
+  updatedAt?: string;
 }

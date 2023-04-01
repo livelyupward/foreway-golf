@@ -138,3 +138,19 @@ export const deleteAll = (req, res) => {
       });
     });
 };
+
+export const getRecentRounds = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    console.log('REQ id: ', userId);
+    const receivedRoundsForUser = await Round.findAll({
+      where: { userId },
+      limit: 5,
+      order: [['updatedAt', 'DESC']],
+    });
+
+    res.status(200).send(receivedRoundsForUser);
+  } catch (error) {
+    res.status(400).send({ error });
+  }
+};

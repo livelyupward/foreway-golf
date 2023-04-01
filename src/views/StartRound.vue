@@ -73,15 +73,16 @@ const courses: Response = await fetch(`http://localhost:4000/api/courses`);
 const courseResponse: CourseInfo[] = await courses.json();
 
 const showModal: Ref<boolean> = ref(false);
-const courseIndexFromSelect: Ref<number | null> = ref(null);
+const courseIndexFromSelect: Ref<number | undefined> = ref();
 const teesToPlay: Ref<string | null> = ref(null);
 
-const selectedCourse: ComputedRef<CourseInfo | null> = computed(() => {
-  return courseIndexFromSelect.value !== null ? courseResponse[courseIndexFromSelect.value] : null;
+const selectedCourse: ComputedRef<CourseInfo> = computed(() => {
+  if (!courseIndexFromSelect.value) throw Error('Course index from select is undefined.');
+  return courseResponse[courseIndexFromSelect.value];
 });
 
-const teesForSelectedCourse: ComputedRef<string[]> = computed(() => {
-  return selectedCourse.value !== null ? JSON.parse(selectedCourse.value.tees) : null;
+const teesForSelectedCourse = computed(() => {
+  return JSON.parse(selectedCourse.value.tees);
 });
 
 const courseOptions = courseResponse.map((courseItem, index) => {
@@ -93,7 +94,7 @@ const courseOptions = courseResponse.map((courseItem, index) => {
 
 const teesOptions = computed(() => {
   return teesForSelectedCourse.value !== null
-    ? teesForSelectedCourse.value.map((tee) => {
+    ? teesForSelectedCourse.value.map((tee: object) => {
         return { label: tee, value: tee };
       })
     : [];
@@ -102,7 +103,7 @@ const teesOptions = computed(() => {
 async function startNewRound() {
   const startRound = await createNewRound({
     courseId: selectedCourse.value.id,
-    userId: getUser.value.id,
+    userId: getUser.value ? getUser.value.id : null,
   });
   isDebug() && console.log('res: ', startRound);
   message.success('Round created!');
@@ -117,7 +118,7 @@ interface CourseInfo {
   state: string;
   zip: string;
   holeCount: number;
-  tees: string[];
+  tees: string;
   phoneNumber: string;
   webpage: string;
   courseImage: string;

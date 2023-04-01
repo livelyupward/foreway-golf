@@ -1,7 +1,7 @@
 <template>
   <n-form
     @submit.prevent="submitScoreForHole"
-    v-if="currentHoleInScoreModal !== null"
+    v-if="currentHoleInScoreModal"
     label-width="auto"
     :style="{
       maxWidth: '640px',
@@ -10,10 +10,10 @@
   >
     <div class="hole-score_form-group">
       <n-form-item label="Strokes">
-        <n-input v-model:value="scoreData.strokes" placeholder="# of strokes" />
+        <n-input v-model.number="scoreData.strokes" placeholder="# of strokes" />
       </n-form-item>
       <n-form-item label="Putts">
-        <n-input v-model:value="scoreData.putts" placeholder="# of putts" />
+        <n-input v-model.number="scoreData.putts" placeholder="# of putts" />
       </n-form-item>
     </div>
     <div class="hole-score_form-group">
@@ -25,10 +25,10 @@
       </n-space>
     </div>
     <n-list class="hole-score-form-info">
-      <n-list-item class="hole-score-form-info-item"><span>Par: </span>{{ getHoleFromSelect.par }}</n-list-item>
-      <n-list-item class="hole-score-form-info-item"><span>Yards: </span>{{ getHoleFromSelect.yardage }}</n-list-item>
+      <n-list-item class="hole-score-form-info-item"><span>Par: </span>{{ holeObjFromSelect.par }}</n-list-item>
+      <n-list-item class="hole-score-form-info-item"><span>Yards: </span>{{ holeObjFromSelect.yardage }}</n-list-item>
       <n-list-item class="hole-score-form-info-item">
-        <span>Handicap: </span>{{ getHoleFromSelect.handicap }}
+        <span>Handicap: </span>{{ holeObjFromSelect.handicap }}
       </n-list-item>
     </n-list>
     <n-button attr-type="submit" :justify="'center'" class="hole-score-form-button">Save score</n-button>
@@ -36,18 +36,17 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NSpace, NList, NListItem, useMessage } from 'naive-ui';
+import { NButton, NSpace, NList, NListItem, NFormItem, NInput, NForm, NCheckbox, useMessage } from 'naive-ui';
 import { computed, ComputedRef, ref, Ref, PropType } from 'vue';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
+import type { Score, Course, Hole } from '../store';
 
 const message = useMessage();
 const store = mainStore();
 const { submitScore, submitEditedScore, closeScoreModal } = store;
 const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store);
-import { NFormItem, NInput, NForm, NCheckbox } from 'naive-ui';
-import type { Score } from '../store';
 
 const props = defineProps<ScoreProps>();
 
@@ -56,19 +55,20 @@ const holeFromSelect: ComputedRef<number | undefined> = computed((): number | un
   return props.selectedHole;
 });
 
-const getHoleFromSelect: ComputedRef<number | null> = computed((): number | null => {
+const holeObjFromSelect: ComputedRef<Hole> = computed((): Hole => {
+  if (!props.selectedHole) throw Error('Selected hole is undefined.');
   isDebug() && console.log('course holes in ScoreForm:: ', props!.course.holes);
-  return props!.selectedHole > 0 ? props!.course.holes[props.selectedHole - 1] : null;
+  return props.course.holes![props.selectedHole - 1];
 });
 
 const scoreData: Ref<Score> = ref({
-  strokes: null,
-  putts: null,
+  strokes: 0,
+  putts: 0,
   gir: false,
   fairway: false,
-  roundId: getCurrentRound.value.id,
-  holeId: holeFromSelect,
-  userId: getUser!.value.id,
+  roundId: getCurrentRound.value.id ?? undefined,
+  holeId: holeFromSelect.value ?? undefined,
+  userId: getUser.value !== null ? getUser.value.id : undefined,
 });
 
 if (props.selectedHole && getCurrentRound.value.scores[props.selectedHole - 1]?.strokes) {
@@ -77,8 +77,7 @@ if (props.selectedHole && getCurrentRound.value.scores[props.selectedHole - 1]?.
 }
 
 async function submitScoreForHole() {
-  isDebug() && console.log('hello');
-  if (scoreData.value.roundId && scoreData.value.holeId !== null && scoreData.value.userId) {
+  if (scoreData.value.roundId && scoreData.value.holeId !== undefined && scoreData.value.userId) {
     const newScore = existingScore.value
       ? await submitEditedScore(scoreData.value)
       : await submitScore(scoreData.value);
@@ -96,8 +95,8 @@ async function submitScoreForHole() {
 }
 
 interface ScoreProps {
-  course?: object;
-  selectedHole?: number;
+  course: Course;
+  selectedHole: number | undefined;
 }
 </script>
 

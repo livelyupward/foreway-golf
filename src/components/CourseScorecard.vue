@@ -18,7 +18,7 @@
             <td
               @click="activateScoreFormFromScorecard(hole.number)"
               class="scorecard-table_row-item score"
-              :class="strokeCalculate(getCurrentRound.scores[index]?.strokes, hole.par)"
+              :class="strokeCalculate(getCurrentRound.scores[index].strokes, hole.par)"
             >
               <span class="scorecard-table_row-item_span">{{
                 getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : ''
@@ -33,23 +33,23 @@
 
 <script setup lang="ts">
 import { NTable } from 'naive-ui';
-import { mainStore } from '../store';
+import { Course, mainStore } from '../store';
 import { storeToRefs } from 'pinia';
+import type { Hole } from '../store';
 
 const store = mainStore();
 const { openScoreModal, setHoleInScoreModal } = store;
 const { getCurrentRound } = storeToRefs(store);
 
-const props = defineProps({
-  holes: Array,
-});
+const props = defineProps<HoleProp>();
 
 async function activateScoreFormFromScorecard(holeNumber: number): Promise<void> {
   await setHoleInScoreModal(holeNumber);
   await openScoreModal();
 }
 
-const strokeCalculate = (score: number, par: number) => {
+const strokeCalculate = (score: number | null, par: number) => {
+  if (score === null) return '';
   if (score - par >= 2) {
     return 'double-bogey';
   } else if (score - par === 1) {
@@ -64,6 +64,10 @@ const strokeCalculate = (score: number, par: number) => {
 };
 
 console.log('Scorecard holes length: ', props.holes);
+
+interface HoleProp {
+  holes: Array<Hole>;
+}
 </script>
 
 <style lang="scss">

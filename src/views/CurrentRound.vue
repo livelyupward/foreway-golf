@@ -25,10 +25,12 @@
 
 <script setup lang="ts">
 import { mainStore } from '../store';
+import type { Course } from '../store';
 import { NModal, NCard } from 'naive-ui';
 import { CloseSharp as CloseIcon } from '@vicons/ionicons5';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
+import type { Hole } from '../store';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
 import { computed } from 'vue';
@@ -40,27 +42,15 @@ const { getUser, getCurrentRound, computedScoreModal, currentHoleInScoreModal } 
 isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
 const courseFetch = await fetch(`http://localhost:4000/api/courses/${getCurrentRound.value.courseId}?holes=true`);
-const course = await courseFetch.json();
+const course: Course = await courseFetch.json();
 
 const friendlyCreatedDate = computed(() => {
-  const dateString = course.createdAt;
-  const date = new Date(dateString);
+  const dateString: string | undefined = course.createdAt;
+  const date: Date | null = dateString ? new Date(dateString) : null;
   const options = { timeZone: 'UTC' };
 
-  return date.toLocaleDateString('en-US', options);
+  return date ? date.toLocaleDateString('en-US', options) : null;
 });
-
-interface Hole {
-  id: number;
-  number: number;
-  yardage: number;
-  par: number;
-  tees: string;
-  handicap: number;
-  courseId: number;
-  createdAt: string;
-  updatedAt: string;
-}
 </script>
 
 <style lang="scss">
