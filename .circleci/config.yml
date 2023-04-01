@@ -12,10 +12,6 @@ jobs:
     docker:
       - image: arvindr226/alpine-ssh
     needs: run-vitest
-    filters:
-      branches:
-        only:
-          - main
     steps:
       - checkout
       - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP "./deploy-app.sh"
@@ -24,5 +20,9 @@ jobs:
 workflows:
   golf-app-workflow:
     jobs:
-      run-vitest
-      pull-and-build
+      run-vitest:
+      pull-and-build:
+        filters:
+          branches:
+            only:
+              - main
