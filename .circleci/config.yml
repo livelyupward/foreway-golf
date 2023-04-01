@@ -10,7 +10,7 @@ jobs:
       - run: npm run test
   pull-and-build:
     docker:
-      -image: arvindr226/alpine-ssh
+      - image: arvindr226/alpine-ssh
     steps:
       - checkout
       - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP "./deploy-app.sh"
@@ -19,9 +19,10 @@ jobs:
 workflows:
   golf-app-workflow:
     jobs:
-      - run-vitest
-      - pull-and-build:
-          filters:
-            branches:
-              only:
-                - main
+      run-vitest:
+      pull-and-build:
+        needs: run-vitest
+        filters:
+          branches:
+            only:
+              - main
