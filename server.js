@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 import Express from 'express';
 import cors from 'cors';
-import path from 'path';
+import { dirname } from 'path';
+import { fileURLToPath } from 'url';
 import eSession from 'express-session';
 import seedGCI from './models/gci.seed.js';
 import seedDave from './models/user.seed.js';
@@ -10,6 +11,8 @@ import seedStreamwoodOaks from './models/streamwood-oaks.seed.js';
 import { OAuth2Client } from 'google-auth-library';
 import bodyParser from 'body-parser';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 const app = Express();
 const port = 4000;
 
