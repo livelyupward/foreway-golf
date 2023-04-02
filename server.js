@@ -1,9 +1,12 @@
 import dotenv from 'dotenv';
-dotenv.config();
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+dotenv.config({ path: join(__dirname, '.env') });
+
 import Express from 'express';
 import cors from 'cors';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
 import eSession from 'express-session';
 import seedGCI from './models/gci.seed.js';
 import seedDave from './models/user.seed.js';
@@ -11,8 +14,6 @@ import seedStreamwoodOaks from './models/streamwood-oaks.seed.js';
 import { OAuth2Client } from 'google-auth-library';
 import bodyParser from 'body-parser';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const app = Express();
 const port = 4000;
 
