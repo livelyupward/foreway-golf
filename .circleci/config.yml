@@ -11,6 +11,8 @@ jobs:
   pull-and-build:
     docker:
       - image: arvindr226/alpine-ssh
+    environment:
+      NODE_OPTIONS: "--max-old-space-size=4096"
     steps:
       - checkout
       - run: ssh -oStrictHostKeyChecking=no -v $USER@$IP "./deploy-app.sh"
