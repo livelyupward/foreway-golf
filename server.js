@@ -17,9 +17,13 @@ import db from './models/index.js';
 
 app.use(cors());
 app.use(bodyParser.json());
+app.set('trust proxy', 1);
 app.use(
   eSession({
     secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true },
   })
 );
 
