@@ -15,33 +15,37 @@ const { setUser } = store;
 
 const googleAuthCallback = async (response: GoogleResponse) => {
   // This callback will be triggered when the user selects or login to their Google account from the popup
+  try {
+    // set the credential response to a localStorage value
+    localStorage.setItem('gg_token', response.credential);
 
-  // set the credential response to a localStorage value
-  localStorage.setItem('gg_token', response.credential);
+    /**
+     * send the credential that we saved to the server
+     */
+    const tokenSend = await fetch(`/api/auth?cred=${response.credential}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-  /**
-   * send the credential that we saved to the server
-   */
-  const tokenSend = await fetch(`/api/auth?cred=${response.credential}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
+    const tokenResponse = await tokenSend.json();
 
-  const tokenResponse = await tokenSend.json();
+    /**
+     * query db for the user that was sent by successful Google auth
+     */
+    const userDbFetch: Response = await fetch(`/api/users/${tokenResponse.email}`);
+    const userDbResponse: object[] = await userDbFetch.json();
 
-  /**
-   * query db for the user that was sent by successful Google auth
-   */
-  const userDbFetch: Response = await fetch(`/api/users/${tokenResponse.email}`);
-  const userDbResponse: object[] = await userDbFetch.json();
-
-  /**
-   * set the user in the app state and push to the home route
-   */
-  setUser(userDbResponse[0]);
-  await router.push('/');
+    /**
+     * set the user in the app state and push to the home route
+     */
+    setUser(userDbResponse[0]);
+    await router.push('/');
+  } catch (error) {
+    console.error('Google callback error: ', error);
+    throw Error('Error during Google callback.');
+  }
 };
 
 interface GoogleResponse {
