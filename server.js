@@ -31,7 +31,7 @@ app.use(
   })
 );
 
-app.use(Express.static('dist'));
+app.use(Express.static('/public'));
 
 db.sequelize
   .sync({ force: true })
@@ -49,7 +49,7 @@ db.sequelize
   });
 
 app.get('/', (req, res) => {
-  res.sendFile('index.html', { root: join(__dirname, '/dist/') });
+  res.send('Welcome to this golf app.');
 });
 
 app.post('/auth', (req, res) => {
