@@ -47,8 +47,7 @@ db.sequelize
   });
 
 app.get('/', (req, res) => {
-  console.log('GET / is firing');
-  res.sendFile(__dirname, '/dist/index.html');
+  res.sendFile('index.html', { root: join(__dirname, '/dist/') });
 });
 
 app.post('/auth', (req, res) => {
