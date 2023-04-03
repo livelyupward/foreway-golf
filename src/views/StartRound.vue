@@ -69,7 +69,7 @@ const { createNewRound, goToRound } = store;
 const { getUser } = storeToRefs(store);
 const message = useMessage();
 
-const courses: Response = await fetch(`http://localhost:4000/api/courses`);
+const courses: Response = await fetch(`/api/courses`);
 const courseResponse: CourseInfo[] = await courses.json();
 
 const showModal: Ref<boolean> = ref(false);

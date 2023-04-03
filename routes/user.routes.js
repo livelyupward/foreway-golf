@@ -21,5 +21,5 @@ export default (app) => {
   // Delete all Tutorials
   router.delete('/', deleteAll);
 
-  app.use('/api/users', router);
+  app.use('/users', router);
 };

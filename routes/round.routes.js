@@ -32,5 +32,5 @@ export default (app) => {
   // Delete all Tutorials
   router.delete('/', deleteAll);
 
-  app.use('/api/round', router);
+  app.use('/round', router);
 };

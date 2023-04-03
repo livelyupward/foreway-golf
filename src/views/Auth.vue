@@ -22,7 +22,7 @@ const googleAuthCallback = async (response: GoogleResponse) => {
   /**
    * send the credential that we saved to the server
    */
-  const tokenSend = await fetch(`http://localhost:4000/auth?cred=${response.credential}`, {
+  const tokenSend = await fetch(`/api/auth?cred=${response.credential}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -34,7 +34,7 @@ const googleAuthCallback = async (response: GoogleResponse) => {
   /**
    * query db for the user that was sent by successful Google auth
    */
-  const userDbFetch: Response = await fetch(`http://localhost:4000/api/users/${tokenResponse.email}`);
+  const userDbFetch: Response = await fetch(`/api/users/${tokenResponse.email}`);
   const userDbResponse: object[] = await userDbFetch.json();
 
   /**

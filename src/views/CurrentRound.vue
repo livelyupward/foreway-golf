@@ -41,7 +41,7 @@ const { getUser, getCurrentRound, computedScoreModal, currentHoleInScoreModal } 
 
 isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
-const courseFetch = await fetch(`http://localhost:4000/api/courses/${getCurrentRound.value.courseId}?holes=true`);
+const courseFetch = await fetch(`/api/courses/${getCurrentRound.value.courseId}?holes=true`);
 const course: Course = await courseFetch.json();
 
 const friendlyCreatedDate = computed(() => {

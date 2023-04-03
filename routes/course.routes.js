@@ -1,32 +1,25 @@
-import Express from "express";
+import Express from 'express';
 const router = Express.Router();
-import {
-  create,
-  findOne,
-  findAll,
-  update,
-  deleteOne,
-  deleteAll,
-} from "../controllers/course.controller.js";
+import { create, findOne, findAll, update, deleteOne, deleteAll } from '../controllers/course.controller.js';
 
 export default (app) => {
   // Create a new Tutorial
-  router.post("/", create);
+  router.post('/', create);
 
   // Retrieve all Tutorials
-  router.get("/", findAll);
+  router.get('/', findAll);
 
   // Retrieve a single Tutorial with id
-  router.get("/:id", findOne);
+  router.get('/:id', findOne);
 
   // Update a Tutorial with id
-  router.put("/:id", update);
+  router.put('/:id', update);
 
   // Delete a Tutorial with id
-  router.delete("/:id", deleteOne);
+  router.delete('/:id', deleteOne);
 
   // Delete all Tutorials
-  router.delete("/", deleteAll);
+  router.delete('/', deleteAll);
 
-  app.use("/api/courses", router);
+  app.use('/courses', router);
 };

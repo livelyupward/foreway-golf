@@ -66,7 +66,7 @@ export const mainStore = defineStore('main', () => {
   }
 
   async function createNewRound(courseInfoObject: object) {
-    const newRoundRequest = await fetch(`http://localhost:4000/api/round/`, {
+    const newRoundRequest = await fetch(`/api/round/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export const mainStore = defineStore('main', () => {
 
     const userRoundRequest = await fetch(
       // @ts-ignore
-      `http://localhost:4000/api/users/${getUser.value.id}?roundId=${newRoundResponse.id}`,
+      `/api/users/${getUser.value.id}?roundId=${newRoundResponse.id}`,
       {
         method: 'PUT',
         headers: {
@@ -99,7 +99,7 @@ export const mainStore = defineStore('main', () => {
 
   async function submitScore(payload: Score) {
     try {
-      const newScoreRequest = await fetch(`http://localhost:4000/api/scores/`, {
+      const newScoreRequest = await fetch(`/api/scores/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ export const mainStore = defineStore('main', () => {
 
   async function submitEditedScore(payload: Score) {
     try {
-      const newScoreEditedRequest: Response = await fetch(`http://localhost:4000/api/scores/${payload.id}`, {
+      const newScoreEditedRequest: Response = await fetch(`/api/scores/${payload.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -154,15 +154,12 @@ export const mainStore = defineStore('main', () => {
         /**
          * send cached token to Google auth
          */
-        const cachedTokenSend: Response = await fetch(
-          `http://localhost:4000/auth?cred=${localStorage.getItem('gg_token')}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        const cachedTokenSend: Response = await fetch(`/api/auth?cred=${localStorage.getItem('gg_token')}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
 
         if (cachedTokenSend.status === 403) {
           localStorage.removeItem('gg_token');
@@ -171,15 +168,13 @@ export const mainStore = defineStore('main', () => {
         }
 
         const cachedTokenResponse = await cachedTokenSend.json();
-        const userDbFetch: Response = await fetch(`http://localhost:4000/api/users/${cachedTokenResponse.email}`);
+        const userDbFetch: Response = await fetch(`/api/users/${cachedTokenResponse.email}`);
         const userDbResponse: object[] = await userDbFetch.json();
 
         await setUser(userDbResponse[0]);
 
         if (getUser.value && getUser.value.currentRound) {
-          const getRoundRequest: Response = await fetch(
-            `http://localhost:4000/api/round/${getUser.value.currentRound}`
-          );
+          const getRoundRequest: Response = await fetch(`/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
         }
 
@@ -195,7 +190,7 @@ export const mainStore = defineStore('main', () => {
   async function getRecentUserRounds(): Promise<any> {
     if (getUser.value !== null) {
       try {
-        const recentRoundsRequest: Response = await fetch(`http://localhost:4000/api/round/${getUser.value.id}/recent`);
+        const recentRoundsRequest: Response = await fetch(`/api/round/${getUser.value.id}/recent`);
 
         return recentRoundsRequest.json();
       } catch (error) {
