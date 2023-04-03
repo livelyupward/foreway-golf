@@ -9,16 +9,13 @@ export default ({ mode }) => {
     plugins: [vue()],
     base: './',
     server: {
-      proxy:
-        process.env.VITE_APP_ENV === 'dev'
-          ? {
-              '/api': {
-                target: 'http://localhost:4000',
-                changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, ''),
-              },
-            }
-          : undefined,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:4000',
+          changeOrigin: true,
+          rewrite: process.env.VITE_APP_ENV === 'dev' ? (path) => path.replace(/^\/api/, '') : undefined,
+        },
+      },
     },
   });
 };
