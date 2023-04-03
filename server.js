@@ -31,6 +31,8 @@ app.use(
   })
 );
 
+app.use(Express.static('dist'));
+
 db.sequelize
   .sync({ force: true })
   .then(async () => {
