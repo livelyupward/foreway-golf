@@ -5,7 +5,7 @@
       <n-select v-model:value="courseIndexFromSelect" :options="courseOptions" v-if="courseResponse" />
     </n-form-item>
     <n-form-item
-      v-if="courseIndexFromSelect !== null"
+      v-if="courseIndexFromSelect !== undefined"
       class="course-picker_input-component"
       label="Tees"
       :show-feedback="false"
@@ -14,45 +14,47 @@
     </n-form-item>
   </n-form>
   <hr />
-  <div class="course-picker_course-info" v-if="selectedCourse">
-    <h3 class="course-picker_course-name">{{ selectedCourse.name }}</h3>
-    <div class="course-picker_hero">
-      <img class="course-picker_hero-image" :src="selectedCourse.courseImage" alt="" />
+  <div class="course-picker_course-container" v-if="courseIndexFromSelect !== undefined">
+    <div class="course-picker_course-info" v-if="selectedCourse">
+      <h3 class="course-picker_course-name">{{ selectedCourse.name }}</h3>
+      <div class="course-picker_hero">
+        <img class="course-picker_hero-image" :src="selectedCourse.courseImage" alt="" />
+      </div>
+      <div class="course-picker_actions">
+        <n-button v-if="selectedCourse" @click="showModal = true" type="info">
+          <RoundIcon class="course-picker_actions-icon" /><!-- TODO: Move Start Round to bottom of screen, fixed -->
+          Start Round
+        </n-button>
+        <n-button tag="a" :tel="selectedCourse.phoneNumber" type="primary">
+          <PhoneIcon class="course-picker_actions-icon" />
+          Call </n-button
+        ><!-- TODO: make call and website side by side buttons that span equal width window -->
+        <n-button tag="a" strong secondary :href="selectedCourse.webpage" target="_blank" type="tertiary">
+          <WebsiteIcon class="course-picker_actions-icon" />
+          Website
+        </n-button>
+      </div>
+      <address>{{ selectedCourse.address }}</address>
+      <address>{{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}</address>
+      <p>Holes: {{ selectedCourse.holeCount }}</p>
     </div>
-    <div class="course-picker_actions">
-      <n-button v-if="selectedCourse" @click="showModal = true" type="info">
-        <RoundIcon class="course-picker_actions-icon" /><!-- TODO: Move Start Round to bottom of screen, fixed -->
-        Start Round
-      </n-button>
-      <n-button tag="a" :tel="selectedCourse.phoneNumber" type="primary">
-        <PhoneIcon class="course-picker_actions-icon" />
-        Call </n-button
-      ><!-- TODO: make call and website side by side buttons that span equal width window -->
-      <n-button tag="a" strong secondary :href="selectedCourse.webpage" target="_blank" type="tertiary">
-        <WebsiteIcon class="course-picker_actions-icon" />
-        Website
-      </n-button>
-    </div>
-    <address>{{ selectedCourse.address }}</address>
-    <address>{{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}</address>
-    <p>Holes: {{ selectedCourse.holeCount }}</p>
+    <n-modal v-model:show="showModal">
+      <n-card
+        class="start-modal-card"
+        style="width: 600px"
+        title="Are you sure?"
+        :bordered="false"
+        role="dialog"
+        aria-modal="true"
+      >
+        Start a round at {{ selectedCourse.name }}?
+        <template #footer>
+          <n-button @click="showModal = false" type="error">Cancel</n-button>
+          <n-button @click="startNewRound" type="success">Start</n-button>
+        </template>
+      </n-card>
+    </n-modal>
   </div>
-  <n-modal v-model:show="showModal">
-    <n-card
-      class="start-modal-card"
-      style="width: 600px"
-      title="Are you sure?"
-      :bordered="false"
-      role="dialog"
-      aria-modal="true"
-    >
-      Start a round at {{ selectedCourse.name }}?
-      <template #footer>
-        <n-button @click="showModal = false" type="error">Cancel</n-button>
-        <n-button @click="startNewRound" type="success">Start</n-button>
-      </template>
-    </n-card>
-  </n-modal>
 </template>
 
 <script setup lang="ts">
@@ -74,15 +76,14 @@ const courseResponse: CourseInfo[] = await courses.json();
 
 const showModal: Ref<boolean> = ref(false);
 const courseIndexFromSelect: Ref<number | undefined> = ref();
-const teesToPlay: Ref<string | null> = ref(null);
+const teesToPlay: Ref<string | undefined> = ref(undefined);
 
-const selectedCourse: ComputedRef<CourseInfo> = computed(() => {
-  if (!courseIndexFromSelect.value) throw Error('Course index from select is undefined.');
-  return courseResponse[courseIndexFromSelect.value];
+const selectedCourse: ComputedRef<CourseInfo | undefined> = computed(() => {
+  return courseIndexFromSelect.value !== undefined ? courseResponse[courseIndexFromSelect.value] : undefined;
 });
 
 const teesForSelectedCourse = computed(() => {
-  return JSON.parse(selectedCourse.value.tees);
+  if (selectedCourse.value !== undefined) return selectedCourse.value.tees;
 });
 
 const courseOptions = courseResponse.map((courseItem, index) => {
@@ -93,7 +94,7 @@ const courseOptions = courseResponse.map((courseItem, index) => {
 });
 
 const teesOptions = computed(() => {
-  return teesForSelectedCourse.value !== null
+  return teesForSelectedCourse.value !== undefined
     ? teesForSelectedCourse.value.map((tee: object) => {
         return { label: tee, value: tee };
       })
@@ -102,7 +103,7 @@ const teesOptions = computed(() => {
 
 async function startNewRound() {
   const startRound = await createNewRound({
-    courseId: selectedCourse.value.id,
+    courseId: selectedCourse.value ? selectedCourse.value.id : undefined,
     userId: getUser.value ? getUser.value.id : null,
   });
   isDebug() && console.log('res: ', startRound);

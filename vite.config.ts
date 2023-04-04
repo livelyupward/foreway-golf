@@ -13,7 +13,6 @@ export default ({ mode }) => {
         '/api': {
           target: 'http://localhost:4000',
           changeOrigin: true,
-          rewrite: process.env.VITE_APP_ENV === 'dev' ? (path) => path.replace(/^\/api/, '') : undefined,
         },
       },
     },
