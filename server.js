@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to this golf app.');
 });
 
-app.post('/auth', (req, res) => {
+app.post('/api/auth', (req, res) => {
   const token = req.query.cred;
   let userToSend;
 
