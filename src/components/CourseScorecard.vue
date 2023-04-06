@@ -84,12 +84,18 @@ interface HoleProp {
     td.scorecard-table_row-item.score {
       font-weight: 700;
 
+      .scorecard-table_row-item_span {
+        display: block;
+        margin: 0 auto;
+      }
+
       &.double-bogey {
         .scorecard-table_row-item_span {
           border: 1px solid #fff;
           outline: 1px solid #fff;
           outline-offset: 4px;
           padding: 2px 6px;
+          width: 20px;
         }
       }
 
@@ -105,6 +111,9 @@ interface HoleProp {
           border: 1px solid #fff;
           border-radius: 50%;
           padding: 2px 6px;
+          height: 100%;
+          margin: 0 auto;
+          width: 20px;
         }
       }
     }
