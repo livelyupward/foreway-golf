@@ -18,7 +18,7 @@
             <td
               @click="activateScoreFormFromScorecard(hole.number)"
               class="scorecard-table_row-item score"
-              :class="strokeCalculate(getCurrentRound.scores[index].strokes, hole.par)"
+              :class="strokeCalculate(getCurrentRound.scores[index]?.strokes, hole.par)"
             >
               <span class="scorecard-table_row-item_span">{{
                 getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : ''

@@ -94,17 +94,29 @@ const courseOptions = courseResponse.map((courseItem, index) => {
 });
 
 const teesOptions = computed(() => {
-  return teesForSelectedCourse.value !== undefined
-    ? teesForSelectedCourse.value.map((tee: object) => {
-        return { label: tee, value: tee };
-      })
-    : [];
+  if (teesForSelectedCourse.value !== undefined) {
+    if (teesForSelectedCourse.value.includes('[')) {
+      const teeStringToArray = JSON.parse(teesForSelectedCourse.value);
+      let formattedTeeOptions = [];
+
+      for (let i = 0; i < teeStringToArray.length; i++) {
+        formattedTeeOptions.push({ label: teeStringToArray[i], value: teeStringToArray[i] });
+      }
+
+      return formattedTeeOptions;
+    } else {
+      return { value: teesForSelectedCourse.value, label: teesForSelectedCourse.value };
+    }
+  } else {
+    return [];
+  }
 });
 
 async function startNewRound() {
   const startRound = await createNewRound({
     courseId: selectedCourse.value ? selectedCourse.value.id : undefined,
     userId: getUser.value ? getUser.value.id : null,
+    tees: teesToPlay.value ? teesToPlay.value : undefined,
   });
   isDebug() && console.log('res: ', startRound);
   message.success('Round created!');
