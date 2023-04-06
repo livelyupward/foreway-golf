@@ -10,10 +10,10 @@
   >
     <div class="hole-score_form-group">
       <n-form-item label="Strokes">
-        <n-input v-model.number="scoreData.strokes" placeholder="# of strokes" />
+        <n-input-number v-model:value="scoreData.strokes" placeholder="# of strokes" />
       </n-form-item>
       <n-form-item label="Putts">
-        <n-input v-model.number="scoreData.putts" placeholder="# of putts" />
+        <n-input-number v-model:value="scoreData.putts" placeholder="# of putts" />
       </n-form-item>
     </div>
     <div class="hole-score_form-group">
@@ -36,7 +36,7 @@
 </template>
 
 <script setup lang="ts">
-import { NButton, NSpace, NList, NListItem, NFormItem, NInput, NForm, NCheckbox, useMessage } from 'naive-ui';
+import { NButton, NSpace, NList, NListItem, NFormItem, NInputNumber, NForm, NCheckbox, useMessage } from 'naive-ui';
 import { computed, ComputedRef, ref, Ref, PropType } from 'vue';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
