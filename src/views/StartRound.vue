@@ -22,7 +22,7 @@
       </div>
       <div class="course-picker_actions">
         <n-button v-if="selectedCourse" @click="showModal = true" type="info">
-          <RoundIcon class="course-picker_actions-icon" /><!-- TODO: Move Start Round to bottom of screen, fixed -->
+          <RoundIcon class="course-picker_actions-icon" />
           Start Round
         </n-button>
         <n-button tag="a" :tel="selectedCourse.phoneNumber" type="primary">
@@ -38,7 +38,7 @@
       <address>{{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}</address>
       <p>Holes: {{ selectedCourse.holeCount }}</p>
     </div>
-    <n-modal v-model:show="showModal">
+    <n-modal v-model:show="showModal" v-if="selectedCourse !== undefined">
       <n-card
         class="start-modal-card"
         style="width: 600px"
@@ -59,9 +59,10 @@
 
 <script setup lang="ts">
 import { computed, ComputedRef, Ref, ref } from 'vue';
-import { NForm, NSelect, NFormItem, NButton, NModal, NCard, useMessage } from 'naive-ui';
+import { NForm, NSelect, NFormItem, NButton, NModal, NCard, useMessage, SelectOption } from 'naive-ui';
 import { CallOutline as PhoneIcon } from '@vicons/ionicons5';
 import { ScreenShare as WebsiteIcon, Golf as RoundIcon } from '@vicons/tabler';
+import type { SelectMixedOption } from 'naive-ui/es/select/src/interface';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
@@ -93,19 +94,24 @@ const courseOptions = courseResponse.map((courseItem, index) => {
   };
 });
 
-const teesOptions = computed(() => {
+const teesOptions: ComputedRef<SelectMixedOption[]> = computed(() => {
   if (teesForSelectedCourse.value !== undefined) {
     if (teesForSelectedCourse.value.includes('[')) {
       const teeStringToArray = JSON.parse(teesForSelectedCourse.value);
-      let formattedTeeOptions = [];
+      let formattedTeeOptions: SelectMixedOption[] = [];
 
       for (let i = 0; i < teeStringToArray.length; i++) {
-        formattedTeeOptions.push({ label: teeStringToArray[i], value: teeStringToArray[i] });
+        const teeString: string = teeStringToArray[i];
+
+        formattedTeeOptions.push({
+          label: teeString,
+          value: teeString,
+        });
       }
 
       return formattedTeeOptions;
     } else {
-      return { value: teesForSelectedCourse.value, label: teesForSelectedCourse.value };
+      return [{ value: teesForSelectedCourse.value, label: teesForSelectedCourse.value }];
     }
   } else {
     return [];
