@@ -107,6 +107,7 @@ interface ScoreProps {
 }
 
 .hole-score_form-card {
+  font-size: 16px;
   margin-top: 15px;
 
   .hole-score_form-group {
