@@ -25,7 +25,7 @@
           <RoundIcon class="course-picker_actions-icon" />
           Start Round
         </n-button>
-        <n-button tag="a" :tel="selectedCourse.phoneNumber" type="primary">
+        <n-button tag="a" :href="`tel:${selectedCourse.phoneNumber}`" type="primary">
           <PhoneIcon class="course-picker_actions-icon" />
           Call </n-button
         ><!-- TODO: make call and website side by side buttons that span equal width window -->
