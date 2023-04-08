@@ -10,15 +10,14 @@
 <script setup lang="ts">
 import router from '../router';
 import { mainStore } from '../store';
+import { useMessage } from 'naive-ui';
 const store = mainStore();
 const { setUser } = store;
+const message = useMessage();
 
 const googleAuthCallback = async (response: GoogleResponse) => {
   // This callback will be triggered when the user selects or login to their Google account from the popup
   try {
-    // set the credential response to a localStorage value
-    localStorage.setItem('gg_token', response.credential);
-
     /**
      * send the credential that we saved to the server
      */
@@ -31,16 +30,39 @@ const googleAuthCallback = async (response: GoogleResponse) => {
 
     const tokenResponse = await tokenSend.json();
 
+    // set the credential response to a localStorage value
+    localStorage.setItem('gg_token', response.credential);
+
     /**
      * query db for the user that was sent by successful Google auth
      */
     const userDbFetch: Response = await fetch(`/api/users/${tokenResponse.email}`);
-    const userDbResponse: object[] = await userDbFetch.json();
+    let userDbResponse: object[];
+
+    if (userDbFetch.status === 404) {
+      const newUser = await fetch(`/api/users`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: tokenResponse.email,
+          name: tokenResponse.name,
+        }),
+      });
+      const newUserFromDB = await newUser.json();
+
+      userDbResponse = [newUserFromDB];
+      message.success('User created successfully');
+    } else {
+      userDbResponse = await userDbFetch.json();
+      message.success('Logged in');
+    }
 
     /**
      * set the user in the app state and push to the home route
      */
-    setUser(userDbResponse[0]);
+    await setUser(userDbResponse[0]);
     await router.push('/');
   } catch (error) {
     console.error('Google callback error: ', error);

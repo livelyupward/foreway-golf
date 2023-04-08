@@ -8,9 +8,10 @@ dotenv.config({ path: join(__dirname, '.env') });
 import Express from 'express';
 import cors from 'cors';
 import eSession from 'express-session';
-import seedGCI from './models/gci.seed.js';
-import seedDave from './models/user.seed.js';
-import seedStreamwoodOaks from './models/streamwood-oaks.seed.js';
+import seedGCI from './seeds/gci.seed.js';
+import seedDave from './seeds/user.seed.js';
+import seedStreamwoodOaks from './seeds/streamwood-oaks.seed.js';
+import seedSettlersHill from './seeds/settlers-hill.seed.js';
 import { OAuth2Client } from 'google-auth-library';
 import bodyParser from 'body-parser';
 
@@ -38,6 +39,7 @@ db.sequelize
   .then(async () => {
     await seedGCI(db);
     await seedStreamwoodOaks(db);
+    await seedSettlersHill(db);
     await seedDave(db);
     console.log('Seeds run successfully');
   })

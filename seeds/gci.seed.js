@@ -6,6 +6,7 @@ export default async (db) => {
     state: 'IL',
     zip: '60102',
     holeCount: 18,
+    tees: ['red'],
     phoneNumber: '8476584400',
     webpage: 'https://golfclubofil.com/',
     courseImage: 'https://golfclubofil.com/wp-content/uploads/2021/12/20210926_085539-768x768.jpg',

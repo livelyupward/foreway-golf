@@ -169,6 +169,9 @@ export const mainStore = defineStore('main', () => {
 
         const cachedTokenResponse = await cachedTokenSend.json();
         const userDbFetch: Response = await fetch(`/api/users/${cachedTokenResponse.email}`);
+
+        if (userDbFetch.status === 404) return await router.push('/auth');
+
         const userDbResponse: object[] = await userDbFetch.json();
 
         await setUser(userDbResponse[0]);

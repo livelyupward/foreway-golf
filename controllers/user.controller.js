@@ -5,9 +5,9 @@ const { Op } = db.Sequelize;
 // Create and Save a new Course
 export const create = (req, res) => {
   // Validate request
-  if (!req.body.title) {
+  if (!req.body.name || !req.body.email) {
     res.status(400).send({
-      message: 'Content can not be empty!',
+      message: 'Google email or name was not found.',
     });
     return;
   }
@@ -56,7 +56,7 @@ export const findOne = (req, res) => {
     },
   })
     .then((data) => {
-      if (data) {
+      if (data.length) {
         res.send(data);
       } else {
         res.status(404).send({
