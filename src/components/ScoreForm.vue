@@ -10,10 +10,10 @@
   >
     <div class="hole-score_form-group">
       <n-form-item label="Strokes">
-        <n-input-number v-model:value="scoreData.strokes" placeholder="# of strokes" />
+        <n-input-number v-model:value="scoreData.strokes" pattern="[0-9]*" placeholder="# of strokes" />
       </n-form-item>
       <n-form-item label="Putts">
-        <n-input-number v-model:value="scoreData.putts" placeholder="# of putts" />
+        <n-input-number v-model:value="scoreData.putts" pattern="[0-9]*" placeholder="# of putts" />
       </n-form-item>
     </div>
     <div class="hole-score_form-group">

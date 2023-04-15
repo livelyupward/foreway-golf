@@ -5,6 +5,7 @@
       <p class="current-round_info-date">Date: {{ friendlyCreatedDate }}</p>
     </div>
     <CourseScorecard :holes="course.holes" />
+    <n-button class="current-round_end-round" type="error" tertiary @click="endRound">Close Round</n-button>
     <n-modal v-model:show="computedScoreModal" @update:show="toggleScoreModal">
       <n-card
         style="width: 600px"
@@ -26,31 +27,42 @@
 <script setup lang="ts">
 import { mainStore } from '../store';
 import type { Course } from '../store';
-import { NModal, NCard } from 'naive-ui';
+import { NButton, NModal, NCard, useMessage } from 'naive-ui';
 import { CloseSharp as CloseIcon } from '@vicons/ionicons5';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
-import type { Hole } from '../store';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
 import { computed } from 'vue';
 
 const store = mainStore();
-const { toggleScoreModal, closeScoreModal } = store;
+const message = useMessage();
+const { toggleScoreModal, closeScoreModal, closeRound, getCourse } = store;
 const { getUser, getCurrentRound, computedScoreModal, currentHoleInScoreModal } = storeToRefs(store);
 
 isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
-const courseFetch = await fetch(`/api/courses/${getCurrentRound.value.courseId}?holes=true`);
-const course: Course = await courseFetch.json();
+// @ts-ignore
+const { course } = await getCourse(getCurrentRound.value.courseId);
 
 const friendlyCreatedDate = computed(() => {
+  // @ts-ignore
   const dateString: string | undefined = course.createdAt;
   const date: Date | null = dateString ? new Date(dateString) : null;
   const options = { timeZone: 'UTC' };
 
   return date ? date.toLocaleDateString('en-US', options) : null;
 });
+
+async function endRound() {
+  try {
+    await closeRound();
+    message.success('Round closed successfully');
+  } catch (error) {
+    console.error(error);
+    message.error('Round could not be closed -- please try again');
+  }
+}
 </script>
 
 <style lang="scss">
@@ -127,6 +139,17 @@ const friendlyCreatedDate = computed(() => {
     &:last-of-type {
       margin-bottom: 0;
     }
+  }
+}
+
+.current-round_end-round {
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+  width: 100%;
+
+  span {
+    justify-content: center;
   }
 }
 </style>

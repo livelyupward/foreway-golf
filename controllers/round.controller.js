@@ -83,17 +83,17 @@ export const update = (req, res) => {
     .then((num) => {
       if (num === 1) {
         res.send({
-          message: 'Tutorial was updated successfully.',
+          message: 'Round was updated successfully.',
         });
       } else {
         res.send({
-          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`,
+          message: `Cannot update Round with id=${id}. Maybe Round was not found or req.body is empty!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error updating Tutorial with id=' + id,
+        message: 'Error updating Round with id=' + id,
       });
     });
 };
@@ -108,17 +108,17 @@ export const deleteOne = (req, res) => {
     .then((num) => {
       if (num === 1) {
         res.send({
-          message: 'Tutorial was deleted successfully!',
+          message: 'Round was deleted successfully!',
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`,
+          message: `Cannot delete Round with id=${id}. Maybe Round was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Could not delete Tutorial with id=' + id,
+        message: 'Could not delete Round with id=' + id,
       });
     });
 };
@@ -130,7 +130,7 @@ export const deleteAll = (req, res) => {
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+      res.send({ message: `${nums} Rounds were deleted successfully!` });
     })
     .catch((err) => {
       res.status(500).send({

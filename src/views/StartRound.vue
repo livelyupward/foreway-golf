@@ -120,9 +120,10 @@ const teesOptions: ComputedRef<SelectMixedOption[]> = computed(() => {
 
 async function startNewRound() {
   const startRound = await createNewRound({
+    // @ts-ignore
     courseId: selectedCourse.value ? selectedCourse.value.id : undefined,
     userId: getUser.value ? getUser.value.id : null,
-    tees: teesToPlay.value ? teesToPlay.value : undefined,
+    tees: teesToPlay.value ? [teesToPlay.value] : undefined,
   });
   isDebug() && console.log('res: ', startRound);
   message.success('Round created!');

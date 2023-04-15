@@ -10,6 +10,7 @@ export const mainStore = defineStore('main', () => {
     closed: false,
     scores: [],
   });
+  const currentCourse: Ref<Course | null> = ref(null);
   const user: Ref<User | null> = ref(null);
   const drawerOpen: Ref<boolean> = ref(false);
   const currentHoleInScoreModal: Ref<number | undefined> = ref(undefined);
@@ -20,6 +21,10 @@ export const mainStore = defineStore('main', () => {
 
   const getCurrentRound: ComputedRef<Round> = computed(() => {
     return currentRound.value;
+  });
+
+  const getCurrentCourse: ComputedRef<Course | null> = computed(() => {
+    return currentCourse.value;
   });
 
   const getUser: ComputedRef<User | null> = computed(() => {
@@ -65,7 +70,7 @@ export const mainStore = defineStore('main', () => {
     return (currentHoleInScoreModal.value = holeNumberToSet);
   }
 
-  async function createNewRound(courseInfoObject: object) {
+  async function createNewRound(courseInfoObject: Course) {
     const newRoundRequest = await fetch(`/api/round/`, {
       method: 'POST',
       headers: {
@@ -76,6 +81,7 @@ export const mainStore = defineStore('main', () => {
 
     const newRoundResponse = await newRoundRequest.json();
     newRoundResponse.scores = [];
+    currentCourse.value = courseInfoObject;
     currentRound.value = newRoundResponse;
 
     const userRoundRequest = await fetch(
@@ -141,12 +147,6 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
-  async function markRoundComplete() {
-    // TODO: finish adding steps to completing a round or just build it
-    // edit round to be complete
-    // remove round id from user
-  }
-
   async function authAndGetUserFromDB(): Promise<any> {
     // if token is saved in DB
     if (localStorage.getItem('gg_token')) {
@@ -202,13 +202,49 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function getCourse(courseId: number) {
+    try {
+      const courseFetch = await fetch(`/api/courses/${courseId}?holes=true`);
+      const course: Course = await courseFetch.json();
+
+      currentCourse.value = course;
+
+      return { course };
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async function closeRound(): Promise<any> {
+    if (getCurrentRound.value !== null) {
+      try {
+        const endRoundRequest = await fetch(`/api/round/${getCurrentRound.value.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(getCurrentRound.value),
+        });
+        const endRoundResponse = endRoundRequest.json();
+
+        return { message: 'Round ended successfully.', round: endRoundRequest };
+      } catch (error) {
+        return { error };
+      }
+    } else {
+      return { error: 'Could not find an active round.' };
+    }
+  }
+
   return {
     computedScoreModal,
     currentHoleInScoreModal,
     getCurrentRound,
+    getCurrentCourse,
     getUser,
     getDrawerState,
     getRecentUserRounds,
+    getCourse,
     authAndGetUserFromDB,
     openScoreModal,
     closeScoreModal,
@@ -221,6 +257,7 @@ export const mainStore = defineStore('main', () => {
     goToRound,
     submitScore,
     submitEditedScore,
+    closeRound,
   };
 });
 
@@ -285,7 +322,7 @@ export interface Course {
   webpage?: string;
   courseImage?: string;
   holeCount: number;
-  tees: string[];
+  tees?: string[];
   holes: Hole[];
   createdAt?: string;
   updatedAt?: string;
