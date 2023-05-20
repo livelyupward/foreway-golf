@@ -15,7 +15,8 @@ export const mainStore = defineStore('main', () => {
   const drawerOpen: Ref<boolean> = ref(false);
   const currentHoleInScoreModal: Ref<number | undefined> = ref(undefined);
   const scoreModalOpen: Ref<boolean> = ref(false);
-  const computedScoreModal = computed(() => {
+
+  const computedScoreModal: ComputedRef<boolean> = computed(() => {
     return scoreModalOpen.value;
   });
 
@@ -31,47 +32,47 @@ export const mainStore = defineStore('main', () => {
     return user.value;
   });
 
-  const getDrawerState = computed(() => {
+  const getDrawerState: ComputedRef<boolean> = computed(() => {
     return drawerOpen.value;
   });
 
-  function closeDrawer() {
+  function closeDrawer(): void {
     drawerOpen.value = false;
   }
 
-  function openDrawer() {
+  function openDrawer(): void {
     drawerOpen.value = true;
   }
 
-  function toggleDrawer() {
+  function toggleDrawer(): boolean {
     return (drawerOpen.value = !drawerOpen.value);
   }
 
-  async function openScoreModal() {
+  async function openScoreModal(): Promise<boolean> {
     return (scoreModalOpen.value = true);
   }
-  async function closeScoreModal() {
+  async function closeScoreModal(): Promise<boolean> {
     return (scoreModalOpen.value = false);
   }
 
-  async function toggleScoreModal() {
+  async function toggleScoreModal(): Promise<boolean> {
     return (scoreModalOpen.value = !scoreModalOpen.value);
   }
 
-  async function setUser(userPayload: any) {
+  async function setUser(userPayload: any): Promise<any> {
     return (user.value = userPayload);
   }
 
-  function resetUser() {
+  function resetUser(): null {
     return (user.value = null);
   }
 
-  async function setHoleInScoreModal(holeNumberToSet: number) {
+  async function setHoleInScoreModal(holeNumberToSet: number): Promise<number> {
     return (currentHoleInScoreModal.value = holeNumberToSet);
   }
 
   async function createNewRound(courseInfoObject: Course) {
-    const newRoundRequest = await fetch(`/api/round/`, {
+    const newRoundRequest: Response = await fetch(`/api/round/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -84,7 +85,7 @@ export const mainStore = defineStore('main', () => {
     currentCourse.value = courseInfoObject;
     currentRound.value = newRoundResponse;
 
-    const userRoundRequest = await fetch(
+    const userRoundRequest: Response = await fetch(
       // @ts-ignore
       `/api/users/${getUser.value.id}?roundId=${newRoundResponse.id}`,
       {
@@ -204,7 +205,7 @@ export const mainStore = defineStore('main', () => {
 
   async function getCourse(courseId: number) {
     try {
-      const courseFetch = await fetch(`/api/courses/${courseId}?holes=true`);
+      const courseFetch: Response = await fetch(`/api/courses/${courseId}?holes=true`);
       const course: Course = await courseFetch.json();
 
       currentCourse.value = course;
@@ -216,18 +217,30 @@ export const mainStore = defineStore('main', () => {
   }
 
   async function closeRound(): Promise<any> {
-    if (getCurrentRound.value !== null) {
+    if (getUser.value !== null && getCurrentRound.value !== null) {
       try {
-        const endRoundRequest = await fetch(`/api/round/${getCurrentRound.value.id}`, {
+        // take current round and make null for current user
+        user.value ? (user.value.currentRound = undefined) : null;
+
+        const updateUserRoundRequest: Response = await fetch(`/api/users/${getUser.value.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(user.value),
+        });
+        const updateUserRoundResponse: Promise<any> = updateUserRoundRequest.json();
+
+        const endRoundRequest: Response = await fetch(`/api/round/${getCurrentRound.value.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(getCurrentRound.value),
         });
-        const endRoundResponse = endRoundRequest.json();
+        const endRoundResponse: Promise<any> = endRoundRequest.json();
 
-        return { message: 'Round ended successfully.', round: endRoundRequest };
+        return { message: 'Round ended successfully.', round: endRoundResponse, user: updateUserRoundResponse };
       } catch (error) {
         return { error };
       }

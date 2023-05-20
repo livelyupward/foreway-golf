@@ -12,6 +12,7 @@ import seedGCI from './seeds/gci.seed.js';
 import seedDave from './seeds/user.seed.js';
 import seedStreamwoodOaks from './seeds/streamwood-oaks.seed.js';
 import seedSettlersHill from './seeds/settlers-hill.seed.js';
+import seedHilldale from './seeds/hilldale.seed.js';
 import { OAuth2Client } from 'google-auth-library';
 import bodyParser from 'body-parser';
 
@@ -35,12 +36,13 @@ app.use(
 app.use(Express.static('/public'));
 
 db.sequelize
-  .sync({ force: true })
+  // .sync()
   .then(async () => {
-    await seedGCI(db);
-    await seedStreamwoodOaks(db);
-    await seedSettlersHill(db);
-    await seedDave(db);
+    // await seedGCI(db);
+    // await seedStreamwoodOaks(db);
+    // await seedSettlersHill(db);
+    // await seedDave(db);
+    await seedHilldale(db);
     console.log('Seeds run successfully');
   })
   .then(() => {

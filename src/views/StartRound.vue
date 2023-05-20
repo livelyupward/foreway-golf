@@ -16,22 +16,21 @@
   <hr />
   <div class="course-picker_course-container" v-if="courseIndexFromSelect !== undefined">
     <div class="course-picker_course-info" v-if="selectedCourse">
-      <h3 class="course-picker_course-name">{{ selectedCourse.name }}</h3>
+      <a class="course-picker_course-link" :href="selectedCourse.webpage" target="_blank">
+        <h3 class="course-picker_course-name">{{ selectedCourse.name }}</h3>
+        <WebsiteIcon />
+      </a>
       <div class="course-picker_hero">
         <img class="course-picker_hero-image" :src="selectedCourse.courseImage" alt="" />
       </div>
       <div class="course-picker_actions">
-        <n-button v-if="selectedCourse" @click="showModal = true" type="info">
+        <n-button class="course-picker_actions-start" v-if="selectedCourse" @click="showModal = true" type="info">
           <RoundIcon class="course-picker_actions-icon" />
           Start Round
         </n-button>
-        <n-button tag="a" :href="`tel:${selectedCourse.phoneNumber}`" type="primary">
+        <n-button class="course-picker_actions-call" tag="a" :href="`tel:${selectedCourse.phoneNumber}`" type="primary">
           <PhoneIcon class="course-picker_actions-icon" />
-          Call </n-button
-        ><!-- TODO: make call and website side by side buttons that span equal width window -->
-        <n-button tag="a" strong secondary :href="selectedCourse.webpage" target="_blank" type="tertiary">
-          <WebsiteIcon class="course-picker_actions-icon" />
-          Website
+          Call
         </n-button>
       </div>
       <address>{{ selectedCourse.address }}</address>
@@ -42,7 +41,7 @@
       <n-card
         class="start-modal-card"
         style="width: 600px"
-        title="Are you sure?"
+        :title="`${selectedCourse.name}`"
         :bordered="false"
         role="dialog"
         aria-modal="true"
@@ -154,6 +153,22 @@ interface CourseInfo {
   }
 }
 
+.course-picker_course-link {
+  align-items: center;
+  color: #18a058;
+  display: flex;
+  font-size: 1.25rem;
+
+  h3 {
+    margin: 0.5rem 0 0.1rem;
+  }
+
+  svg {
+    margin: 0.5rem 0 0.1rem 10px;
+    width: 20px;
+  }
+}
+
 .course-picker_hero {
   img {
     aspect-ratio: 16/5;
@@ -166,6 +181,30 @@ interface CourseInfo {
 
 .course-picker_actions {
   display: flex;
+  margin-bottom: 10px;
+
+  & > * {
+    flex: 1 1 50%;
+  }
+
+  .course-picker_actions-start {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  .course-picker_actions-call {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+
+  .course-picker_actions-start,
+  .course-picker_actions-call {
+    font-size: 1rem;
+    height: 3rem;
+
+    span {
+      padding: 1rem;
+    }
+  }
 
   @media screen and (max-width: 900px) {
     justify-content: space-between;
