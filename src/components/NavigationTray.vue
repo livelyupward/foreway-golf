@@ -40,6 +40,7 @@ const { getUser } = storeToRefs(store);
 
 <style lang="scss">
 #navigation-tray {
+  background-color: #fff;
   border-top: 1px solid #888;
   position: fixed;
   bottom: 0;
