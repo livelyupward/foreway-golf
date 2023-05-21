@@ -1,5 +1,5 @@
 <template>
-  <div class="toggle-button" @click="toggleValue">
+  <div class="toggle-button" :class="`${props.buttonClass} ${passedValue ? 'checked' : ''}`" @click="toggleValue">
     <slot></slot>
     <span class="toggle-button_text">{{ props.buttonText }}</span>
   </div>
@@ -9,6 +9,7 @@
 import { toRefs } from 'vue';
 
 const props = defineProps({
+  buttonClass: String,
   buttonText: String,
   passedValue: Boolean,
 });
@@ -19,4 +20,4 @@ function toggleValue() {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped></style>

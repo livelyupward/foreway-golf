@@ -22,14 +22,12 @@ svg {
   min-width: 20px;
 }
 
-.router-link:visited {
-  color: #18a058;
+input {
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  padding: 3px 6px;
 }
 
-.n-select:not(.no-cap) {
-  text-transform: capitalize;
-}
-
-.n-base-select-option {
-  text-transform: capitalize;
+.center-content {
+  text-align: center;
 }
