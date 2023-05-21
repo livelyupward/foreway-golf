@@ -38,19 +38,19 @@ const routes = [
     name: 'Home',
     path: '/',
     component: () => import('./views/Home.vue'),
-    beforeEnter: checkAuth,
+    // beforeEnter: checkAuth,
   },
   {
     name: 'Start',
     path: '/round',
     component: () => import('./views/StartRound.vue'),
-    beforeEnter: checkAuth,
+    // beforeEnter: checkAuth,
   },
   {
     name: 'Current round',
     path: '/rounds/:id',
     component: () => import('./views/CurrentRound.vue'),
-    beforeEnter: checkAuth,
+    // beforeEnter: checkAuth,
   },
   {
     name: 'Auth',
