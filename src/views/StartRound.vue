@@ -33,9 +33,12 @@
           Call
         </n-button>
       </div>
-      <address>{{ selectedCourse.address }}</address>
-      <address>{{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}</address>
-      <p>Holes: {{ selectedCourse.holeCount }}</p>
+      <address class="course-picker_course-info_address-top">{{ selectedCourse.address }}</address>
+      <address class="course-picker_course-info_address-bottom">
+        {{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}
+      </address>
+      <p class="course-picker_course-info_hole-count">Holes: {{ selectedCourse.holeCount }}</p>
+      <p class="course-picker_course-info_about">{{ selectedCourse.about }}</p>
     </div>
     <n-modal v-model:show="showModal" v-if="selectedCourse !== undefined">
       <n-card
@@ -136,6 +139,7 @@ interface CourseInfo {
   address: string;
   state: string;
   zip: string;
+  about: string;
   holeCount: number;
   tees: string;
   phoneNumber: string;
@@ -158,6 +162,12 @@ interface CourseInfo {
   color: #18a058;
   display: flex;
   font-size: 1.25rem;
+  margin-bottom: 6px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 
   h3 {
     margin: 0.5rem 0 0.1rem;
@@ -246,5 +256,9 @@ interface CourseInfo {
       margin-right: 15px;
     }
   }
+}
+
+.course-picker_input-component {
+  margin-bottom: 15px;
 }
 </style>

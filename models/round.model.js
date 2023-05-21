@@ -14,6 +14,10 @@ export default (sequelize, Sequelize) => {
       closed: {
         type: Sequelize.BOOLEAN,
       },
+      groupId: {
+        type: Sequelize.INTEGER,
+        required: false,
+      },
     },
     { timestamps: true }
   );

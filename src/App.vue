@@ -49,7 +49,7 @@ onBeforeMount(async () => {
   border-left: 1px solid darkslategrey;
   grid-area: main;
   min-height: 100vh;
-  padding: 30px;
+  padding: 20px;
 
   @media screen and (max-width: 900px) {
     padding: 15px;
