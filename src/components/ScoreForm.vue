@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent>
-    <span>Hole 1</span>
+    <h2 class="score-form_hole">Score for Hole 1</h2>
     <div class="form-group-inline">
       <label class="form-label" for="score">Score</label>
       <input class="form-input center-content" id="score" type="tel" />
@@ -60,9 +60,9 @@ function toggleValue(type: string): boolean {
 </script>
 
 <style lang="scss">
-.score-title {
-  margin-bottom: 10px;
-  margin-top: 0;
+.score-form_hole {
+  font-size: 2.75rem;
+  margin: 0 0 2rem;
 }
 
 .hole-score_form-card {

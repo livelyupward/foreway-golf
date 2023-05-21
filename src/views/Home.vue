@@ -1,7 +1,6 @@
 <template>
   <section id="homepage">
     <!--  <section id="homepage" v-if="getUser">-->
-    <h1 class="homepage_title">Foreway</h1>
     <ScoreForm />
   </section>
 </template>
