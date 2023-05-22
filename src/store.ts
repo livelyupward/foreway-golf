@@ -12,7 +12,6 @@ export const mainStore = defineStore('main', () => {
   });
   const currentCourse: Ref<Course | null> = ref(null);
   const user: Ref<User | null> = ref(null);
-  const drawerOpen: Ref<boolean> = ref(false);
   const currentHoleInScoreModal: Ref<number | undefined> = ref(undefined);
   const scoreModalOpen: Ref<boolean> = ref(false);
 
@@ -31,22 +30,6 @@ export const mainStore = defineStore('main', () => {
   const getUser: ComputedRef<User | null> = computed(() => {
     return user.value;
   });
-
-  const getDrawerState: ComputedRef<boolean> = computed(() => {
-    return drawerOpen.value;
-  });
-
-  function closeDrawer(): void {
-    drawerOpen.value = false;
-  }
-
-  function openDrawer(): void {
-    drawerOpen.value = true;
-  }
-
-  function toggleDrawer(): boolean {
-    return (drawerOpen.value = !drawerOpen.value);
-  }
 
   async function openScoreModal(): Promise<boolean> {
     return (scoreModalOpen.value = true);
@@ -255,7 +238,6 @@ export const mainStore = defineStore('main', () => {
     getCurrentRound,
     getCurrentCourse,
     getUser,
-    getDrawerState,
     getRecentUserRounds,
     getCourse,
     authAndGetUserFromDB,
@@ -263,8 +245,6 @@ export const mainStore = defineStore('main', () => {
     closeScoreModal,
     toggleScoreModal,
     setHoleInScoreModal,
-    closeDrawer,
-    toggleDrawer,
     setUser,
     createNewRound,
     goToRound,

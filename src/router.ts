@@ -64,13 +64,4 @@ const router = createRouter({
   routes,
 });
 
-router.beforeResolve((to, from) => {
-  const store = mainStore();
-
-  /**
-   * before nav make sure to close the drawer for mobile
-   */
-  store.closeDrawer();
-});
-
 export default router;
