@@ -15,6 +15,9 @@ import {
   faFlag,
   faTriangleExclamation,
   faUserMinus,
+  faCircleQuestion,
+  faPhoneVolume,
+  faDesktop,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import * as process from 'process';
@@ -31,7 +34,10 @@ library.add(
   faFlag,
   faCircleCheck,
   faTriangleExclamation,
-  faUserMinus
+  faUserMinus,
+  faCircleQuestion,
+  faPhoneVolume,
+  faDesktop
 );
 
 if (process.env.NODE_ENV === 'production') {

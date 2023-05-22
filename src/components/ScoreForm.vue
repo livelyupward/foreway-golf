@@ -1,6 +1,6 @@
 <template>
   <form @submit.prevent>
-    <h2 class="score-form_hole">Hole 1</h2>
+    <h2 class="score-form_hole page-title">Hole 1</h2>
     <hr />
     <div class="score-form_hole-info"></div>
     <div class="form-group-inline full-width">
@@ -84,9 +84,7 @@ function toggleValue(type: string): boolean {
 
 <style lang="scss">
 .score-form_hole {
-  font-size: 2.75rem;
   margin: 0 0 1rem;
-  text-align: center;
 }
 
 .hole-score_form-card {
