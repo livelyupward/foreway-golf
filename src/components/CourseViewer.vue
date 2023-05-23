@@ -56,4 +56,94 @@ interface CourseInfo {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.course-viewer {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 0;
+  display: flex;
+  left: 0;
+  padding: 5px;
+  position: fixed;
+  right: 0;
+  top: 0;
+
+  .course-viewer_modal {
+    background-color: #fff;
+    border-radius: 4px;
+    max-height: 85%;
+    overflow-y: auto;
+    padding: 15px;
+
+    .course-viewer_modal-title {
+      font-size: 2rem;
+      margin: 0 0 10px;
+    }
+
+    .course-viewer_modal-hero {
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    .course-viewer_modal_button-group {
+      align-items: center;
+      display: flex;
+
+      .course-viewer_modal_action-button {
+        align-items: center;
+        border: none;
+        border-radius: 4px;
+        display: flex;
+        flex-basis: 50%;
+        justify-content: center;
+        padding: 8px 0;
+
+        svg {
+          margin-right: 6px;
+        }
+
+        &.call {
+          background-color: #81c784;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          color: #333;
+        }
+
+        &.website {
+          background-color: #90caf9;
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          color: #333;
+        }
+      }
+    }
+
+    .course-viewer_modal_address-container {
+      margin-top: 10px;
+    }
+
+    .course-viewer_modal_select-button,
+    .course-viewer_modal_close-button {
+      border-width: 1px;
+      border-style: solid;
+      border-radius: 4px;
+      font-size: 1.125rem;
+      margin-bottom: 10px;
+      padding: 4px 0;
+      width: 100%;
+    }
+
+    .course-viewer_modal_select-button {
+      background-color: cadetblue;
+      border-color: cadetblue;
+      color: #fff;
+    }
+
+    .course-viewer_modal_close-button {
+      background-color: #d32f2f;
+      border-color: #d32f2f;
+      color: #fff;
+    }
+  }
+}
+</style>
