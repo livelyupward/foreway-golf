@@ -4,26 +4,17 @@
     <h2 class="start-round_container-title">Course</h2>
     <div class="start-round_container" v-show="stageIndex === 0">
       <ul class="start-round_course-list">
-        <li class="start-round_course-item">
-          <span class="start-round_course-item_name">Golf Club of Illinois</span>
-          <button class="start-round_course-item_button info" @click="courseViewerActivated = true">
+        <li v-for="(course, index) in courses" class="start-round_course-item">
+          <span class="start-round_course-item_name">{{ course.name }}</span>
+          <button class="start-round_course-item_button info" @click="activateCourseViewer(index)">
             <font-awesome-icon :icon="['fas', 'circle-question']"></font-awesome-icon>
           </button>
-          <button class="start-round_course-item_button select" @click="selectCourse">Select</button>
-        </li>
-        <li class="start-round_course-item">
-          <span class="start-round_course-item_name">Hilldale Golf Club</span>
-          <button class="start-round_course-item_button info" @click="courseViewerActivated = true">
-            <font-awesome-icon :icon="['fas', 'circle-question']"></font-awesome-icon>
+          <button
+            class="start-round_course-item_button select"
+            @click="selectCourse({ courseId: course.id, courseName: course.name })"
+          >
+            Select
           </button>
-          <button class="start-round_course-item_button select" @click="selectCourse">Select</button>
-        </li>
-        <li class="start-round_course-item">
-          <span class="start-round_course-item_name">Streamwood Oaks</span>
-          <button class="start-round_course-item_button info" @click="courseViewerActivated = true">
-            <font-awesome-icon :icon="['fas', 'circle-question']"></font-awesome-icon>
-          </button>
-          <button class="start-round_course-item_button select" @click="selectCourse">Select</button>
         </li>
       </ul>
     </div>
@@ -36,6 +27,7 @@
         <li class="start-round_options-item">Option 2</li>
         <li class="start-round_options-item">Option 3</li>
       </ul>
+      <button @click="saveOptions">Save options</button>
     </div>
   </section>
   <section class="start-round step-by-step" :class="`${stageIndex === 2 ? 'active' : ''}`">
@@ -48,6 +40,7 @@
       v-if="courseViewerActivated"
       @set-course="selectCourse"
       @close-viewer="courseViewerActivated = false"
+      :course-info="courseInViewer"
     />
   </Teleport>
 </template>
@@ -57,12 +50,11 @@ import { Ref, ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import CourseViewer from '../components/CourseViewer.vue';
 
+/*
+StartRound component state
+ */
 const courseViewerActivated = ref(false);
 const stageIndex = ref(0);
-const roundConfig: Ref<RoundSettings> = ref({
-  courseId: undefined,
-  courseName: undefined,
-});
 
 function selectCourse(roundConfigObject: RoundSettings): void {
   roundConfig.value.courseId = roundConfigObject.courseId;
@@ -71,10 +63,80 @@ function selectCourse(roundConfigObject: RoundSettings): void {
   ++stageIndex.value;
 }
 
+function activateCourseViewer(index: number) {
+  courseInViewer.value = courses[index];
+  courseViewerActivated.value = true;
+}
+
+function saveOptions() {
+  ++stageIndex.value;
+}
+
+/*
+Info from course needed to start round
+ */
+const roundConfig: Ref<RoundSettings> = ref({
+  courseId: undefined,
+  courseName: undefined,
+});
+
 interface RoundSettings {
   courseId?: number;
   courseName?: string;
 }
+
+/*
+Temporary course data until I add in database courses
+ */
+const courses = [
+  {
+    id: 1,
+    name: 'Golf Club of Illinois',
+    address: '1575 Edgewood Dr',
+    city: 'Algonquin',
+    state: 'IL',
+    zip: '60102',
+    holeCount: 18,
+    tees: ['red'],
+    phoneNumber: '8476584400',
+    webpage: 'https://golfclubofil.com/',
+    courseImage: 'https://golfclubofil.com/wp-content/uploads/2021/12/20210926_085539-768x768.jpg',
+    about:
+      'Built in 1987 by Dick Nugent and Bruce Borland, the Golf Club of Illinois in Algonquin is a classic links-style course featuring high fescue grasses, treacherous sand bunkers, and strategically placed mounds on each hole. Early on, the course quickly developed the reputation as a stern test for all skill levels of golfers, and was consistently ranked among the top 10 public courses to play by Chicagoland Golf.',
+  },
+  {
+    id: 4,
+    name: 'Hilldale Golf Club',
+    address: '1625 Ardwick Drive',
+    city: 'Hoffman Estates',
+    state: 'IL',
+    zip: '60169',
+    holeCount: 18,
+    tees: ['white'],
+    phoneNumber: '8473101100',
+    webpage: 'https://www.hilldalegolf.com/',
+    courseImage: 'https://www.pebblewoodgolf.com/golfbuffalohill/wp-content/uploads/sites/8067/2014/12/pg13.jpg?w=837',
+    about:
+      'Hilldale Golf Club was built in 1970 on land that was once a sportsman’s club and owned by the famous retailer Marshall Field. Hilldale is a par 71 course that offers challenges to golfers of any kind. Despite your skill, you might use all the clubs in your bag. Water comes into play on 13 holes and be wary of the O.B. stakes. Precise shot-making and proper club selection is required. Some holes at Hilldale Golf Course favor a fairway wood or long iron from the tee.',
+  },
+  {
+    id: 2,
+    name: 'Streamwood Oaks',
+    address: '565 Madison Dr',
+    city: 'Streamwood',
+    state: 'IL',
+    zip: '60107',
+    holeCount: 9,
+    tees: ['blue', 'white', 'red'],
+    phoneNumber: '6304831881',
+    webpage: 'https://streamwoodoaksgolf.com/',
+    courseImage: 'https://streamwoodoaksgolf.com/wp-content/uploads/2023/03/Sunshine-9th-tee-scaled.jpg',
+    about:
+      'In September of 1990, Streamwood Oaks Golf Course opened for business. Streamwood Oaks is a nine-hole golf course and features a 3,404-yard championship layout. Water comes into play on all nine holes and will challenge even the most experienced player. The golf course is owned by the Village of Streamwood and operated and managed by Links Management.',
+  },
+];
+
+const courseInViewer = ref();
 </script>
 
 <style lang="scss">
