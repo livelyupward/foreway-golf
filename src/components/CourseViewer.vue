@@ -70,7 +70,7 @@ interface CourseInfo {
 
   .course-viewer_modal {
     background-color: #fff;
-    border-radius: 4px;
+    border-radius: 15px;
     max-height: 85%;
     overflow-y: auto;
     padding: 15px;
@@ -81,22 +81,24 @@ interface CourseInfo {
     }
 
     .course-viewer_modal-hero {
-      border-radius: 4px;
+      @include sm-shadow;
+      border-radius: 15px 15px 0 0;
       width: 100%;
     }
 
     .course-viewer_modal_button-group {
+      @include sm-shadow;
       align-items: center;
       display: flex;
+      margin-top: -5px;
 
       .course-viewer_modal_action-button {
         align-items: center;
         border: none;
-        border-radius: 4px;
         display: flex;
         flex-basis: 50%;
         justify-content: center;
-        padding: 8px 0;
+        padding: 15px 0;
 
         svg {
           margin-right: 6px;
@@ -104,15 +106,14 @@ interface CourseInfo {
 
         &.call {
           background-color: #81c784;
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 15px;
           color: #333;
         }
 
         &.website {
           background-color: #90caf9;
           border-top-left-radius: 0;
-          border-bottom-left-radius: 0;
+          border-bottom-right-radius: 15px;
           color: #333;
         }
       }
@@ -126,14 +127,15 @@ interface CourseInfo {
     .course-viewer_modal_close-button {
       border-width: 1px;
       border-style: solid;
-      border-radius: 4px;
+      border-radius: 15px;
       font-size: 1.125rem;
       margin-bottom: 10px;
-      padding: 4px 0;
+      padding: 6px 0;
       width: 100%;
     }
 
     .course-viewer_modal_select-button {
+      @include sm-shadow;
       background-color: cadetblue;
       border-color: cadetblue;
       color: #fff;

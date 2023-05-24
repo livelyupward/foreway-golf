@@ -9,12 +9,7 @@
           <button class="start-round_course-item_button info" @click="activateCourseViewer(index)">
             <font-awesome-icon :icon="['fas', 'circle-question']"></font-awesome-icon>
           </button>
-          <button
-            class="start-round_course-item_button select"
-            @click="selectCourse({ courseId: course.id, courseName: course.name })"
-          >
-            Select
-          </button>
+          <button class="start-round_course-item_button select" @click="selectCourse(index)">Select</button>
         </li>
       </ul>
     </div>
@@ -44,15 +39,19 @@
     />
   </Teleport>
   <Teleport to="body">
-    <TeeSelector v-if="teeSelectorActivated && teesConfig.courseName" :course-info="teesConfig"></TeeSelector>
+    <TeeSelector
+      v-if="teeSelectorActivated && roundConfig.courseName"
+      :course-info="roundConfig"
+      @close-selector="closeModals"
+    ></TeeSelector>
   </Teleport>
 </template>
 
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import courses from '../assets/courses.json';
 import CourseViewer from '../components/CourseViewer.vue';
-import courses from '../../public/courses.json';
 import TeeSelector from '../components/TeeSelector.vue';
 
 /*
@@ -63,11 +62,14 @@ const courseViewerActivated = ref(false);
 const courseInViewer = ref();
 const teeSelectorActivated = ref(false);
 
-function selectCourse(roundConfigObject: RoundSettings): void {
-  roundConfig.value.courseId = roundConfigObject.courseId;
-  roundConfig.value.courseName = roundConfigObject.courseName;
-  teesConfig.value.courseName = courseInViewer.value.name; // TODO: Fix error
-  teesConfig.value.tees = courseInViewer.value.tees;
+function selectCourse(index: number): void {
+  const courseSelected = courseInViewer.value || courses[index];
+
+  roundConfig.value = {
+    courseId: courseSelected.id,
+    courseName: courseSelected.name,
+    tees: courseSelected.tees,
+  };
   courseViewerActivated.value = false;
   teeSelectorActivated.value = true;
 }
@@ -81,22 +83,25 @@ function saveOptions() {
   ++stageIndex.value;
 }
 
+function closeModals() {
+  roundConfig.value = { courseId: undefined, courseName: undefined };
+  courseViewerActivated.value = false;
+  teeSelectorActivated.value = false;
+}
+
 /*
 Info from course needed to start round
  */
 const roundConfig: Ref<RoundSettings> = ref({
   courseId: undefined,
   courseName: undefined,
-});
-
-const teesConfig: Ref<TeesSettings> = ref({
-  courseName: undefined,
-  tees: [],
+  tees: undefined,
 });
 
 interface RoundSettings {
   courseId?: number;
   courseName?: string;
+  tees?: string[];
 }
 
 export interface TeesSettings {
@@ -107,10 +112,11 @@ export interface TeesSettings {
 
 <style lang="scss">
 .step-by-step {
+  background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 15px;
   margin-bottom: 10px;
-  padding: 8px;
+  padding: 10px;
 
   &:last-of-type {
     margin-bottom: 0;
@@ -156,6 +162,10 @@ export interface TeesSettings {
         &:first-of-type {
           margin-left: auto;
           margin-right: 10px;
+        }
+
+        &:last-of-type {
+          @include sm-shadow;
         }
       }
     }

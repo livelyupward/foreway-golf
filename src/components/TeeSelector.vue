@@ -2,12 +2,21 @@
   <div class="tee-selector">
     <div class="tee-selector_modal">
       <div class="tee-selector_container">
-        <h3 class="tee-selector_course-name">{{ props.courseInfo.courseName }}</h3>
+        <h3 class="tee-selector_course-name">Select your teebox for {{ props.courseInfo.courseName }}</h3>
         <ul class="tee-selector_selection-container">
-          <li v-for="tee in props.courseInfo.tees" class="tee-selector_selection-item" @click="setTee(tee)">
+          <li
+            v-for="tee in props.courseInfo.tees"
+            class="tee-selector_selection-item"
+            :class="`${selectedTeeBox === tee ? 'selected' : ''}`"
+            @click="setTee(tee)"
+          >
             {{ tee }}
           </li>
         </ul>
+        <div class="tee-selector_button-group">
+          <button class="tee-selector_button save">Save</button>
+          <button class="tee-selector_button cancel" @click="$emit('closeSelector')">Cancel</button>
+        </div>
       </div>
     </div>
   </div>
@@ -21,8 +30,11 @@ const props = defineProps<{
   courseInfo: TeesSettings;
 }>();
 
+const selectedOption = ref();
+
 const selectedTeeBox = ref('');
 function setTee(teeString: string): string {
+  selectedTeeBox.value = teeString;
   return (selectedTeeBox.value = teeString);
 }
 </script>
@@ -41,79 +53,71 @@ function setTee(teeString: string): string {
 
   .tee-selector_modal {
     background-color: #fff;
-    border-radius: 4px;
+    border-radius: 15px;
+    margin: 0 auto;
     max-height: 85%;
     overflow-y: auto;
     padding: 15px;
 
-    .tee-selector_modal-title {
-      font-size: 2rem;
-      margin: 0 0 10px;
+    .tee-selector_course-name {
+      font-size: 1.5rem;
+      line-height: 1.5;
+      margin-top: 0;
     }
 
-    .tee-selector_modal-hero {
-      border-radius: 4px;
-      width: 100%;
-    }
+    .tee-selector_selection-container {
+      border-radius: 15px;
+      list-style-type: none;
+      padding-left: 0;
 
-    .tee-selector_modal_button-group {
-      align-items: center;
-      display: flex;
+      li {
+        border: 1px solid #ddd;
+        border-bottom: none;
+        padding: 15px 8px;
+        text-transform: capitalize;
 
-      .tee-selector_modal_action-button {
-        align-items: center;
-        border: none;
-        border-radius: 4px;
-        display: flex;
-        flex-basis: 50%;
-        justify-content: center;
-        padding: 8px 0;
-
-        svg {
-          margin-right: 6px;
+        &.selected {
+          background-color: #888;
+          color: #fff;
         }
 
-        &.call {
-          background-color: #81c784;
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-          color: #333;
+        &:first-of-type {
+          border-top-right-radius: 15px;
+          border-top-left-radius: 15px;
         }
 
-        &.website {
-          background-color: #90caf9;
-          border-top-left-radius: 0;
-          border-bottom-left-radius: 0;
-          color: #333;
+        &:last-of-type {
+          border-bottom: 1px solid #ddd;
+          border-bottom-right-radius: 15px;
+          border-bottom-left-radius: 15px;
+          margin-bottom: 0;
         }
       }
     }
 
-    .tee-selector_modal_address-container {
-      margin-top: 10px;
-    }
-
-    .tee-selector_modal_select-button,
-    .tee-selector_modal_close-button {
-      border-width: 1px;
-      border-style: solid;
-      border-radius: 4px;
-      font-size: 1.125rem;
-      margin-bottom: 10px;
-      padding: 4px 0;
-      width: 100%;
-    }
-
-    .tee-selector_modal_select-button {
-      background-color: cadetblue;
-      border-color: cadetblue;
+    .tee-selector_button {
       color: #fff;
-    }
+      font-size: 1rem;
+      margin: 0 10px;
+      padding: 8px 15px;
 
-    .tee-selector_modal_close-button {
-      background-color: #d32f2f;
-      border-color: #d32f2f;
-      color: #fff;
+      &:first-of-type {
+        margin-left: 0;
+      }
+
+      &:last-of-type {
+        margin-right: 0;
+      }
+
+      &.save {
+        background-color: cadetblue;
+        border: 1px solid cadetblue;
+      }
+
+      &.cancel {
+        background-color: #d32f2f;
+        border: 1px solid #d32f2f;
+      }
     }
   }
 }
