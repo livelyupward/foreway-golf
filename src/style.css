@@ -1,0 +1,33 @@
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  background-color: #333333;
+  box-sizing: border-box;
+  color: #fff;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 16px;
+  max-width: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  line-height: 1;
+}
+
+svg {
+  min-height: 20px;
+  min-width: 20px;
+}
+
+.router-link:visited {
+  color: #18a058;
+}
+
+.n-select:not(.no-cap) {
+  text-transform: capitalize;
+}
+
+.n-base-select-option {
+  text-transform: capitalize;
+}

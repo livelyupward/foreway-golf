@@ -22,6 +22,10 @@ export default (sequelize, Sequelize) => {
       zip: {
         type: Sequelize.STRING,
       },
+      about: {
+        type: Sequelize.STRING,
+        required: false,
+      },
       holeCount: {
         type: Sequelize.INTEGER,
       },

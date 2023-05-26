@@ -14,6 +14,9 @@ export default (sequelize, Sequelize) => {
       fairway: {
         type: Sequelize.BOOLEAN,
       },
+      hazard: {
+        type: Sequelize.BOOLEAN,
+      },
     },
     { timestamps: true }
   );

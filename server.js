@@ -7,14 +7,19 @@ dotenv.config({ path: join(__dirname, '.env') });
 
 import Express from 'express';
 import cors from 'cors';
-import eSession from 'express-session';
+import expressSession from 'express-session';
+import { OAuth2Client } from 'google-auth-library';
+import bodyParser from 'body-parser';
+
 import seedGCI from './seeds/gci.seed.js';
 import seedDave from './seeds/user.seed.js';
 import seedStreamwoodOaks from './seeds/streamwood-oaks.seed.js';
 import seedSettlersHill from './seeds/settlers-hill.seed.js';
 import seedHilldale from './seeds/hilldale.seed.js';
-import { OAuth2Client } from 'google-auth-library';
-import bodyParser from 'body-parser';
+import courseRoutes from './routes/course.routes.js';
+import userRoutes from './routes/user.routes.js';
+import roundRoutes from './routes/round.routes.js';
+import scoreRoutes from './routes/score.routes.js';
 
 const app = Express();
 const port = 4000;
@@ -25,7 +30,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.set('trust proxy', 1);
 app.use(
-  eSession({
+  expressSession({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
@@ -36,12 +41,12 @@ app.use(
 app.use(Express.static('/public'));
 
 db.sequelize
-  // .sync()
+  .sync({ force: true })
   .then(async () => {
-    // await seedGCI(db);
-    // await seedStreamwoodOaks(db);
-    // await seedSettlersHill(db);
-    // await seedDave(db);
+    await seedGCI(db);
+    await seedStreamwoodOaks(db);
+    await seedSettlersHill(db);
+    await seedDave(db);
     await seedHilldale(db);
     console.log('Seeds run successfully');
   })
@@ -77,11 +82,6 @@ app.post('/api/auth', (req, res) => {
       return res.status(403).send({ error });
     });
 });
-
-import courseRoutes from './routes/course.routes.js';
-import userRoutes from './routes/user.routes.js';
-import roundRoutes from './routes/round.routes.js';
-import scoreRoutes from './routes/score.routes.js';
 
 courseRoutes(app);
 userRoutes(app);
