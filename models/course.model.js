@@ -41,6 +41,7 @@ export default (sequelize, Sequelize) => {
       courseImage: {
         type: Sequelize.STRING,
       },
+      about: Sequelize.STRING,
     },
     {
       timestamps: true,

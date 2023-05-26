@@ -38,19 +38,19 @@ const routes = [
     name: 'Home',
     path: '/',
     component: () => import('./views/Home.vue'),
-    beforeEnter: checkAuth,
+    // beforeEnter: checkAuth,
   },
   {
     name: 'Start',
     path: '/round',
     component: () => import('./views/StartRound.vue'),
-    beforeEnter: checkAuth,
+    // beforeEnter: checkAuth,
   },
   {
     name: 'Current round',
     path: '/rounds/:id',
     component: () => import('./views/CurrentRound.vue'),
-    beforeEnter: checkAuth,
+    // beforeEnter: checkAuth,
   },
   {
     name: 'Auth',
@@ -62,15 +62,6 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
-
-router.beforeResolve((to, from) => {
-  const store = mainStore();
-
-  /**
-   * before nav make sure to close the drawer for mobile
-   */
-  store.closeDrawer();
 });
 
 export default router;
