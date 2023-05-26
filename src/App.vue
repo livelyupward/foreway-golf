@@ -31,6 +31,7 @@ const { authAndGetUserFromDB } = store;
 #main-panel {
   min-height: calc(100vh - 70px); // 50px for tray height and 20 for top and bottom padding
   padding: 30px;
+  position: relative;
 
   @media screen and (max-width: 900px) {
     padding: 10px;
