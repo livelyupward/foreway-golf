@@ -41,7 +41,7 @@ app.use(
 app.use(Express.static('/public'));
 
 db.sequelize
-  .sync({ force: true })
+  .sync()
   .then(async () => {
     await seedGCI(db);
     await seedStreamwoodOaks(db);

@@ -1,7 +1,5 @@
 <template>
-  <section id="homepage">
-    <!--      <section id="homepage" v-if="getUser">-->
-  </section>
+  <section id="homepage" v-if="getUser"></section>
 </template>
 
 <script setup lang="ts">

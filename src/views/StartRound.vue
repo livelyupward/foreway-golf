@@ -1,7 +1,10 @@
 <template>
   <h1 class="course-picker_title page-title">Round Setup</h1>
   <span class="selected-course" v-if="roundConfig.courseId">
-    <span class="selected-course_tee-name">{{ roundConfig.tees ? roundConfig.tees : null }}</span> tees at
+    <span v-if="roundConfig.courseName && roundConfig.tees" class="selected-course_tee-name">{{
+      roundConfig.tees ? roundConfig.tees : null
+    }}</span>
+    tees at
     {{ roundConfig.courseName }}
   </span>
   <section class="start-round step-by-step" :class="`${stageIndex === 0 ? 'active' : ''}`">
