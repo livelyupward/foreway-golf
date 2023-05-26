@@ -11,10 +11,11 @@
             @click="setTee(tee)"
           >
             {{ tee }}
+            <font-awesome-icon :class="tee" :icon="['fas', 'golf-ball-tee']" />
           </li>
         </ul>
         <div class="tee-selector_button-group">
-          <button class="tee-selector_button save">Save</button>
+          <button class="tee-selector_button save" @click="$emit('saveTeeAndClose', selectedTeeBox)">Save</button>
           <button class="tee-selector_button cancel" @click="$emit('closeSelector')">Cancel</button>
         </div>
       </div>
@@ -24,18 +25,24 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { type TeesSettings } from '../views/StartRound.vue';
 
 const props = defineProps<{
-  courseInfo: TeesSettings;
+  courseInfo: Course;
 }>();
+const emit = defineEmits(['closeSelector', 'saveTeeAndClose']);
 
 const selectedOption = ref();
 
 const selectedTeeBox = ref('');
-function setTee(teeString: string): string {
+function setTee(teeString: string): void {
   selectedTeeBox.value = teeString;
-  return (selectedTeeBox.value = teeString);
+  selectedTeeBox.value = teeString;
+}
+
+interface Course {
+  courseName: string;
+  courseId: number;
+  tees: string[];
 }
 </script>
 
@@ -53,7 +60,7 @@ function setTee(teeString: string): string {
 
   .tee-selector_modal {
     background-color: #fff;
-    border-radius: 15px;
+    @include rounded-corners;
     margin: 0 auto;
     max-height: 85%;
     overflow-y: auto;
@@ -66,19 +73,53 @@ function setTee(teeString: string): string {
     }
 
     .tee-selector_selection-container {
-      border-radius: 15px;
+      @include rounded-corners;
       list-style-type: none;
       padding-left: 0;
 
       li {
+        align-items: center;
         border: 1px solid #ddd;
         border-bottom: none;
+        display: flex;
+        font-size: 1.125rem;
+        justify-content: space-between;
         padding: 15px 8px;
         text-transform: capitalize;
 
+        .fa-golf-ball-tee {
+          filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.75));
+          font-size: 2rem;
+
+          &.black {
+            color: #333;
+          }
+
+          &.white {
+            color: #fff;
+          }
+
+          &.blue {
+            color: #00f;
+          }
+
+          &.red {
+            color: #f00;
+          }
+
+          &.yellow {
+            color: #ffee58;
+          }
+
+          &.gold {
+            color: #ffd54f;
+          }
+        }
+
         &.selected {
-          background-color: #888;
-          color: #fff;
+          background-color: #ccc;
+          color: #333;
+          font-weight: 700;
         }
 
         &:first-of-type {
@@ -110,8 +151,8 @@ function setTee(teeString: string): string {
       }
 
       &.save {
-        background-color: cadetblue;
-        border: 1px solid cadetblue;
+        background-color: $green;
+        border: 1px solid $green;
       }
 
       &.cancel {

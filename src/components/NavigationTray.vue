@@ -81,7 +81,7 @@ const { getUser } = storeToRefs(store);
       width: 100%;
 
       &.router-link-active {
-        background-color: cadetblue;
+        background-color: $green;
         color: #fff;
 
         .unicon {
@@ -90,7 +90,7 @@ const { getUser } = storeToRefs(store);
       }
 
       .unicon {
-        fill: cadetblue;
+        fill: $green;
         margin-right: 4px;
       }
     }

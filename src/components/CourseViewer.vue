@@ -7,27 +7,29 @@
         <div class="course-viewer_modal_button-group">
           <a :href="`tel:${props.courseInfo.phoneNumber}`" class="course-viewer_modal_action-button call">
             <font-awesome-icon :icon="['fas', 'phone-volume']"></font-awesome-icon>
-            {{ props.courseInfo.phoneNumber }}
+            {{ formattedPhoneNumber(props.courseInfo.phoneNumber) }}
           </a>
           <a :href="props.courseInfo.webpage" target="_blank" class="course-viewer_modal_action-button website">
             <font-awesome-icon :icon="['fas', 'desktop']"></font-awesome-icon>
             Website
           </a>
         </div>
-        <div class="course-viewer_modal_address-container">
-          <address>{{ props.courseInfo.address }}</address>
-          <address>{{ props.courseInfo.city }}, {{ props.courseInfo.state }} {{ props.courseInfo.zip }}</address>
+        <div class="course-viewer_modal_content-container">
+          <div class="course-viewer_modal_address-container">
+            <address>{{ props.courseInfo.address }}</address>
+            <address>{{ props.courseInfo.city }}, {{ props.courseInfo.state }} {{ props.courseInfo.zip }}</address>
+          </div>
+          <div class="course-viewer_modal_course-excerpt">
+            <p>{{ props.courseInfo.about }}</p>
+          </div>
+          <button
+            class="course-viewer_modal_select-button"
+            @click="$emit('setCourse', { courseId: props.courseInfo.id, courseName: props.courseInfo.name })"
+          >
+            Select Course
+          </button>
+          <button class="course-viewer_modal_close-button" @click="$emit('closeViewer')">Close Info</button>
         </div>
-        <div class="course-viewer_modal_course-excerpt">
-          <p>{{ props.courseInfo.about }}</p>
-        </div>
-        <button
-          class="course-viewer_modal_select-button"
-          @click="$emit('setCourse', { courseId: props.courseInfo.id, courseName: props.courseInfo.name })"
-        >
-          Select Course
-        </button>
-        <button class="course-viewer_modal_close-button" @click="$emit('closeViewer')">Close Info</button>
       </div>
     </div>
   </div>
@@ -35,10 +37,23 @@
 
 <script setup lang="ts">
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { computed } from 'vue';
 
 const props = defineProps<{
   courseInfo: CourseInfo;
 }>();
+
+function formattedPhoneNumber(phoneNumberString: string): string {
+  if (phoneNumberString.length === 10) {
+    const firstThree = phoneNumberString.slice(0, 3);
+    const middleTwo = phoneNumberString.slice(3, 6);
+    const lastFour = phoneNumberString.slice(6);
+    const convertedString = `(${firstThree}) ${middleTwo}-${lastFour}`;
+    return convertedString;
+  } else {
+    return phoneNumberString;
+  }
+}
 
 interface CourseInfo {
   id: number;
@@ -59,30 +74,35 @@ interface CourseInfo {
 <style lang="scss" scoped>
 .course-viewer {
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.75);
   bottom: 0;
   display: flex;
   left: 0;
-  padding: 5px;
+  padding: 15px;
   position: fixed;
   right: 0;
   top: 0;
 
   .course-viewer_modal {
     background-color: #fff;
-    border-radius: 15px;
-    max-height: 85%;
+    @include rounded-corners;
+    max-height: 100%;
     overflow-y: auto;
-    padding: 15px;
+    //padding: 15px;
+
+    .course-viewer_modal_content-container {
+      padding: 15px;
+    }
 
     .course-viewer_modal-title {
       font-size: 2rem;
-      margin: 0 0 10px;
+      margin: 0;
+      padding: 15px;
+      text-align: center;
     }
 
     .course-viewer_modal-hero {
       @include sm-shadow;
-      border-radius: 15px 15px 0 0;
       width: 100%;
     }
 
@@ -106,14 +126,12 @@ interface CourseInfo {
 
         &.call {
           background-color: #81c784;
-          border-bottom-left-radius: 15px;
           color: #333;
         }
 
         &.website {
           background-color: #90caf9;
           border-top-left-radius: 0;
-          border-bottom-right-radius: 15px;
           color: #333;
         }
       }
@@ -127,7 +145,7 @@ interface CourseInfo {
     .course-viewer_modal_close-button {
       border-width: 1px;
       border-style: solid;
-      border-radius: 15px;
+      @include rounded-corners;
       font-size: 1.125rem;
       margin-bottom: 10px;
       padding: 6px 0;
@@ -136,8 +154,8 @@ interface CourseInfo {
 
     .course-viewer_modal_select-button {
       @include sm-shadow;
-      background-color: cadetblue;
-      border-color: cadetblue;
+      background-color: $green;
+      border-color: $green;
       color: #fff;
     }
 

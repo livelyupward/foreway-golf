@@ -1,5 +1,9 @@
 <template>
   <h1 class="course-picker_title page-title">Round Setup</h1>
+  <span class="selected-course" v-if="roundConfig.courseId">
+    <span class="selected-course_tee-name">{{ roundConfig.tees ? roundConfig.tees : null }}</span> tees at
+    {{ roundConfig.courseName }}
+  </span>
   <section class="start-round step-by-step" :class="`${stageIndex === 0 ? 'active' : ''}`">
     <h2 class="start-round_container-title">Course</h2>
     <div class="start-round_container" v-show="stageIndex === 0">
@@ -29,20 +33,21 @@
     <h2 class="start-round_container-title">Group</h2>
     <div class="start-round_container" v-show="stageIndex === 2"></div>
   </section>
-  <span class="selected-course" v-if="roundConfig.courseId">{{ roundConfig.courseName }}</span>
+  <button>Start Round</button>
   <Teleport to="body">
     <CourseViewer
       v-if="courseViewerActivated"
       @set-course="selectCourse"
       @close-viewer="courseViewerActivated = false"
-      :course-info="courseInViewer"
+      :course-info="activeCourse"
     />
   </Teleport>
   <Teleport to="body">
     <TeeSelector
       v-if="teeSelectorActivated && roundConfig.courseName"
-      :course-info="roundConfig"
+      :course-info="activeCourse"
       @close-selector="closeModals"
+      @save-tee-and-close="setTeeFromModal"
     ></TeeSelector>
   </Teleport>
 </template>
@@ -57,6 +62,7 @@ import TeeSelector from '../components/TeeSelector.vue';
 /*
 StartRound component state
  */
+const activeCourse = ref();
 const stageIndex = ref(0);
 const courseViewerActivated = ref(false);
 const courseInViewer = ref();
@@ -65,22 +71,35 @@ const teeSelectorActivated = ref(false);
 function selectCourse(index: number): void {
   const courseSelected = courseInViewer.value || courses[index];
 
+  activeCourse.value = {
+    courseName: courseSelected.name,
+    courseId: courseSelected.id,
+    tees: courseSelected.tees,
+  };
   roundConfig.value = {
+    ...roundConfig.value,
     courseId: courseSelected.id,
     courseName: courseSelected.name,
-    tees: courseSelected.tees,
   };
   courseViewerActivated.value = false;
   teeSelectorActivated.value = true;
 }
 
 function activateCourseViewer(index: number) {
+  activeCourse.value = courses[index];
   courseInViewer.value = courses[index];
   courseViewerActivated.value = true;
 }
 
 function saveOptions() {
   ++stageIndex.value;
+}
+
+function setTeeFromModal(teeBox: string): void {
+  roundConfig.value.tees = teeBox;
+  saveOptions();
+  courseViewerActivated.value = false;
+  teeSelectorActivated.value = false;
 }
 
 function closeModals() {
@@ -98,29 +117,24 @@ const roundConfig: Ref<RoundSettings> = ref({
   tees: undefined,
 });
 
-interface RoundSettings {
+export interface RoundSettings {
   courseId?: number;
   courseName?: string;
-  tees?: string[];
-}
-
-export interface TeesSettings {
-  courseName?: string;
-  tees?: string[];
+  tees?: string | string[];
 }
 </script>
 
 <style lang="scss">
+.course-picker_title {
+  margin-bottom: 15px;
+}
+
 .step-by-step {
   background-color: #fff;
   border: 1px solid #ddd;
-  border-radius: 15px;
-  margin-bottom: 10px;
+  @include rounded-corners;
+  margin-bottom: 15px;
   padding: 10px;
-
-  &:last-of-type {
-    margin-bottom: 0;
-  }
 }
 
 .start-round {
@@ -180,11 +194,25 @@ export interface TeesSettings {
       }
 
       &.select {
-        background-color: #38853a;
-        border: 1px solid #38853a;
+        background-color: $green;
+        border: 1px solid $green;
         color: #fff;
       }
     }
   }
+}
+
+.selected-course {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  @include rounded-corners;
+  display: block;
+  font-weight: 700;
+  margin-bottom: 15px;
+  padding: 15px;
+  text-align: center;
+}
+.selected-course_tee-name {
+  text-transform: capitalize;
 }
 </style>

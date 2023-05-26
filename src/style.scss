@@ -28,9 +28,11 @@ p {
 }
 
 button {
-  border-radius: 15px;
+  border: 1px solid #ddd;
+  @include rounded-corners;
   font-family: "Noto Sans", sans-serif;
-  padding: 3px 12px;
+  font-size: 1rem;
+  padding: 6px 12px;
 }
 
 svg {
@@ -40,7 +42,7 @@ svg {
 
 input {
   border: 1px solid #bbb;
-  border-radius: 15px;
+  @include rounded-corners;
   padding: 3px 6px;
 }
 
