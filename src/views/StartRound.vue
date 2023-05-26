@@ -18,21 +18,21 @@
       </ul>
     </div>
   </section>
-  <section class="start-round step-by-step" :class="`${stageIndex === 1 ? 'active' : ''}`">
-    <h2 class="start-round_container-title">Options</h2>
-    <div class="start-round_container" v-show="stageIndex === 1">
-      <ul class="start-round_options-list">
-        <li class="start-round_options-item">Option 1</li>
-        <li class="start-round_options-item">Option 2</li>
-        <li class="start-round_options-item">Option 3</li>
-      </ul>
-      <button @click="saveOptions">Save options</button>
-    </div>
-  </section>
-  <section class="start-round step-by-step" :class="`${stageIndex === 2 ? 'active' : ''}`">
-    <h2 class="start-round_container-title">Group</h2>
-    <div class="start-round_container" v-show="stageIndex === 2"></div>
-  </section>
+  <!--  <section class="start-round step-by-step" :class="`${stageIndex === 1 ? 'active' : ''}`">-->
+  <!--    <h2 class="start-round_container-title">Options</h2>-->
+  <!--    <div class="start-round_container" v-show="stageIndex === 1">-->
+  <!--      <ul class="start-round_options-list">-->
+  <!--        <li class="start-round_options-item">Option 1</li>-->
+  <!--        <li class="start-round_options-item">Option 2</li>-->
+  <!--        <li class="start-round_options-item">Option 3</li>-->
+  <!--      </ul>-->
+  <!--      <button @click="saveOptions">Save options</button>-->
+  <!--    </div>-->
+  <!--  </section>-->
+  <!--  <section class="start-round step-by-step" :class="`${stageIndex === 2 ? 'active' : ''}`">-->
+  <!--    <h2 class="start-round_container-title">Group</h2>-->
+  <!--    <div class="start-round_container" v-show="stageIndex === 2"></div>-->
+  <!--  </section>-->
   <button>Start Round</button>
   <Teleport to="body">
     <CourseViewer
