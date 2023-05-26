@@ -10,6 +10,8 @@ export default async (db) => {
     phoneNumber: '6304831881',
     webpage: 'https://streamwoodoaksgolf.com/',
     courseImage: 'https://streamwoodoaksgolf.com/wp-content/uploads/2023/03/Sunshine-9th-tee-scaled.jpg',
+    about:
+      'In September of 1990, Streamwood Oaks Golf Course opened for business. Streamwood Oaks is a nine-hole golf course and features a 3,404-yard championship layout. Water comes into play on all nine holes and will challenge even the most experienced player. The golf course is owned by the Village of Streamwood and operated and managed by Links Management.',
   });
   await db.holes.create({
     number: 1,

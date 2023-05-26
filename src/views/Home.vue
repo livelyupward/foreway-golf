@@ -1,7 +1,6 @@
 <template>
   <section id="homepage">
-    <!--  <section id="homepage" v-if="getUser">-->
-    <ScoreForm />
+    <!--      <section id="homepage" v-if="getUser">-->
   </section>
 </template>
 

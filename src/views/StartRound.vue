@@ -1,249 +1,189 @@
 <template>
-  <h1 class="course-picker_title">Round Setup</h1>
-  <n-form>
-    <n-form-item class="course-picker_input-component" label="Course" :show-feedback="false">
-      <n-select v-model:value="courseIndexFromSelect" :options="courseOptions" v-if="courseResponse" />
-    </n-form-item>
-    <n-form-item
-      v-if="courseIndexFromSelect !== undefined"
-      class="course-picker_input-component"
-      label="Tees"
-      :show-feedback="false"
-    >
-      <n-select v-model:value="teesToPlay" :options="teesOptions" />
-    </n-form-item>
-  </n-form>
-  <hr />
-  <div class="course-picker_course-container" v-if="courseIndexFromSelect !== undefined">
-    <div class="course-picker_course-info" v-if="selectedCourse">
-      <a class="course-picker_course-link" :href="selectedCourse.webpage" target="_blank">
-        <h3 class="course-picker_course-name">{{ selectedCourse.name }}</h3>
-        <WebsiteIcon />
-      </a>
-      <div class="course-picker_hero">
-        <img class="course-picker_hero-image" :src="selectedCourse.courseImage" alt="" />
-      </div>
-      <div class="course-picker_actions">
-        <n-button class="course-picker_actions-start" v-if="selectedCourse" @click="showModal = true" type="info">
-          <RoundIcon class="course-picker_actions-icon" />
-          Start Round
-        </n-button>
-        <n-button class="course-picker_actions-call" tag="a" :href="`tel:${selectedCourse.phoneNumber}`" type="primary">
-          <PhoneIcon class="course-picker_actions-icon" />
-          Call
-        </n-button>
-      </div>
-      <address>{{ selectedCourse.address }}</address>
-      <address>{{ selectedCourse.city }}, {{ selectedCourse.state }} {{ selectedCourse.zip }}</address>
-      <p>Holes: {{ selectedCourse.holeCount }}</p>
+  <h1 class="course-picker_title page-title">Round Setup</h1>
+  <section class="start-round step-by-step" :class="`${stageIndex === 0 ? 'active' : ''}`">
+    <h2 class="start-round_container-title">Course</h2>
+    <div class="start-round_container" v-show="stageIndex === 0">
+      <ul class="start-round_course-list">
+        <li v-for="(course, index) in courses" class="start-round_course-item">
+          <span class="start-round_course-item_name">{{ course.name }}</span>
+          <button class="start-round_course-item_button info" @click="activateCourseViewer(index)">
+            <font-awesome-icon :icon="['fas', 'circle-question']"></font-awesome-icon>
+          </button>
+          <button class="start-round_course-item_button select" @click="selectCourse(index)">Select</button>
+        </li>
+      </ul>
     </div>
-    <n-modal v-model:show="showModal" v-if="selectedCourse !== undefined">
-      <n-card
-        class="start-modal-card"
-        style="width: 600px"
-        :title="`${selectedCourse.name}`"
-        :bordered="false"
-        role="dialog"
-        aria-modal="true"
-      >
-        Start a round at {{ selectedCourse.name }}?
-        <template #footer>
-          <n-button @click="showModal = false" type="error">Cancel</n-button>
-          <n-button @click="startNewRound" type="success">Start</n-button>
-        </template>
-      </n-card>
-    </n-modal>
-  </div>
+  </section>
+  <section class="start-round step-by-step" :class="`${stageIndex === 1 ? 'active' : ''}`">
+    <h2 class="start-round_container-title">Options</h2>
+    <div class="start-round_container" v-show="stageIndex === 1">
+      <ul class="start-round_options-list">
+        <li class="start-round_options-item">Option 1</li>
+        <li class="start-round_options-item">Option 2</li>
+        <li class="start-round_options-item">Option 3</li>
+      </ul>
+      <button @click="saveOptions">Save options</button>
+    </div>
+  </section>
+  <section class="start-round step-by-step" :class="`${stageIndex === 2 ? 'active' : ''}`">
+    <h2 class="start-round_container-title">Group</h2>
+    <div class="start-round_container" v-show="stageIndex === 2"></div>
+  </section>
+  <span class="selected-course" v-if="roundConfig.courseId">{{ roundConfig.courseName }}</span>
+  <Teleport to="body">
+    <CourseViewer
+      v-if="courseViewerActivated"
+      @set-course="selectCourse"
+      @close-viewer="courseViewerActivated = false"
+      :course-info="courseInViewer"
+    />
+  </Teleport>
+  <Teleport to="body">
+    <TeeSelector
+      v-if="teeSelectorActivated && roundConfig.courseName"
+      :course-info="roundConfig"
+      @close-selector="closeModals"
+    ></TeeSelector>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { computed, ComputedRef, Ref, ref } from 'vue';
-import { NForm, NSelect, NFormItem, NButton, NModal, NCard, useMessage, SelectOption } from 'naive-ui';
-import { CallOutline as PhoneIcon } from '@vicons/ionicons5';
-import { ScreenShare as WebsiteIcon, Golf as RoundIcon } from '@vicons/tabler';
-import type { SelectMixedOption } from 'naive-ui/es/select/src/interface';
-import { mainStore } from '../store';
-import { storeToRefs } from 'pinia';
-import isDebug from '../plugins/debugConsole';
+import { Ref, ref } from 'vue';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import courses from '../assets/courses.json';
+import CourseViewer from '../components/CourseViewer.vue';
+import TeeSelector from '../components/TeeSelector.vue';
 
-const store = mainStore();
-const { createNewRound, goToRound } = store;
-const { getUser } = storeToRefs(store);
-const message = useMessage();
+/*
+StartRound component state
+ */
+const stageIndex = ref(0);
+const courseViewerActivated = ref(false);
+const courseInViewer = ref();
+const teeSelectorActivated = ref(false);
 
-const courses: Response = await fetch(`/api/courses`);
-const courseResponse: CourseInfo[] = await courses.json();
+function selectCourse(index: number): void {
+  const courseSelected = courseInViewer.value || courses[index];
 
-const showModal: Ref<boolean> = ref(false);
-const courseIndexFromSelect: Ref<number | undefined> = ref();
-const teesToPlay: Ref<string | undefined> = ref(undefined);
-
-const selectedCourse: ComputedRef<CourseInfo | undefined> = computed(() => {
-  return courseIndexFromSelect.value !== undefined ? courseResponse[courseIndexFromSelect.value] : undefined;
-});
-
-const teesForSelectedCourse = computed(() => {
-  if (selectedCourse.value !== undefined) return selectedCourse.value.tees;
-});
-
-const courseOptions = courseResponse.map((courseItem, index) => {
-  return {
-    label: courseItem.name,
-    value: index,
+  roundConfig.value = {
+    courseId: courseSelected.id,
+    courseName: courseSelected.name,
+    tees: courseSelected.tees,
   };
-});
-
-const teesOptions: ComputedRef<SelectMixedOption[]> = computed(() => {
-  if (teesForSelectedCourse.value !== undefined) {
-    if (teesForSelectedCourse.value.includes('[')) {
-      const teeStringToArray = JSON.parse(teesForSelectedCourse.value);
-      let formattedTeeOptions: SelectMixedOption[] = [];
-
-      for (let i = 0; i < teeStringToArray.length; i++) {
-        const teeString: string = teeStringToArray[i];
-
-        formattedTeeOptions.push({
-          label: teeString,
-          value: teeString,
-        });
-      }
-
-      return formattedTeeOptions;
-    } else {
-      return [{ value: teesForSelectedCourse.value, label: teesForSelectedCourse.value }];
-    }
-  } else {
-    return [];
-  }
-});
-
-async function startNewRound() {
-  const startRound = await createNewRound({
-    // @ts-ignore
-    courseId: selectedCourse.value ? selectedCourse.value.id : undefined,
-    userId: getUser.value ? getUser.value.id : null,
-    tees: teesToPlay.value ? [teesToPlay.value] : undefined,
-  });
-  isDebug() && console.log('res: ', startRound);
-  message.success('Round created!');
-  return await goToRound(startRound.round.id);
+  courseViewerActivated.value = false;
+  teeSelectorActivated.value = true;
 }
 
-interface CourseInfo {
-  id: number;
-  name: string;
-  city: string;
-  address: string;
-  state: string;
-  zip: string;
-  holeCount: number;
-  tees: string;
-  phoneNumber: string;
-  webpage: string;
-  courseImage: string;
-  createdAt: string;
-  updatedAt: string;
+function activateCourseViewer(index: number) {
+  courseInViewer.value = courses[index];
+  courseViewerActivated.value = true;
+}
+
+function saveOptions() {
+  ++stageIndex.value;
+}
+
+function closeModals() {
+  roundConfig.value = { courseId: undefined, courseName: undefined };
+  courseViewerActivated.value = false;
+  teeSelectorActivated.value = false;
+}
+
+/*
+Info from course needed to start round
+ */
+const roundConfig: Ref<RoundSettings> = ref({
+  courseId: undefined,
+  courseName: undefined,
+  tees: undefined,
+});
+
+interface RoundSettings {
+  courseId?: number;
+  courseName?: string;
+  tees?: string[];
+}
+
+export interface TeesSettings {
+  courseName?: string;
+  tees?: string[];
 }
 </script>
 
 <style lang="scss">
-.course-picker_title {
-  label {
-    font-size: 2rem;
-  }
-}
-
-.course-picker_course-link {
-  align-items: center;
-  color: #18a058;
-  display: flex;
-  font-size: 1.25rem;
-
-  h3 {
-    margin: 0.5rem 0 0.1rem;
-  }
-
-  svg {
-    margin: 0.5rem 0 0.1rem 10px;
-    width: 20px;
-  }
-}
-
-.course-picker_hero {
-  img {
-    aspect-ratio: 16/5;
-    object-fit: cover;
-    object-position: bottom;
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
-.course-picker_actions {
-  display: flex;
+.step-by-step {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 15px;
   margin-bottom: 10px;
+  padding: 10px;
 
-  & > * {
-    flex: 1 1 50%;
+  &:last-of-type {
+    margin-bottom: 0;
   }
+}
 
-  .course-picker_actions-start {
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .course-picker_actions-call {
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
+.start-round {
+  color: #aaa;
 
-  .course-picker_actions-start,
-  .course-picker_actions-call {
-    font-size: 1rem;
-    height: 3rem;
+  .start-round_container-title {
+    font-size: 1.75rem;
+    margin: 0;
 
-    span {
-      padding: 1rem;
+    & ~ .start-round_container.active {
+      margin-top: 10px;
     }
   }
 
-  @media screen and (max-width: 900px) {
-    justify-content: space-between;
+  &.active {
+    color: inherit;
   }
-}
 
-.course-picker_actions-icon {
-  margin-right: 5px;
-}
+  .start-round_course-list {
+    list-style-type: none;
+    margin-bottom: 0;
+    padding-left: 0;
 
-.course-picker_label {
-  font-size: 18px;
-}
+    .start-round_course-item {
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      font-size: 1.125rem;
+      justify-content: space-between;
+      padding: 0 0 10px;
+      margin: 10px 0 0;
 
-#course-picker {
-  border: 1px solid #bbb;
-  border-radius: 4px;
-  font-family: v-sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol';
-  font-size: 18px;
-  margin: 10px 0;
-  padding: 4px;
-  width: 100%;
+      &:last-of-type {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
 
-  option {
-    border-radius: 0;
-  }
-}
+      .start-round_course-item_button {
+        &:first-of-type {
+          margin-left: auto;
+          margin-right: 10px;
+        }
 
-.start-modal-card {
-  font-size: 18px;
-
-  .n-button {
-    .n-button__content {
-      font-size: 18px;
+        &:last-of-type {
+          @include sm-shadow;
+        }
+      }
     }
 
-    &:first-of-type {
-      margin-right: 15px;
+    .start-round_course-item_button {
+      font-size: 1rem;
+
+      &.info {
+        background-color: rgba(0, 0, 0, 0);
+        border: none;
+        color: #2196f3;
+      }
+
+      &.select {
+        background-color: #38853a;
+        border: 1px solid #38853a;
+        color: #fff;
+      }
     }
   }
 }

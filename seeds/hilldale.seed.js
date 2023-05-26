@@ -10,6 +10,8 @@ export default async (db) => {
     phoneNumber: '8473101100',
     webpage: 'https://www.hilldalegolf.com/',
     courseImage: 'https://www.pebblewoodgolf.com/golfbuffalohill/wp-content/uploads/sites/8067/2014/12/pg13.jpg?w=837',
+    about:
+      'Hilldale Golf Club was built in 1970 on land that was once a sportsman’s club and owned by the famous retailer Marshall Field. Hilldale is a par 71 course that offers challenges to golfers of any kind. Despite your skill, you might use all the clubs in your bag. Water comes into play on 13 holes and be wary of the O.B. stakes. Precise shot-making and proper club selection is required. Some holes at Hilldale Golf Course favor a fairway wood or long iron from the tee.',
   });
   await db.holes.create({
     number: 1,

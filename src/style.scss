@@ -19,7 +19,18 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: "Lato", sans-serif;
   line-height: 1;
+}
+
+p {
+  line-height: 1.5;
+}
+
+button {
+  border-radius: 15px;
+  font-family: "Noto Sans", sans-serif;
+  padding: 3px 12px;
 }
 
 svg {
@@ -29,10 +40,15 @@ svg {
 
 input {
   border: 1px solid #bbb;
-  border-radius: 4px;
+  border-radius: 15px;
   padding: 3px 6px;
 }
 
 .center-content {
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.5rem;
   text-align: center;
 }
