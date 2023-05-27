@@ -36,7 +36,12 @@
   <!--    <h2 class="start-round_container-title">Group</h2>-->
   <!--    <div class="start-round_container" v-show="stageIndex === 2"></div>-->
   <!--  </section>-->
-  <button>Start Round</button>
+  <button
+    v-if="getUser && roundConfig.courseId && roundConfig.courseName"
+    @click="submitNewRoundRequest({ ...roundConfig, userId: getUser.id })"
+  >
+    Start Round
+  </button>
   <Teleport to="body">
     <CourseViewer
       v-if="courseViewerActivated"
@@ -57,10 +62,20 @@
 
 <script setup lang="ts">
 import { Ref, ref } from 'vue';
+import { mainStore } from '../store';
+import { useRoute, useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { type RoundSettings } from '../store';
 import courses from '../assets/courses.json';
 import CourseViewer from '../components/CourseViewer.vue';
 import TeeSelector from '../components/TeeSelector.vue';
+
+const router = useRouter();
+const route = useRoute();
+const store = mainStore();
+const { createNewRound } = store;
+const { getUser } = storeToRefs(store);
 
 /*
 StartRound component state
@@ -111,6 +126,14 @@ function closeModals() {
   teeSelectorActivated.value = false;
 }
 
+async function submitNewRoundRequest(roundConfig: RoundSettings) {
+  const newRoundResponse = await createNewRound(roundConfig);
+
+  if (newRoundResponse.errors) return 'errors were found';
+
+  return router.push(`/rounds/${newRoundResponse.round.id}`);
+}
+
 /*
 Info from course needed to start round
  */
@@ -119,12 +142,6 @@ const roundConfig: Ref<RoundSettings> = ref({
   courseName: undefined,
   tees: undefined,
 });
-
-export interface RoundSettings {
-  courseId?: number;
-  courseName?: string;
-  tees?: string | string[];
-}
 </script>
 
 <style lang="scss">

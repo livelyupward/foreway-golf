@@ -153,16 +153,11 @@ interface CourseInfo {
     }
 
     .course-viewer_modal_select-button {
-      @include sm-shadow;
-      background-color: $green;
-      border-color: $green;
-      color: #fff;
+      @include green-btn;
     }
 
     .course-viewer_modal_close-button {
-      background-color: #d32f2f;
-      border-color: #d32f2f;
-      color: #fff;
+      @include red-btn;
     }
   }
 }

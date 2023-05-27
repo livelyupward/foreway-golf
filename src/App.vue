@@ -11,16 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
-import { mainStore } from './store';
 import NavigationTray from './components/NavigationTray.vue';
-
-const store = mainStore();
-const { authAndGetUserFromDB } = store;
-
-// onBeforeMount(async () => {
-//   await authAndGetUserFromDB();
-// });
 </script>
 
 <style lang="scss">
@@ -29,6 +20,7 @@ const { authAndGetUserFromDB } = store;
 }
 
 #main-panel {
+  @include nav-spacer;
   min-height: calc(100vh - 70px); // 50px for tray height and 20 for top and bottom padding
   padding: 30px;
   position: relative;

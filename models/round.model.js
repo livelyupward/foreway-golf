@@ -14,18 +14,8 @@ export default (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         required: true,
       },
-<<<<<<< HEAD
-      closed: {
-        type: Sequelize.BOOLEAN,
-      },
-      groupId: {
-        type: Sequelize.INTEGER,
-        required: false,
-      },
-=======
       groupId: Sequelize.INTEGER,
       closed: Sequelize.BOOLEAN,
->>>>>>> release/redesign-UI
     },
     { timestamps: true }
   );

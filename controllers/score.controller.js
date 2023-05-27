@@ -18,6 +18,8 @@ export const create = (req, res) => {
     putts: req.body.putts,
     gir: req.body.gir,
     fairway: req.body.fairway,
+    hazard: req.body.hazard,
+    penalty: req.body.penalty,
     roundId: req.body.roundId,
     holeId: req.body.holeId,
     userId: req.body.userId,

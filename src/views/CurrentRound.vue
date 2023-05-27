@@ -4,41 +4,33 @@
     <div class="current-round_info">
       <p class="current-round_info-date">Date: {{ friendlyCreatedDate }}</p>
     </div>
-    <CourseScorecard :holes="course.holes" />
-    <n-button class="current-round_end-round" type="error" tertiary @click="endRound">Close Round</n-button>
-    <n-modal v-model:show="computedScoreModal" @update:show="toggleScoreModal">
-      <n-card
-        style="width: 600px"
-        :title="`Hole ${currentHoleInScoreModal}`"
-        :bordered="false"
-        size="huge"
-        role="dialog"
-        aria-modal="true"
-      >
-        <template #header-extra>
-          <CloseIcon @click="closeScoreModal" />
-        </template>
-        <ScoreForm :course="course" :selected-hole="currentHoleInScoreModal" />
-      </n-card>
-    </n-modal>
+    <CourseScorecard @click-score="openModalForHole" :holes="course.holes" />
+    <button class="current-round_end-round" @click="endRound">Close Round</button>
+    <Teleport to="body">
+      <ScoreForm
+        v-if="scoreFormOpen && holeNumberForScoreForm"
+        :course="course"
+        :selected-hole="holeNumberForScoreForm"
+        @close-form="scoreFormOpen = false"
+      />
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { mainStore } from '../store';
-import type { Course } from '../store';
-import { NButton, NModal, NCard, useMessage } from 'naive-ui';
-import { CloseSharp as CloseIcon } from '@vicons/ionicons5';
-import CourseScorecard from '../components/CourseScorecard.vue';
-import ScoreForm from '../components/ScoreForm.vue';
+import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import isDebug from '../plugins/debugConsole';
-import { computed } from 'vue';
+import CourseScorecard from '../components/CourseScorecard.vue';
+import ScoreForm from '../components/ScoreForm.vue';
 
 const store = mainStore();
-const message = useMessage();
-const { toggleScoreModal, closeScoreModal, closeRound, getCourse } = store;
-const { getUser, getCurrentRound, computedScoreModal, currentHoleInScoreModal } = storeToRefs(store);
+const { closeScoreModal, closeRound, getCourse } = store;
+const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store);
+
+const scoreFormOpen = ref(false);
+const holeNumberForScoreForm = ref();
 
 isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
@@ -57,11 +49,17 @@ const friendlyCreatedDate = computed(() => {
 async function endRound() {
   try {
     await closeRound();
-    message.success('Round closed successfully');
+    // message.success('Round closed successfully');
   } catch (error) {
     console.error(error);
-    message.error('Round could not be closed -- please try again');
+    // message.error('Round could not be closed -- please try again');
   }
+}
+
+function openModalForHole(holeNumberAndId: object) {
+  console.log('passing hole number ', holeNumberAndId);
+  holeNumberForScoreForm.value = holeNumberAndId;
+  scoreFormOpen.value = true;
 }
 </script>
 
@@ -143,6 +141,7 @@ async function endRound() {
 }
 
 .current-round_end-round {
+  @include red-btn;
   display: block;
   margin-top: 15px;
   text-align: center;
@@ -151,5 +150,17 @@ async function endRound() {
   span {
     justify-content: center;
   }
+}
+
+.score-form_container {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.75);
+  bottom: 0;
+  display: flex;
+  left: 0;
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
 }
 </style>

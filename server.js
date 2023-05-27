@@ -43,11 +43,11 @@ app.use(Express.static('/public'));
 db.sequelize
   .sync()
   .then(async () => {
-    await seedGCI(db);
-    await seedStreamwoodOaks(db);
-    await seedSettlersHill(db);
-    await seedDave(db);
-    await seedHilldale(db);
+    // await seedGCI(db);
+    // await seedStreamwoodOaks(db);
+    // await seedSettlersHill(db);
+    // await seedDave(db);
+    // await seedHilldale(db);
     console.log('Seeds run successfully');
   })
   .then(() => {

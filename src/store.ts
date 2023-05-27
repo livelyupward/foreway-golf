@@ -5,8 +5,8 @@ import isDebug from './plugins/debugConsole';
 
 export const mainStore = defineStore('main', () => {
   const currentRound: Ref<Round> = ref({
-    courseId: null,
-    userId: null,
+    courseId: undefined,
+    userId: undefined,
     closed: false,
     scores: [],
   });
@@ -54,18 +54,23 @@ export const mainStore = defineStore('main', () => {
     return (currentHoleInScoreModal.value = holeNumberToSet);
   }
 
-  async function createNewRound(courseInfoObject: Course) {
+  async function createNewRound(courseInfoObject: RoundSettings) {
     const newRoundRequest: Response = await fetch(`/api/round/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(courseInfoObject),
+      body: JSON.stringify({
+        courseId: courseInfoObject.courseId,
+        userId: getUser.value !== null ? getUser.value.id : null,
+        groupId: courseInfoObject.groupId ? courseInfoObject.groupId : null,
+        tees: courseInfoObject.tees,
+      }),
     });
 
     const newRoundResponse = await newRoundRequest.json();
     newRoundResponse.scores = [];
-    currentCourse.value = courseInfoObject;
+    // currentCourse.value = courseInfoObject;
     currentRound.value = newRoundResponse;
 
     const userRoundRequest: Response = await fetch(
@@ -87,14 +92,24 @@ export const mainStore = defineStore('main', () => {
     return await router.push(`/rounds/${roundId}`);
   }
 
-  async function submitScore(payload: Score) {
+  async function submitScore(payload: ScoreForSubmit) {
     try {
       const newScoreRequest = await fetch(`/api/scores/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          strokes: payload.strokes,
+          putts: payload.putts,
+          gir: payload.toggles.greenInReg,
+          fairway: payload.toggles.fairwayHit,
+          hazard: payload.toggles.hazard,
+          penalty: payload.toggles.penalty,
+          roundId: payload.roundId,
+          holeId: payload.holeId,
+          userId: payload.userId,
+        }),
       });
 
       const newSavedScore = await newScoreRequest.json();
@@ -256,8 +271,8 @@ export const mainStore = defineStore('main', () => {
 
 export interface Round {
   id?: number;
-  courseId: number | null;
-  userId: number | null;
+  courseId?: number;
+  userId?: number;
   closed: boolean;
   scores: Array<Score>;
   holes?: Array<Hole>;
@@ -265,8 +280,8 @@ export interface Round {
 
 export interface Score {
   id?: number;
-  strokes: number | null;
-  putts: number | null;
+  strokes?: number;
+  putts?: number;
   gir: boolean;
   fairway: boolean;
   roundId?: number;
@@ -274,10 +289,10 @@ export interface Score {
   userId?: number;
 }
 
-interface EditedScore {
+interface EditedScore extends Score {
   id: number;
-  strokes: number;
-  putts: number | null;
+  strokes?: number;
+  putts?: number;
   gir: boolean;
   fairway: boolean;
   roundId: number;
@@ -319,4 +334,29 @@ export interface Course {
   holes: Hole[];
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface RoundSettings {
+  courseId?: number;
+  courseName?: string;
+  groupId?: number;
+  tees?: string | string[];
+  userId?: number;
+}
+
+export interface ScoreForSubmit {
+  strokes?: number;
+  putts?: number;
+  toggles: Toggles;
+  penaltyStrokes?: number;
+  roundId?: number;
+  holeId?: number;
+  userId?: number;
+}
+
+export interface Toggles {
+  greenInReg: boolean;
+  fairwayHit: boolean;
+  hazard: boolean;
+  penalty: boolean;
 }

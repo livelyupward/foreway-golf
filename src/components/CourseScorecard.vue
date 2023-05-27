@@ -1,7 +1,7 @@
 <template>
   <div id="course-scorecard" v-if="holes?.length && getCurrentCourse">
     <div class="scorecard-table_container">
-      <n-table class="scorecard-table front" :bordered="true" :single-line="false" size="large">
+      <table class="scorecard-table">
         <thead>
           <tr class="scorecard-table_row heading">
             <th class="scorecard-table_row-header">Hole</th>
@@ -16,7 +16,7 @@
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
             <td
-              @click="activateScoreFormFromScorecard(hole.number)"
+              @click="activateScoreFormFromScorecard({ holdNumber: hole.number, holeId: hole.id })"
               class="scorecard-table_row-item score"
               :class="strokeCalculate(getCurrentRound.scores[index]?.strokes, hole.par)"
             >
@@ -29,6 +29,7 @@
             <td colspan="3">Front 9 Total</td>
             <td>{{ frontNineScoreTotal }}</td>
           </tr>
+
           <tr
             v-if="getCurrentCourse.holeCount > 9"
             v-for="(hole, index) in props.holes.slice(9, 18)"
@@ -48,21 +49,20 @@
             </td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9">
-            <td colspan="3">Back 9 Total</td>
+            <td class="scorecard-table_row-total" colspan="3">Back 9 Total</td>
             <td>{{ backNineScoreTotal }}</td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9">
-            <td colspan="3">Round Total</td>
+            <td class="scorecard-table_row-total" colspan="3">Round Total</td>
             <td>{{ roundTotal }}</td>
           </tr>
         </tbody>
-      </n-table>
+      </table>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { NTable, NButton } from 'naive-ui';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import type { Hole } from '../store';
@@ -73,14 +73,15 @@ const { openScoreModal, setHoleInScoreModal } = store;
 const { getCurrentRound, getCurrentCourse } = storeToRefs(store);
 
 const props = defineProps<HoleProp>();
+const emit = defineEmits(['clickScore']);
 
 interface HoleProp {
   holes: Array<Hole>;
 }
 
-async function activateScoreFormFromScorecard(holeNumber: number): Promise<void> {
-  await setHoleInScoreModal(holeNumber);
-  await openScoreModal();
+async function activateScoreFormFromScorecard(holeNumberAndId: object): Promise<void> {
+  // await setHoleInScoreModal(holeNumber);
+  emit('clickScore', holeNumberAndId);
 }
 
 const strokeCalculate = (score: number | null, par: number) => {
@@ -132,6 +133,40 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
 </script>
 
 <style lang="scss">
+.scorecard-table {
+  @include rounded-corners;
+  border-spacing: 0;
+  width: 100%;
+
+  th {
+    border: 1px solid #bbb;
+    border-right: none;
+    border-bottom: none;
+
+    &:last-of-type:not(:only-of-type) {
+      border-right: 1px solid #bbb;
+    }
+  }
+
+  td {
+    border: 1px solid #bbb;
+    padding: 5px 0;
+
+    &.scorecard-table_row-total[colspan] {
+      border-bottom: 1px solid #bbb;
+    }
+
+    &.score {
+      border-bottom: none;
+    }
+
+    &:not(:last-of-type) {
+      border-bottom: none;
+      border-right: none;
+    }
+  }
+}
+
 .scorecard-table_container {
   overflow-x: auto;
 

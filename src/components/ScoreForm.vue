@@ -1,71 +1,90 @@
 <template>
-  <form @submit.prevent>
-    <h2 class="score-form_hole page-title">Hole 1</h2>
-    <hr />
-    <div class="score-form_hole-info"></div>
-    <div class="form-group-inline full-width">
-      <label class="form-label strokes" for="score">Strokes</label>
-      <input class="form-input center-content" id="score" type="tel" v-model="scoreValues.strokes" required />
-    </div>
-    <div class="form-group-inline full-width">
-      <label class="form-label putts" for="putts">Putts</label>
-      <input class="form-input center-content" id="putts" type="tel" v-model="scoreValues.putts" />
-    </div>
+  <div class="score-form_container">
+    <div class="score-form_modal">
+      <form class="score-form_form" @submit.prevent>
+        <h2 class="score-form_hole page-title">Hole {{ selectedHole.holeNumber }}</h2>
+        <hr />
+        <div class="score-form_hole-info"></div>
+        <div class="form-group-inline full-width">
+          <label class="form-label strokes" for="score">Strokes</label>
+          <input
+            class="form-input center-content"
+            id="score"
+            type="tel"
+            v-model.number="scoreValues.strokes"
+            required
+          />
+        </div>
+        <div class="form-group-inline full-width">
+          <label class="form-label putts" for="putts">Putts</label>
+          <input class="form-input center-content" id="putts" type="tel" v-model.number="scoreValues.putts" />
+        </div>
 
-    <div class="score-form_toggle-button-group">
-      <div
-        class="score-form_toggle-button gir"
-        :class="`${scoreValues.toggles.greenInReg ? 'checked' : ''}`"
-        @click="toggleValue('greenInReg')"
-      >
-        <font-awesome-icon :icon="['fas', 'flag']" />
-        <span class="score-form_toggle-button_text">GIR</span>
-      </div>
-      <div
-        class="score-form_toggle-button fh"
-        :class="`${scoreValues.toggles.fairwayHit ? 'checked' : ''}`"
-        @click="toggleValue('fairwayHit')"
-      >
-        <font-awesome-icon :icon="['far', 'circle-check']" />
-        <span class="score-form_toggle-button_text">Fairway</span>
-      </div>
-      <div
-        class="score-form_toggle-button hazard"
-        :class="`${scoreValues.toggles.hazard ? 'checked' : ''}`"
-        @click="toggleValue('hazard')"
-      >
-        <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
-        <span class="score-form_toggle-button_text">Hazard</span>
-      </div>
-      <div
-        class="score-form_toggle-button penalty"
-        :class="`${scoreValues.toggles.penalty ? 'checked' : ''}`"
-        @click="toggleValue('penalty')"
-      >
-        <font-awesome-icon :icon="['fas', 'user-minus']" />
-        <span class="score-form_toggle-button_text">Penalty</span>
-      </div>
+        <div class="score-form_toggle-button-group">
+          <div
+            class="score-form_toggle-button gir"
+            :class="`${scoreValues.toggles.greenInReg ? 'checked' : ''}`"
+            @click="toggleValue('greenInReg')"
+          >
+            <font-awesome-icon :icon="['fas', 'flag']" />
+            <span class="score-form_toggle-button_text">GIR</span>
+          </div>
+          <div
+            class="score-form_toggle-button fh"
+            :class="`${scoreValues.toggles.fairwayHit ? 'checked' : ''}`"
+            @click="toggleValue('fairwayHit')"
+          >
+            <font-awesome-icon :icon="['far', 'circle-check']" />
+            <span class="score-form_toggle-button_text">Fairway</span>
+          </div>
+          <div
+            class="score-form_toggle-button hazard"
+            :class="`${scoreValues.toggles.hazard ? 'checked' : ''}`"
+            @click="toggleValue('hazard')"
+          >
+            <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
+            <span class="score-form_toggle-button_text">Hazard</span>
+          </div>
+          <div
+            class="score-form_toggle-button penalty"
+            :class="`${scoreValues.toggles.penalty ? 'checked' : ''}`"
+            @click="toggleValue('penalty')"
+          >
+            <font-awesome-icon :icon="['fas', 'user-minus']" />
+            <span class="score-form_toggle-button_text">Penalty</span>
+          </div>
+        </div>
+
+        <Transition name="bounce">
+          <div class="form-group-inline full-width" v-show="scoreValues.toggles.penalty">
+            <label class="form-label penalty" for="penalty">Penalty Strokes</label>
+            <input class="form-input center-content" id="penalty" type="tel" v-model="scoreValues.penaltyStrokes" />
+          </div>
+        </Transition>
+
+        <button @click="saveScoreForHole" class="score-form_submit-button">Save Score</button>
+        <button @click="$emit('closeForm')" class="score-form_cancel-button">Cancel</button>
+      </form>
     </div>
-
-    <Transition name="bounce">
-      <div class="form-group-inline full-width" v-show="scoreValues.toggles.penalty">
-        <label class="form-label penalty" for="penalty">Penalty Strokes</label>
-        <input class="form-input center-content" id="penalty" type="tel" v-model="scoreValues.penaltyStrokes" />
-      </div>
-    </Transition>
-
-    <button class="score-form_submit-button">Save Score</button>
-    <button class="score-form_cancel-button">Cancel</button>
-  </form>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
+import { mainStore } from '../store';
+import { type ScoreForSubmit } from '../store';
+import { storeToRefs } from 'pinia';
 
-const scoreValues: Ref<object> = ref({
+const store = mainStore();
+const { submitScore } = store;
+const { getUser, getCurrentRound } = storeToRefs(store);
+const props = defineProps({
+  selectedHole: Object,
+});
+
+const scoreValues: Ref<ScoreForSubmit> = ref({
   strokes: undefined,
   putts: undefined,
-  // countPutts: false,
   toggles: {
     greenInReg: false,
     fairwayHit: false,
@@ -79,11 +98,34 @@ function toggleValue(type: string): boolean {
   // @ts-ignore
   return (scoreValues.value.toggles[type] = !scoreValues.value.toggles[type]);
 }
+
+async function saveScoreForHole() {
+  await submitScore({
+    strokes: scoreValues.value.strokes,
+    putts: scoreValues.value.putts,
+    toggles: {
+      greenInReg: scoreValues.value.toggles.greenInReg,
+      fairwayHit: scoreValues.value.toggles.fairwayHit,
+      hazard: scoreValues.value.toggles.hazard,
+      penalty: scoreValues.value.toggles.penalty,
+    },
+    roundId: getCurrentRound.value.id,
+    holeId: props.selectedHole ? props.selectedHole.holeId : undefined,
+    userId: getUser.value ? getUser.value.id : undefined,
+  });
+  console.log('saved score for the hole');
+}
 </script>
 
 <style lang="scss">
 .score-form_hole {
   margin: 0 0 1rem;
+}
+
+.score-form_modal {
+  @include rounded-corners;
+  background-color: #fff;
+  padding: 10px;
 }
 
 .hole-score_form-card {
@@ -108,7 +150,7 @@ function toggleValue(type: string): boolean {
 
 .form-input,
 .form-label {
-  font-size: 32px;
+  font-size: 1.875rem;
 }
 
 .form-group-inline {
@@ -129,7 +171,7 @@ function toggleValue(type: string): boolean {
 
     .form-input,
     .form-label {
-      font-size: 36px;
+      font-size: 1.75rem;
       font-weight: 700;
     }
 
@@ -160,7 +202,7 @@ function toggleValue(type: string): boolean {
   align-items: center;
   display: flex;
   flex-direction: column;
-  font-size: 32px;
+  font-size: 1.75rem;
   justify-content: center;
   min-height: 100px;
   transition: all 250ms ease-in;
@@ -192,22 +234,24 @@ function toggleValue(type: string): boolean {
 
 .score-form_submit-button,
 .score-form_cancel-button {
-  border-radius: 4px;
-  color: #fff;
-  font-size: 2.25rem;
+  //border-radius: 4px;
+  //color: #fff;
+  font-size: 1.75rem;
   margin: 10px 0 0;
-  padding: 5px 0;
+  //padding: 5px 0;
   width: 100%;
 }
 
 .score-form_cancel-button {
-  background-color: #d32f2f;
-  border: 1px solid #d32f2f;
+  @include red-btn;
+  //background-color: #d32f2f;
+  //border: 1px solid #d32f2f;
 }
 
 .score-form_submit-button {
-  background-color: cadetblue;
-  border: 1px solid cadetblue;
+  @include green-btn;
+  //background-color: cadetblue;
+  //border: 1px solid cadetblue;
 }
 
 .bounce-enter-active {

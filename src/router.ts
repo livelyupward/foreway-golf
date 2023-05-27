@@ -8,28 +8,32 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
 
   if (localStorage.getItem('gg_token')) {
     try {
-      /**
-       * with token in localStorage, attempt to use token and get auth
-       * if fails then send to auth path to get a new token
+      /*
+      Check if user has already been retrieved. If user continue with no db calls
        */
-      await authAndGetUserFromDB();
+      if (!getUser?.id) {
+        /**
+         * with token in localStorage, attempt to use token and get auth
+         * if fails then send to auth path to get a new token
+         */
+        await authAndGetUserFromDB();
+      }
       return next();
     } catch (error) {
       /**
        * user could not be authed. send to the auth page to start auth process
        */
       console.error(error);
-      return { name: 'Auth' };
+      return next('/auth');
     }
   }
 
   /**
    * if there is no user in state send to auth page only
-   * else send to route that was intended
    */
   if (getUser === null) {
     isDebug() && console.log('force to auth');
-    return next({ name: 'Auth' });
+    return next('/auth');
   }
 }
 
@@ -38,19 +42,16 @@ const routes = [
     name: 'Home',
     path: '/',
     component: () => import('./views/Home.vue'),
-    // beforeEnter: checkAuth,
+  },
+  {
+    name: 'Current round',
+    path: '/round/:id',
+    component: () => import('./views/CurrentRound.vue'),
   },
   {
     name: 'Start',
     path: '/round',
     component: () => import('./views/StartRound.vue'),
-    // beforeEnter: checkAuth,
-  },
-  {
-    name: 'Current round',
-    path: '/rounds/:id',
-    component: () => import('./views/CurrentRound.vue'),
-    // beforeEnter: checkAuth,
   },
   {
     name: 'Auth',
@@ -62,6 +63,15 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  console.log('to: ', to);
+  if (to.path !== '/auth') {
+    await checkAuth(to, from, next);
+  } else {
+    next();
+  }
 });
 
 export default router;
