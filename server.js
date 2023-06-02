@@ -16,6 +16,7 @@ import seedDave from './seeds/user.seed.js';
 import seedStreamwoodOaks from './seeds/streamwood-oaks.seed.js';
 import seedSettlersHill from './seeds/settlers-hill.seed.js';
 import seedHilldale from './seeds/hilldale.seed.js';
+import seedArlingtonLakes from './seeds/arlington-lakes-gc.seed.js';
 import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
@@ -41,13 +42,14 @@ app.use(
 app.use(Express.static('/public'));
 
 db.sequelize
-  .sync()
+  .sync({ force: true })
   .then(async () => {
-    // await seedGCI(db);
-    // await seedStreamwoodOaks(db);
-    // await seedSettlersHill(db);
-    // await seedDave(db);
-    // await seedHilldale(db);
+    await seedGCI(db);
+    await seedStreamwoodOaks(db);
+    await seedSettlersHill(db);
+    await seedDave(db);
+    await seedHilldale(db);
+    await seedArlingtonLakes(db);
     console.log('Seeds run successfully');
   })
   .then(() => {

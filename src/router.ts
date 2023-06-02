@@ -18,13 +18,13 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
          */
         await authAndGetUserFromDB();
       }
-      return next();
+      return true;
     } catch (error) {
       /**
        * user could not be authed. send to the auth page to start auth process
        */
       console.error(error);
-      return next('/auth');
+      return false;
     }
   }
 
@@ -33,7 +33,7 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
    */
   if (getUser === null) {
     isDebug() && console.log('force to auth');
-    return next('/auth');
+    return false;
   }
 }
 
@@ -66,11 +66,15 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  console.log('to: ', to);
   if (to.path !== '/auth') {
-    await checkAuth(to, from, next);
+    const authed = await checkAuth(to, from, next);
+    if (!authed) {
+      return next('/auth');
+    } else {
+      return next();
+    }
   } else {
-    next();
+    return next();
   }
 });
 

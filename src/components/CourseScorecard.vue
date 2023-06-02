@@ -16,7 +16,7 @@
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
             <td
-              @click="activateScoreFormFromScorecard({ holdNumber: hole.number, holeId: hole.id })"
+              @click="activateScoreFormFromScorecard(hole)"
               class="scorecard-table_row-item score"
               :class="strokeCalculate(getCurrentRound.scores[index]?.strokes, hole.par)"
             >
@@ -26,7 +26,7 @@
             </td>
           </tr>
           <tr>
-            <td colspan="3">Front 9 Total</td>
+            <td class="scorecard-table_row-total" colspan="3">Front 9 Total</td>
             <td>{{ frontNineScoreTotal }}</td>
           </tr>
 
@@ -39,7 +39,7 @@
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
             <td
-              @click="activateScoreFormFromScorecard(hole.number)"
+              @click="activateScoreFormFromScorecard(hole)"
               class="scorecard-table_row-item score"
               :class="strokeCalculate(getCurrentRound.scores[index + 9]?.strokes, hole.par)"
             >
@@ -53,8 +53,8 @@
             <td>{{ backNineScoreTotal }}</td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9">
-            <td class="scorecard-table_row-total" colspan="3">Round Total</td>
-            <td>{{ roundTotal }}</td>
+            <td class="scorecard-table_row-total final-row" colspan="3">Round Total</td>
+            <td class="final-row">{{ roundTotal }}</td>
           </tr>
         </tbody>
       </table>
@@ -69,7 +69,6 @@ import type { Hole } from '../store';
 import { computed, ComputedRef } from 'vue';
 
 const store = mainStore();
-const { openScoreModal, setHoleInScoreModal } = store;
 const { getCurrentRound, getCurrentCourse } = storeToRefs(store);
 
 const props = defineProps<HoleProp>();
@@ -79,13 +78,13 @@ interface HoleProp {
   holes: Array<Hole>;
 }
 
-async function activateScoreFormFromScorecard(holeNumberAndId: object): Promise<void> {
-  // await setHoleInScoreModal(holeNumber);
-  emit('clickScore', holeNumberAndId);
+async function activateScoreFormFromScorecard(holeFromScoreForm: object): Promise<void> {
+  // console.log('scores', getCurrentRound.value.scores);
+  emit('clickScore', holeFromScoreForm);
 }
 
-const strokeCalculate = (score: number | null, par: number) => {
-  if (score === null) return '';
+const strokeCalculate = (score: number | undefined, par: number) => {
+  if (score === undefined) return '';
   if (score - par >= 2) {
     return 'double-bogey';
   } else if (score - par === 1) {
@@ -99,12 +98,12 @@ const strokeCalculate = (score: number | null, par: number) => {
   }
 };
 
-console.log('Scorecard holes length: ', props.holes);
+// console.log('Scorecard holes length: ', props.holes);
 
 const frontNineScoreTotal: ComputedRef<number> = computed(() => {
   let front9total = 0;
   const front9Holes = props.holes.filter((hole, index) => index < 9);
-  console.log('front array from: ', front9Holes);
+  // console.log('front array from: ', front9Holes);
   for (let i = 0; i < front9Holes.length; i++) {
     if (getCurrentRound.value.scores[i] && getCurrentRound.value.scores[i].strokes !== null) {
       // @ts-ignore
@@ -118,7 +117,7 @@ const frontNineScoreTotal: ComputedRef<number> = computed(() => {
 const backNineScoreTotal: ComputedRef<number> = computed(() => {
   let back9total = 0;
   const back9Holes = props.holes.filter((hole, index) => index > 8);
-  console.log('back array from: ', back9Holes);
+  // console.log('back array from: ', back9Holes);
   for (let i = 0; i < back9Holes.length; i++) {
     if (getCurrentRound.value.scores[i + 8] && getCurrentRound.value.scores[i + 8].strokes !== null) {
       // @ts-ignore
@@ -136,6 +135,7 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
 .scorecard-table {
   @include rounded-corners;
   border-spacing: 0;
+  text-align: center;
   width: 100%;
 
   th {
@@ -153,7 +153,20 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
     padding: 5px 0;
 
     &.scorecard-table_row-total[colspan] {
-      border-bottom: 1px solid #bbb;
+      font-weight: 700;
+
+      &.final-row {
+        border-bottom: 1px solid #bbb;
+      }
+
+      & + td {
+        border-bottom: none;
+        font-weight: 700;
+
+        &.final-row {
+          border-bottom: 1px solid #bbb;
+        }
+      }
     }
 
     &.score {
@@ -187,9 +200,9 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
 
       &.double-bogey {
         .scorecard-table_row-item_span {
-          border: 1px solid #fff;
-          outline: 1px solid #fff;
-          outline-offset: 4px;
+          border: 1px solid #333;
+          outline: 1px solid #333;
+          outline-offset: 2px;
           padding: 2px 6px;
           width: 20px;
         }
@@ -197,7 +210,7 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
 
       &.bogey {
         .scorecard-table_row-item_span {
-          border: 1px solid #fff;
+          border: 1px solid #333;
           padding: 2px 6px;
           width: 20px;
         }
@@ -205,12 +218,12 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
 
       &.birdie {
         .scorecard-table_row-item_span {
-          border: 1px solid #fff;
+          border: 1px solid #333;
           border-radius: 50%;
-          padding: 2px 6px;
+          padding: 2px;
           height: 100%;
           margin: 0 auto;
-          width: 20px;
+          width: 25px;
         }
       }
     }
@@ -235,9 +248,5 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
       line-height: 0.75;
     }
   }
-}
-
-.scorecard-table {
-  text-align: center;
 }
 </style>

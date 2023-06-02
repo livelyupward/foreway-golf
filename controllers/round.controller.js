@@ -88,7 +88,7 @@ export const update = (req, res) => {
     where: { id: id },
   })
     .then((num) => {
-      if (num === 1) {
+      if (num[0] === 1) {
         res.send({
           message: 'Round was updated successfully.',
         });

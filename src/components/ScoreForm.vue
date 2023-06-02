@@ -1,8 +1,9 @@
 <template>
-  <div class="score-form_container">
+  <div class="score-form_container" v-if="selectedHole">
     <div class="score-form_modal">
       <form class="score-form_form" @submit.prevent>
-        <h2 class="score-form_hole page-title">Hole {{ selectedHole.holeNumber }}</h2>
+        <h2 class="score-form_hole page-title">Hole {{ selectedHole.number }}</h2>
+        <small>Par {{ selectedHole.par }}</small>
         <hr />
         <div class="score-form_hole-info"></div>
         <div class="form-group-inline full-width">
@@ -63,7 +64,7 @@
         </Transition>
 
         <button @click="saveScoreForHole" class="score-form_submit-button">Save Score</button>
-        <button @click="$emit('closeForm')" class="score-form_cancel-button">Cancel</button>
+        <button @click.prevent="$emit('closeForm')" class="score-form_cancel-button">Cancel</button>
       </form>
     </div>
   </div>
@@ -76,10 +77,13 @@ import { type ScoreForSubmit } from '../store';
 import { storeToRefs } from 'pinia';
 
 const store = mainStore();
-const { submitScore } = store;
+const { submitScore, submitEditedScore } = store;
 const { getUser, getCurrentRound } = storeToRefs(store);
+
+const emit = defineEmits(['closeForm', 'scoreSubmitted']);
 const props = defineProps({
   selectedHole: Object,
+  existingScore: Object,
 });
 
 const scoreValues: Ref<ScoreForSubmit> = ref({
@@ -94,26 +98,59 @@ const scoreValues: Ref<ScoreForSubmit> = ref({
   penaltyStrokes: undefined,
 });
 
+if (props.existingScore) {
+  console.log('existing score called from card: ', props.existingScore);
+  scoreValues.value = {
+    strokes: props.existingScore.strokes,
+    putts: props.existingScore.putts,
+    toggles: {
+      greenInReg: props.existingScore.gir,
+      fairwayHit: props.existingScore.fairway,
+      hazard: props.existingScore.hazard,
+      penalty: props.existingScore.penalty !== undefined ? props.existingScore.penalty : undefined,
+    },
+    penaltyStrokes: props.existingScore.penalty,
+  };
+}
+
 function toggleValue(type: string): boolean {
   // @ts-ignore
   return (scoreValues.value.toggles[type] = !scoreValues.value.toggles[type]);
 }
 
 async function saveScoreForHole() {
-  await submitScore({
-    strokes: scoreValues.value.strokes,
-    putts: scoreValues.value.putts,
-    toggles: {
-      greenInReg: scoreValues.value.toggles.greenInReg,
-      fairwayHit: scoreValues.value.toggles.fairwayHit,
-      hazard: scoreValues.value.toggles.hazard,
-      penalty: scoreValues.value.toggles.penalty,
-    },
-    roundId: getCurrentRound.value.id,
-    holeId: props.selectedHole ? props.selectedHole.holeId : undefined,
-    userId: getUser.value ? getUser.value.id : undefined,
-  });
+  if (props.existingScore) {
+    await submitEditedScore({
+      strokes: scoreValues.value.strokes,
+      putts: scoreValues.value.putts,
+      toggles: {
+        greenInReg: scoreValues.value.toggles.greenInReg,
+        fairwayHit: scoreValues.value.toggles.fairwayHit,
+        hazard: scoreValues.value.toggles.hazard,
+        penalty: scoreValues.value.toggles.penalty,
+      },
+      roundId: getCurrentRound.value.id,
+      holeId: props.selectedHole ? props.selectedHole.number : undefined,
+      userId: getUser.value ? getUser.value.id : undefined,
+      scoreId: props.existingScore.id,
+    });
+  } else {
+    await submitScore({
+      strokes: scoreValues.value.strokes,
+      putts: scoreValues.value.putts,
+      toggles: {
+        greenInReg: scoreValues.value.toggles.greenInReg,
+        fairwayHit: scoreValues.value.toggles.fairwayHit,
+        hazard: scoreValues.value.toggles.hazard,
+        penalty: scoreValues.value.toggles.penalty,
+      },
+      roundId: getCurrentRound.value.id,
+      holeId: props.selectedHole ? props.selectedHole.number : undefined,
+      userId: getUser.value ? getUser.value.id : undefined,
+    });
+  }
   console.log('saved score for the hole');
+  emit('scoreSubmitted');
 }
 </script>
 

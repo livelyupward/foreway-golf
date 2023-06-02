@@ -23,7 +23,7 @@ export default (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       about: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT('long'),
         required: false,
       },
       holeCount: {
@@ -39,9 +39,8 @@ export default (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       courseImage: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT('long'),
       },
-      about: Sequelize.STRING,
     },
     {
       timestamps: true,

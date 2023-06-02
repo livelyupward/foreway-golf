@@ -8,34 +8,40 @@
     <button class="current-round_end-round" @click="endRound">Close Round</button>
     <Teleport to="body">
       <ScoreForm
-        v-if="scoreFormOpen && holeNumberForScoreForm"
+        v-if="scoreFormOpen && scoreFormHoleInfo"
         :course="course"
-        :selected-hole="holeNumberForScoreForm"
-        @close-form="scoreFormOpen = false"
+        :selected-hole="scoreFormHoleInfo"
+        :existing-score="existingScoreOnCard ? existingScoreOnCard : undefined"
+        @close-form="closeModalWithButton"
+        @score-submitted="closeModalWithButton"
       />
     </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { mainStore } from '../store';
+import { Hole, mainStore } from '../store';
 import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import isDebug from '../plugins/debugConsole';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const store = mainStore();
-const { closeScoreModal, closeRound, getCourse } = store;
-const { getUser, getCurrentRound, currentHoleInScoreModal } = storeToRefs(store);
+const { closeRound, getCourse, authAndGetUserFromDB } = store;
+const { getUser, getCurrentRound } = storeToRefs(store);
 
-const scoreFormOpen = ref(false);
-const holeNumberForScoreForm = ref();
-
-isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
+if (getCurrentRound.value.courseId === undefined) await authAndGetUserFromDB();
 
 // @ts-ignore
 const { course } = await getCourse(getCurrentRound.value.courseId);
+
+const scoreFormOpen = ref(false);
+const scoreFormHoleInfo = ref();
+const existingScoreOnCard = ref();
+
+// isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
 const friendlyCreatedDate = computed(() => {
   // @ts-ignore
@@ -49,6 +55,7 @@ const friendlyCreatedDate = computed(() => {
 async function endRound() {
   try {
     await closeRound();
+    await router.push('/');
     // message.success('Round closed successfully');
   } catch (error) {
     console.error(error);
@@ -56,10 +63,23 @@ async function endRound() {
   }
 }
 
-function openModalForHole(holeNumberAndId: object) {
-  console.log('passing hole number ', holeNumberAndId);
-  holeNumberForScoreForm.value = holeNumberAndId;
+function openModalForHole(holeFromScoreForm: Hole) {
+  if (getCurrentRound.value.scores[holeFromScoreForm.number - 1]) {
+    existingScoreOnCard.value = getCurrentRound.value.scores[holeFromScoreForm.number - 1];
+  }
+
+  scoreFormHoleInfo.value = holeFromScoreForm;
   scoreFormOpen.value = true;
+}
+
+function closeModalWithButton() {
+  existingScoreOnCard.value = undefined;
+  scoreFormHoleInfo.value = undefined;
+  scoreFormOpen.value = false;
+}
+
+function refreshScores() {
+  // console.log();
 }
 </script>
 

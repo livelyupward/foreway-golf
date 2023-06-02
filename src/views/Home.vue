@@ -1,9 +1,9 @@
 <template>
   <h1 class="foreway-header">Foreway Golf</h1>
-  <div v-if="getUser" id="homepage">
+  <div v-if="getUser !== undefined" id="homepage">
     <section>Hi {{ getUser.name }}</section>
     <section>
-      <button class="homepage_resume-round_button" v-if="recentRounds.length > 0" @click="resumeCurrentRound">
+      <button class="homepage_resume-round_button" v-if="getUser.currentRound !== null" @click="resumeCurrentRound">
         Resume round
       </button>
       <p v-else>No round found.</p>
@@ -27,7 +27,8 @@ const getRecentRounds = await getRecentUserRounds();
 const recentRounds = ref(getRecentRounds);
 
 function resumeCurrentRound() {
-  if (getUser.value !== null) {
+  if (getUser.value) {
+    console.log('GU: ', getUser.value);
     router.push(`/round/${getUser.value.currentRound}`);
   }
 }

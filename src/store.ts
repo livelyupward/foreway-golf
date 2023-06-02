@@ -11,7 +11,7 @@ export const mainStore = defineStore('main', () => {
     scores: [],
   });
   const currentCourse: Ref<Course | null> = ref(null);
-  const user: Ref<User | null> = ref(null);
+  const user: Ref<User | undefined> = ref();
   const currentHoleInScoreModal: Ref<number | undefined> = ref(undefined);
   const scoreModalOpen: Ref<boolean> = ref(false);
 
@@ -27,7 +27,7 @@ export const mainStore = defineStore('main', () => {
     return currentCourse.value;
   });
 
-  const getUser: ComputedRef<User | null> = computed(() => {
+  const getUser: ComputedRef<User | undefined> = computed(() => {
     return user.value;
   });
 
@@ -46,8 +46,8 @@ export const mainStore = defineStore('main', () => {
     return (user.value = userPayload);
   }
 
-  function resetUser(): null {
-    return (user.value = null);
+  function resetUser(): undefined {
+    return (user.value = undefined);
   }
 
   async function setHoleInScoreModal(holeNumberToSet: number): Promise<number> {
@@ -62,7 +62,7 @@ export const mainStore = defineStore('main', () => {
       },
       body: JSON.stringify({
         courseId: courseInfoObject.courseId,
-        userId: getUser.value !== null ? getUser.value.id : null,
+        userId: getUser.value !== undefined ? getUser.value.id : null,
         groupId: courseInfoObject.groupId ? courseInfoObject.groupId : null,
         tees: courseInfoObject.tees,
       }),
@@ -89,7 +89,7 @@ export const mainStore = defineStore('main', () => {
   }
 
   async function goToRound(roundId: number | undefined) {
-    return await router.push(`/rounds/${roundId}`);
+    return await router.push(`/round/${roundId}`);
   }
 
   async function submitScore(payload: ScoreForSubmit) {
@@ -125,19 +125,33 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
-  async function submitEditedScore(payload: Score) {
+  async function submitEditedScore(payload: ScoreForSubmit) {
+    if (payload.scoreId === undefined)
+      return { error: 'No score id was found for the original score record. Cannot save new score.' };
     try {
-      const newScoreEditedRequest: Response = await fetch(`/api/scores/${payload.id}`, {
+      // @ts-ignore
+      const newScoreEditedRequest: Response = await fetch(`/api/scores/${payload.scoreId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          strokes: payload.strokes,
+          putts: payload.putts,
+          gir: payload.toggles.greenInReg,
+          fairway: payload.toggles.fairwayHit,
+          hazard: payload.toggles.hazard,
+          penalty: payload.toggles.penalty,
+          roundId: payload.roundId,
+          holeId: payload.holeId,
+          userId: payload.userId,
+        }),
       });
 
       const newSavedEditedScore: EditedScore = await newScoreEditedRequest.json();
 
       currentRound.value.scores[newSavedEditedScore.holeId - 1] = newSavedEditedScore;
+      console.dir(newSavedEditedScore);
 
       return newSavedEditedScore;
     } catch (error) {
@@ -170,16 +184,19 @@ export const mainStore = defineStore('main', () => {
         const userDbFetch: Response = await fetch(`/api/users/${cachedTokenResponse.email}`);
 
         if (userDbFetch.status === 404) return await router.push('/auth');
-
+        console.log('passed 404 check');
         const userDbResponse: object[] = await userDbFetch.json();
 
         await setUser(userDbResponse[0]);
-
+        console.log('passed setUser');
         if (getUser.value && getUser.value.currentRound) {
+          console.log('current: ', getUser.value?.currentRound);
           const getRoundRequest: Response = await fetch(`/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
+        } else {
+          console.log('the problem!');
         }
-
+        console.log('passed the important if');
         // @ts-ignore
         return userDbResponse[0];
       } catch (error) {
@@ -190,7 +207,7 @@ export const mainStore = defineStore('main', () => {
   }
 
   async function getRecentUserRounds(): Promise<any> {
-    if (getUser.value !== null) {
+    if (getUser.value !== undefined) {
       try {
         const recentRoundsRequest: Response = await fetch(`/api/round/${getUser.value.id}/recent`);
 
@@ -198,6 +215,17 @@ export const mainStore = defineStore('main', () => {
       } catch (error) {
         return { error };
       }
+    }
+  }
+
+  async function getAllCourses() {
+    try {
+      const allCoursesFetch = await fetch(`/api/courses`);
+      const courses = await allCoursesFetch.json();
+
+      return { courses };
+    } catch (error) {
+      return { error };
     }
   }
 
@@ -215,17 +243,17 @@ export const mainStore = defineStore('main', () => {
   }
 
   async function closeRound(): Promise<any> {
-    if (getUser.value !== null && getCurrentRound.value !== null) {
+    if (getUser.value !== undefined && getCurrentRound.value !== null) {
       try {
         // take current round and make null for current user
-        user.value ? (user.value.currentRound = undefined) : null;
+        user.value !== undefined && user.value.currentRound !== null ? (user.value.currentRound = null) : null;
 
         const updateUserRoundRequest: Response = await fetch(`/api/users/${getUser.value.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(user.value),
+          body: JSON.stringify({ ...user.value, currentRound: null }),
         });
         const updateUserRoundResponse: Promise<any> = updateUserRoundRequest.json();
 
@@ -234,7 +262,7 @@ export const mainStore = defineStore('main', () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(getCurrentRound.value),
+          body: JSON.stringify({ ...getCurrentRound.value, closed: true }),
         });
         const endRoundResponse: Promise<any> = endRoundRequest.json();
 
@@ -254,6 +282,7 @@ export const mainStore = defineStore('main', () => {
     getCurrentCourse,
     getUser,
     getRecentUserRounds,
+    getAllCourses,
     getCourse,
     authAndGetUserFromDB,
     openScoreModal,
@@ -304,7 +333,7 @@ interface User {
   id: number;
   name: string;
   email: string;
-  currentRound?: number;
+  currentRound: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -352,6 +381,7 @@ export interface ScoreForSubmit {
   roundId?: number;
   holeId?: number;
   userId?: number;
+  scoreId?: number;
 }
 
 export interface Toggles {
