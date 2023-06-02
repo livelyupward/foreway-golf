@@ -4,16 +4,18 @@ export default (sequelize, Sequelize) => {
     {
       tees: {
         type: Sequelize.STRING,
+        required: true,
       },
       courseId: {
         type: Sequelize.INTEGER,
+        required: true,
       },
       userId: {
         type: Sequelize.INTEGER,
+        required: true,
       },
-      closed: {
-        type: Sequelize.BOOLEAN,
-      },
+      groupId: Sequelize.INTEGER,
+      closed: Sequelize.BOOLEAN,
     },
     { timestamps: true }
   );

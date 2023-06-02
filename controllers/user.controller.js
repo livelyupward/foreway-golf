@@ -74,30 +74,58 @@ export const findOne = (req, res) => {
 // Update a Course by the id in the request
 export const update = (req, res) => {
   const id = req.params.id;
+  // const closedSent = req.body.closed;
   const roundId = req.query.roundId;
 
-  User.update(
-    { currentRound: roundId },
-    {
-      where: { id: id },
-    }
-  )
-    .then((num) => {
-      if (num === 1) {
-        res.send({
-          message: 'User was updated successfully.',
-        });
-      } else {
-        res.send({
-          message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
-        });
+  if (req.body.currentRound === null) {
+    User.update(
+      { currentRound: null },
+      {
+        where: { id: id },
       }
-    })
-    .catch((err) => {
-      res.status(500).send({
-        message: 'Error updating User with id=' + id,
+    )
+      .then((result) => {
+        console.log('result: ', result);
+        if (result[0] === 1) {
+          res.send({
+            message: 'Round was closed successfully for the user.',
+          });
+        } else {
+          res.send({
+            message: `Cannot close round for user with id=${id}.`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: 'Error updating User with id=' + id,
+        });
       });
-    });
+  } else {
+    User.update(
+      { currentRound: roundId },
+      {
+        where: { id: id },
+      }
+    )
+      .then((result) => {
+        console.log('result: ', result);
+        if (result[0] === 1) {
+          res.send({
+            message: 'User was updated successfully.',
+          });
+        } else {
+          res.send({
+            message: `Cannot update User with id=${id}. Maybe User was not found or req.body is empty!`,
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: 'Error updating User with id=' + id,
+        });
+      });
+  }
 };
 
 // Delete a Course with the specified id in the request

@@ -1,0 +1,56 @@
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  background-color: #fff;
+  box-sizing: border-box;
+  color: #333;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 16px;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Lato", sans-serif;
+  line-height: 1;
+}
+
+p {
+  line-height: 1.5;
+}
+
+button {
+  border: 1px solid #ddd;
+  @include rounded-corners;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1rem;
+  padding: 6px 12px;
+}
+
+svg {
+  min-height: 20px;
+  min-width: 20px;
+}
+
+input {
+  border: 1px solid #bbb;
+  @include rounded-corners;
+  padding: 3px 6px;
+}
+
+.center-content {
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  text-align: center;
+}

@@ -10,10 +10,8 @@
 <script setup lang="ts">
 import router from '../router';
 import { mainStore } from '../store';
-import { useMessage } from 'naive-ui';
 const store = mainStore();
 const { setUser } = store;
-const message = useMessage();
 
 const googleAuthCallback = async (response: GoogleResponse) => {
   // This callback will be triggered when the user selects or login to their Google account from the popup
@@ -53,10 +51,8 @@ const googleAuthCallback = async (response: GoogleResponse) => {
       const newUserFromDB = await newUser.json();
 
       userDbResponse = [newUserFromDB];
-      message.success('User created successfully');
     } else {
       userDbResponse = await userDbFetch.json();
-      message.success('Logged in');
     }
 
     /**

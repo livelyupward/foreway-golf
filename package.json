@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
     "go": "concurrently \"pnpm run dev --host\" \"nodemon server.js\" \"vitest\"",
@@ -12,6 +12,12 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-regular-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
+    "@sentry/vue": "^7.52.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -27,13 +33,10 @@
     "vue3-google-login": "^2.0.15"
   },
   "devDependencies": {
-    "@vicons/ionicons5": "^0.12.0",
-    "@vicons/tabler": "^0.12.0",
-    "@vicons/utils": "^0.1.4",
+    "@sentry/vite-plugin": "^0.7.2",
     "@vitejs/plugin-vue": "^4.1.0",
     "@vue/test-utils": "^2.3.2",
     "concurrently": "^7.6.0",
-    "naive-ui": "^2.34.3",
     "sass": "^1.59.3",
     "typescript": "^4.9.3",
     "vite": "^4.2.0",

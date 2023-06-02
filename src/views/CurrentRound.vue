@@ -4,46 +4,44 @@
     <div class="current-round_info">
       <p class="current-round_info-date">Date: {{ friendlyCreatedDate }}</p>
     </div>
-    <CourseScorecard :holes="course.holes" />
-    <n-button class="current-round_end-round" type="error" tertiary @click="endRound">Close Round</n-button>
-    <n-modal v-model:show="computedScoreModal" @update:show="toggleScoreModal">
-      <n-card
-        style="width: 600px"
-        :title="`Hole ${currentHoleInScoreModal}`"
-        :bordered="false"
-        size="huge"
-        role="dialog"
-        aria-modal="true"
-      >
-        <template #header-extra>
-          <CloseIcon @click="closeScoreModal" />
-        </template>
-        <ScoreForm :course="course" :selected-hole="currentHoleInScoreModal" />
-      </n-card>
-    </n-modal>
+    <CourseScorecard @click-score="openModalForHole" :holes="course.holes" />
+    <button class="current-round_end-round" @click="endRound">Close Round</button>
+    <Teleport to="body">
+      <ScoreForm
+        v-if="scoreFormOpen && scoreFormHoleInfo"
+        :course="course"
+        :selected-hole="scoreFormHoleInfo"
+        :existing-score="existingScoreOnCard ? existingScoreOnCard : undefined"
+        @close-form="closeModalWithButton"
+        @score-submitted="closeModalWithButton"
+      />
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { mainStore } from '../store';
-import type { Course } from '../store';
-import { NButton, NModal, NCard, useMessage } from 'naive-ui';
-import { CloseSharp as CloseIcon } from '@vicons/ionicons5';
+import { Hole, mainStore } from '../store';
+import { computed, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
-import { storeToRefs } from 'pinia';
-import isDebug from '../plugins/debugConsole';
-import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const store = mainStore();
-const message = useMessage();
-const { toggleScoreModal, closeScoreModal, closeRound, getCourse } = store;
-const { getUser, getCurrentRound, computedScoreModal, currentHoleInScoreModal } = storeToRefs(store);
+const { closeRound, getCourse, authAndGetUserFromDB } = store;
+const { getUser, getCurrentRound } = storeToRefs(store);
 
-isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
+if (getCurrentRound.value.courseId === undefined) await authAndGetUserFromDB();
 
 // @ts-ignore
 const { course } = await getCourse(getCurrentRound.value.courseId);
+
+const scoreFormOpen = ref(false);
+const scoreFormHoleInfo = ref();
+const existingScoreOnCard = ref();
+
+// isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
 const friendlyCreatedDate = computed(() => {
   // @ts-ignore
@@ -57,11 +55,31 @@ const friendlyCreatedDate = computed(() => {
 async function endRound() {
   try {
     await closeRound();
-    message.success('Round closed successfully');
+    await router.push('/');
+    // message.success('Round closed successfully');
   } catch (error) {
     console.error(error);
-    message.error('Round could not be closed -- please try again');
+    // message.error('Round could not be closed -- please try again');
   }
+}
+
+function openModalForHole(holeFromScoreForm: Hole) {
+  if (getCurrentRound.value.scores[holeFromScoreForm.number - 1]) {
+    existingScoreOnCard.value = getCurrentRound.value.scores[holeFromScoreForm.number - 1];
+  }
+
+  scoreFormHoleInfo.value = holeFromScoreForm;
+  scoreFormOpen.value = true;
+}
+
+function closeModalWithButton() {
+  existingScoreOnCard.value = undefined;
+  scoreFormHoleInfo.value = undefined;
+  scoreFormOpen.value = false;
+}
+
+function refreshScores() {
+  // console.log();
 }
 </script>
 
@@ -143,6 +161,7 @@ async function endRound() {
 }
 
 .current-round_end-round {
+  @include red-btn;
   display: block;
   margin-top: 15px;
   text-align: center;
@@ -151,5 +170,17 @@ async function endRound() {
   span {
     justify-content: center;
   }
+}
+
+.score-form_container {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.75);
+  bottom: 0;
+  display: flex;
+  left: 0;
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
 }
 </style>

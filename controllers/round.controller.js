@@ -3,15 +3,22 @@ const Round = db.rounds;
 
 // Create and Save a new Round
 export const create = (req, res) => {
+  let errors = [];
   if (!req.body.courseId)
-    return res.status(400).send({ error: 'No course id found. Please provide a course id to create a new round.' });
+    errors.push({ message: 'No course id found. Please provide a course id to create a new round.' });
 
-  if (!req.body.userId)
-    return res.status(400).send({ error: 'No user id found. Please provide a user id to create a new round.' });
+  if (!req.body.userId) errors.push({ message: 'No user id found. Please provide a user id to create a new round.' });
+
+  if (!req.body.tees)
+    errors.push({ message: 'No tee for round was found. Please provide a tee color to create a new round.' });
+
+  if (errors.length > 0) return res.status(400).send({ errors });
   // Create a Round
   const round = {
     courseId: req.body.courseId,
     userId: req.body.userId,
+    tees: req.body.tees,
+    groupId: req.body.groupId || null,
   };
 
   // Save Round in the database
@@ -81,7 +88,7 @@ export const update = (req, res) => {
     where: { id: id },
   })
     .then((num) => {
-      if (num === 1) {
+      if (num[0] === 1) {
         res.send({
           message: 'Round was updated successfully.',
         });

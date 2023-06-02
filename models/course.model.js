@@ -22,6 +22,10 @@ export default (sequelize, Sequelize) => {
       zip: {
         type: Sequelize.STRING,
       },
+      about: {
+        type: Sequelize.TEXT('long'),
+        required: false,
+      },
       holeCount: {
         type: Sequelize.INTEGER,
       },
@@ -35,7 +39,7 @@ export default (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       courseImage: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT('long'),
       },
     },
     {

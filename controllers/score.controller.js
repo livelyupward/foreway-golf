@@ -18,6 +18,8 @@ export const create = (req, res) => {
     putts: req.body.putts,
     gir: req.body.gir,
     fairway: req.body.fairway,
+    hazard: req.body.hazard,
+    penalty: req.body.penalty,
     roundId: req.body.roundId,
     holeId: req.body.holeId,
     userId: req.body.userId,
@@ -62,13 +64,13 @@ export const findOne = (req, res) => {
         res.send(data);
       } else {
         res.status(404).send({
-          message: `Cannot find Tutorial with id=${id}.`,
+          message: `Cannot find Score with id=${id}.`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error retrieving Tutorial with id=' + id,
+        message: 'Error retrieving Score with id=' + id,
       });
     });
 };
@@ -80,20 +82,22 @@ export const update = (req, res) => {
   Score.update(req.body, {
     where: { id: id },
   })
-    .then((num) => {
-      if (num === 1) {
+    .then(async (stuff) => {
+      if (stuff[0] === 1) {
+        const updatedRow = await Score.findByPk(id);
+
         res.send({
-          message: 'Tutorial was updated successfully.',
+          ...updatedRow.dataValues,
         });
       } else {
-        res.send({
-          message: `Cannot update Tutorial with id=${id}. Maybe Tutorial was not found or req.body is empty!`,
+        res.status(400).send({
+          error: `Cannot update Score with id=${id}. Please try again.`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Error updating Tutorial with id=' + id,
+        message: 'Error updating Score with id=' + id,
       });
     });
 };
@@ -108,17 +112,17 @@ export const deleteOne = (req, res) => {
     .then((num) => {
       if (num === 1) {
         res.send({
-          message: 'Tutorial was deleted successfully!',
+          message: 'Score was deleted successfully!',
         });
       } else {
         res.send({
-          message: `Cannot delete Tutorial with id=${id}. Maybe Tutorial was not found!`,
+          message: `Cannot delete Score with id=${id}. Maybe Score was not found!`,
         });
       }
     })
     .catch((err) => {
       res.status(500).send({
-        message: 'Could not delete Tutorial with id=' + id,
+        message: 'Could not delete Score with id=' + id,
       });
     });
 };
@@ -130,7 +134,7 @@ export const deleteAll = (req, res) => {
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} Tutorials were deleted successfully!` });
+      res.send({ message: `${nums} Scores were deleted successfully!` });
     })
     .catch((err) => {
       res.status(500).send({
