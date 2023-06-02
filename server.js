@@ -17,6 +17,7 @@ import seedStreamwoodOaks from './seeds/streamwood-oaks.seed.js';
 import seedSettlersHill from './seeds/settlers-hill.seed.js';
 import seedHilldale from './seeds/hilldale.seed.js';
 import seedArlingtonLakes from './seeds/arlington-lakes-gc.seed.js';
+import seedTannaFarms from './seeds/tanna-farms.seed.js';
 import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
@@ -50,6 +51,7 @@ db.sequelize
     await seedDave(db);
     await seedHilldale(db);
     await seedArlingtonLakes(db);
+    await seedTannaFarms(db);
     console.log('Seeds run successfully');
   })
   .then(() => {
