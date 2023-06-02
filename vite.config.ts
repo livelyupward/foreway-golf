@@ -11,19 +11,19 @@ export default ({ mode }) => {
     plugins: [
       vue(),
       // Put the Sentry vite plugin after all other plugins
-      sentryVitePlugin({
-        org: 'lively-upward',
-        project: 'javascript-vue',
-
-        // Auth tokens can be obtained from https://sentry.io/settings/account/api/auth-tokens/
-        // and need `project:releases` and `org:read` scopes
-        authToken: process.env.SENTRY_AUTH_TOKEN,
-
-        sourcemaps: {
-          // Specify the directory containing build artifacts
-          assets: './dist/**',
-        },
-      }),
+      // sentryVitePlugin({
+      //   org: 'lively-upward',
+      //   project: 'javascript-vue',
+      //
+      //   // Auth tokens can be obtained from https://sentry.io/settings/account/api/auth-tokens/
+      //   // and need `project:releases` and `org:read` scopes
+      //   authToken: process.env.SENTRY_AUTH_TOKEN,
+      //
+      //   sourcemaps: {
+      //     // Specify the directory containing build artifacts
+      //     assets: './dist/**',
+      //   },
+      // }),
     ],
     resolve: {
       alias: {
