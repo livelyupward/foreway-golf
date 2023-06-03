@@ -17,7 +17,8 @@ export default (sequelize, Sequelize) => {
       hazard: {
         type: Sequelize.BOOLEAN,
       },
-      penalty: Sequelize.INTEGER,
+      penalty: Sequelize.BOOLEAN,
+      penaltyStrokes: Sequelize.INTEGER,
     },
     { timestamps: true }
   );

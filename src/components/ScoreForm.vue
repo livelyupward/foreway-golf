@@ -109,7 +109,7 @@ if (props.existingScore) {
       hazard: props.existingScore.hazard,
       penalty: props.existingScore.penalty !== undefined ? props.existingScore.penalty : undefined,
     },
-    penaltyStrokes: props.existingScore.penalty,
+    penaltyStrokes: props.existingScore.penaltyStrokes !== undefined ? props.existingScore.penaltyStrokes : undefined,
   };
 }
 
