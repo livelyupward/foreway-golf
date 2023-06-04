@@ -28,7 +28,7 @@
           <tr>
             <td class="scorecard-table_row-total" colspan="2">Front</td>
             <td class="scorecard-table_row-total_par">{{ frontNineScoreTotal.frontParTotal }}</td>
-            <td>{{ frontNineScoreTotal.front9total }}</td>
+            <td>{{ frontNineScoreTotal.front9Total }}</td>
           </tr>
 
           <tr
@@ -52,7 +52,7 @@
           <tr v-if="getCurrentCourse.holeCount > 9">
             <td class="scorecard-table_row-total" colspan="2">Back</td>
             <td class="scorecard-table_row-total_par">{{ backNineScoreTotal.backParTotal }}</td>
-            <td>{{ backNineScoreTotal.back9total }}</td>
+            <td>{{ backNineScoreTotal.back9Total }}</td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9">
             <td class="scorecard-table_row-total final-row" colspan="2">Total</td>
@@ -105,39 +105,49 @@ const strokeCalculate = (score: number | undefined, par: number) => {
 
 // console.log('Scorecard holes length: ', props.holes);
 
-const frontNineScoreTotal: ComputedRef<object> = computed(() => {
+const frontNineScoreTotal: ComputedRef<Front9Total> = computed(() => {
   let frontParTotal = 0;
-  let front9total = 0;
+  let front9Total = 0;
   const front9Holes = props.holes.filter((hole, index) => index < 9);
   console.log('front array from: ', front9Holes);
   for (let i = 0; i < front9Holes.length; i++) {
     frontParTotal += front9Holes[i].par;
     if (getCurrentRound.value.scores[i] && getCurrentRound.value.scores[i].strokes !== null) {
       // @ts-ignore
-      front9total += getCurrentRound.value.scores[i].strokes;
+      front9Total += getCurrentRound.value.scores[i].strokes;
     }
   }
 
-  return { front9total, frontParTotal };
+  return { front9Total, frontParTotal };
 });
 
-const backNineScoreTotal: ComputedRef<object> = computed(() => {
+const backNineScoreTotal: ComputedRef<Back9Total> = computed(() => {
   let backParTotal = 0;
-  let back9total = 0;
+  let back9Total = 0;
   const back9Holes = props.holes.filter((hole, index) => index > 8);
   console.log('back array from: ', back9Holes);
   for (let i = 0; i < back9Holes.length; i++) {
     backParTotal += back9Holes[i].par;
     if (getCurrentRound.value.scores[i + 9] && getCurrentRound.value.scores[i + 9].strokes !== null) {
       // @ts-ignore
-      back9total += getCurrentRound.value.scores[i + 8].strokes;
+      back9Total += getCurrentRound.value.scores[i + 8].strokes;
     }
   }
 
-  return { back9total, backParTotal };
+  return { back9Total, backParTotal };
 });
 
-const roundTotal = computed(() => frontNineScoreTotal.value.front9total + backNineScoreTotal.value.back9total);
+const roundTotal = computed(() => frontNineScoreTotal.value.front9Total + backNineScoreTotal.value.back9Total);
+
+interface Back9Total {
+  back9Total: number;
+  backParTotal: number;
+}
+
+interface Front9Total {
+  front9Total: number;
+  frontParTotal: number;
+}
 </script>
 
 <style lang="scss">
