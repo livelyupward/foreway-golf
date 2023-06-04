@@ -186,19 +186,15 @@ export const mainStore = defineStore('main', () => {
         const userDbFetch: Response = await fetch(`/api/users/${cachedTokenResponse.email}`);
 
         if (userDbFetch.status === 404) return await router.push('/auth');
-        isDebug() && console.log('passed 404 check');
         const userDbResponse: object[] = await userDbFetch.json();
 
         await setUser(userDbResponse[0]);
-        isDebug() && console.log('passed setUser');
         if (getUser.value && getUser.value.currentRound) {
           isDebug() && console.log('current: ', getUser.value?.currentRound);
           const getRoundRequest: Response = await fetch(`/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
         } else {
-          isDebug() && console.log('the problem!');
         }
-        isDebug() && console.log('passed the important if');
         // @ts-ignore
         return userDbResponse[0];
       } catch (error) {

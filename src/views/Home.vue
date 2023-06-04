@@ -1,12 +1,20 @@
 <template>
   <h1 class="foreway-header">Foreway Golf</h1>
   <div v-if="getUser !== undefined" id="homepage">
-    <section>Hi {{ getUser.name }}</section>
     <section>
       <button class="homepage_resume-round_button" v-if="getUser.currentRound !== null" @click="resumeCurrentRound">
         Resume round
       </button>
-      <p v-else>No round found.</p>
+      <p v-else>
+        You have no currently active rounds of golf. Click the Round button in the menu on the bottom of the screen to
+        start one.
+      </p>
+    </section>
+    <section class="homepage_recent-rounds" v-if="recentRounds">
+      <h2 class="homepage_recent-rounds_header">Recent Rounds</h2>
+      <ul class="homepage_recent-rounds_list">
+        <li v-for="round in recentRounds">{{ round }}</li>
+      </ul>
     </section>
   </div>
 </template>

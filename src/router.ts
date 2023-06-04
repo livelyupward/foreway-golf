@@ -54,6 +54,16 @@ const routes = [
     component: () => import('./views/StartRound.vue'),
   },
   {
+    name: 'Stats',
+    path: '/my-golf',
+    component: () => import('./views/Stats.vue'),
+  },
+  {
+    name: 'Account',
+    path: '/settings',
+    component: () => import('./views/Account.vue'),
+  },
+  {
     name: 'Auth',
     path: '/auth',
     component: () => import('./views/Auth.vue'),
