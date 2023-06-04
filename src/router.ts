@@ -23,7 +23,7 @@ async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormali
       /**
        * user could not be authed. send to the auth page to start auth process
        */
-      console.error(error);
+      isDebug() && console.error(error);
       return false;
     }
   }

@@ -4,8 +4,11 @@
     <div class="current-round_info">
       <p class="current-round_info-date">Date: {{ friendlyCreatedDate }}</p>
     </div>
+    <div class="current-round_invite-wrapper">
+      <a class="current-round_invite-button" href="sms:123&body=hello">Invite players</a>
+    </div>
     <CourseScorecard @click-score="openModalForHole" :holes="course.holes" />
-    <button class="current-round_end-round" @click="endRound">Close Round</button>
+    <button class="current-round_end-round" @click="closeModalIsOpen = true">Close Round</button>
     <Teleport to="body">
       <ScoreForm
         v-if="scoreFormOpen && scoreFormHoleInfo"
@@ -15,6 +18,7 @@
         @close-form="closeModalWithButton"
         @score-submitted="closeModalWithButton"
       />
+      <CloseModal :is-closing="closeModalIsOpen" @close-round="endRound" @close-modal="closeModalIsOpen = false" />
     </Teleport>
   </div>
 </template>
@@ -25,6 +29,7 @@ import { computed, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
+import CloseModal from '../components/CloseModal.vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -40,6 +45,7 @@ const { course } = await getCourse(getCurrentRound.value.courseId);
 const scoreFormOpen = ref(false);
 const scoreFormHoleInfo = ref();
 const existingScoreOnCard = ref();
+const closeModalIsOpen = ref(false);
 
 // isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
 
@@ -90,6 +96,21 @@ function refreshScores() {
 
 .current-round_info-date {
   margin-top: 0;
+}
+
+.current-round_invite-wrapper {
+  margin-bottom: 1rem;
+
+  .current-round_invite-button {
+    @include grey-btn;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: block;
+    padding: 6px 12px;
+    text-align: center;
+    text-decoration: none;
+    width: 100%;
+  }
 }
 
 .record-score-container {
@@ -172,7 +193,8 @@ function refreshScores() {
   }
 }
 
-.score-form_container {
+.score-form_container,
+.close-round_container {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.75);
   bottom: 0;

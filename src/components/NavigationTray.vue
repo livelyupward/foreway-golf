@@ -8,7 +8,7 @@
         </router-link>
       </li>
       <li class="nav-tray_link-list_link-container">
-        <router-link class="nav-tray_link-list_link" to="/round">
+        <router-link class="nav-tray_link-list_link" :to="checkRoundLink">
           <font-awesome-icon :icon="['fas', 'golf-ball-tee']" />
           Round
         </router-link>
@@ -33,9 +33,22 @@
 import { RouterLink } from 'vue-router';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
+import { computed } from 'vue';
 
 const store = mainStore();
 const { getUser } = storeToRefs(store);
+
+/*
+Checks if user has a round in progress. If one is found, the Round link will go to that round rather than the round creation screen.
+In order to create a new round, the user will have to close their current round first.
+ */
+const checkRoundLink = computed(() => {
+  if (getUser.value?.currentRound) {
+    return `/round/${getUser.value.currentRound}`;
+  } else {
+    return `/round`;
+  }
+});
 </script>
 
 <style lang="scss">

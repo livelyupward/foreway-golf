@@ -7,7 +7,7 @@
     "dev": "vite --host",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "go": "concurrently \"pnpm run dev --host\" \"nodemon server.js\" \"vitest\"",
+    "go": "concurrently \"pnpm run dev --host\" \"nodemon server.js\"",
     "test": "vitest run",
     "coverage": "vitest run --coverage"
   },
