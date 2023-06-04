@@ -10,6 +10,7 @@ import cors from 'cors';
 import expressSession from 'express-session';
 import { OAuth2Client } from 'google-auth-library';
 import bodyParser from 'body-parser';
+import history from 'connect-history-api-fallback';
 
 import seedGCI from './seeds/gci.seed.js';
 import seedDave from './seeds/user.seed.js';
@@ -41,6 +42,18 @@ app.use(
 );
 
 app.use(Express.static('/public'));
+app.use(
+  history({
+    rewrites: [
+      {
+        from: /^\/api\/.*$/,
+        to: function (context) {
+          return context.parsedUrl.path;
+        },
+      },
+    ],
+  })
+);
 
 db.sequelize
   // .sync({ force: true })
