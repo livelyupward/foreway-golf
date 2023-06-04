@@ -153,7 +153,7 @@ export const mainStore = defineStore('main', () => {
       const newSavedEditedScore: EditedScore = await newScoreEditedRequest.json();
 
       currentRound.value.scores[newSavedEditedScore.holeId - 1] = newSavedEditedScore;
-      console.dir(newSavedEditedScore);
+      isDebug() && console.dir(newSavedEditedScore);
 
       return newSavedEditedScore;
     } catch (error) {
@@ -186,19 +186,19 @@ export const mainStore = defineStore('main', () => {
         const userDbFetch: Response = await fetch(`/api/users/${cachedTokenResponse.email}`);
 
         if (userDbFetch.status === 404) return await router.push('/auth');
-        console.log('passed 404 check');
+        isDebug() && console.log('passed 404 check');
         const userDbResponse: object[] = await userDbFetch.json();
 
         await setUser(userDbResponse[0]);
-        console.log('passed setUser');
+        isDebug() && console.log('passed setUser');
         if (getUser.value && getUser.value.currentRound) {
-          console.log('current: ', getUser.value?.currentRound);
+          isDebug() && console.log('current: ', getUser.value?.currentRound);
           const getRoundRequest: Response = await fetch(`/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
         } else {
-          console.log('the problem!');
+          isDebug() && console.log('the problem!');
         }
-        console.log('passed the important if');
+        isDebug() && console.log('passed the important if');
         // @ts-ignore
         return userDbResponse[0];
       } catch (error) {

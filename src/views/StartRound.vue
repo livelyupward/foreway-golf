@@ -69,7 +69,6 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { type RoundSettings } from '../store';
-// import courses from '../assets/courses.json';
 import CourseViewer from '../components/CourseViewer.vue';
 import TeeSelector from '../components/TeeSelector.vue';
 
