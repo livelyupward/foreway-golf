@@ -39,7 +39,6 @@ app.use(
     cookie: { secure: true },
   })
 );
-
 app.use(Express.static('/public'));
 
 db.sequelize

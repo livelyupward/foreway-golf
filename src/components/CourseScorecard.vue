@@ -26,8 +26,9 @@
             </td>
           </tr>
           <tr>
-            <td class="scorecard-table_row-total" colspan="3">Front 9 Total</td>
-            <td>{{ frontNineScoreTotal }}</td>
+            <td class="scorecard-table_row-total" colspan="2">Front</td>
+            <td class="scorecard-table_row-total_par">{{ frontNineScoreTotal.frontParTotal }}</td>
+            <td>{{ frontNineScoreTotal.front9Total }}</td>
           </tr>
 
           <tr
@@ -49,11 +50,15 @@
             </td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9">
-            <td class="scorecard-table_row-total" colspan="3">Back 9 Total</td>
-            <td>{{ backNineScoreTotal }}</td>
+            <td class="scorecard-table_row-total" colspan="2">Back</td>
+            <td class="scorecard-table_row-total_par">{{ backNineScoreTotal.backParTotal }}</td>
+            <td>{{ backNineScoreTotal.back9Total }}</td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9">
-            <td class="scorecard-table_row-total final-row" colspan="3">Round Total</td>
+            <td class="scorecard-table_row-total final-row" colspan="2">Total</td>
+            <td class="scorecard-table_row-total_par">
+              {{ frontNineScoreTotal.frontParTotal + backNineScoreTotal.backParTotal }}
+            </td>
             <td class="final-row">{{ roundTotal }}</td>
           </tr>
         </tbody>
@@ -100,35 +105,49 @@ const strokeCalculate = (score: number | undefined, par: number) => {
 
 // console.log('Scorecard holes length: ', props.holes);
 
-const frontNineScoreTotal: ComputedRef<number> = computed(() => {
-  let front9total = 0;
+const frontNineScoreTotal: ComputedRef<Front9Total> = computed(() => {
+  let frontParTotal = 0;
+  let front9Total = 0;
   const front9Holes = props.holes.filter((hole, index) => index < 9);
-  // console.log('front array from: ', front9Holes);
+  console.log('front array from: ', front9Holes);
   for (let i = 0; i < front9Holes.length; i++) {
+    frontParTotal += front9Holes[i].par;
     if (getCurrentRound.value.scores[i] && getCurrentRound.value.scores[i].strokes !== null) {
       // @ts-ignore
-      front9total += getCurrentRound.value.scores[i].strokes;
+      front9Total += getCurrentRound.value.scores[i].strokes;
     }
   }
 
-  return front9total;
+  return { front9Total, frontParTotal };
 });
 
-const backNineScoreTotal: ComputedRef<number> = computed(() => {
-  let back9total = 0;
+const backNineScoreTotal: ComputedRef<Back9Total> = computed(() => {
+  let backParTotal = 0;
+  let back9Total = 0;
   const back9Holes = props.holes.filter((hole, index) => index > 8);
-  // console.log('back array from: ', back9Holes);
+  console.log('back array from: ', back9Holes);
   for (let i = 0; i < back9Holes.length; i++) {
-    if (getCurrentRound.value.scores[i + 8] && getCurrentRound.value.scores[i + 8].strokes !== null) {
+    backParTotal += back9Holes[i].par;
+    if (getCurrentRound.value.scores[i + 9] && getCurrentRound.value.scores[i + 9].strokes !== null) {
       // @ts-ignore
-      back9total += getCurrentRound.value.scores[i + 8].strokes;
+      back9Total += getCurrentRound.value.scores[i + 8].strokes;
     }
   }
 
-  return back9total;
+  return { back9Total, backParTotal };
 });
 
-const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal.value);
+const roundTotal = computed(() => frontNineScoreTotal.value.front9Total + backNineScoreTotal.value.back9Total);
+
+interface Back9Total {
+  back9Total: number;
+  backParTotal: number;
+}
+
+interface Front9Total {
+  front9Total: number;
+  frontParTotal: number;
+}
 </script>
 
 <style lang="scss">
@@ -164,6 +183,10 @@ const roundTotal = computed(() => frontNineScoreTotal.value + backNineScoreTotal
         font-weight: 700;
 
         &.final-row {
+          border-bottom: 1px solid #bbb;
+        }
+
+        &.scorecard-table_row-total_par {
           border-bottom: 1px solid #bbb;
         }
       }
