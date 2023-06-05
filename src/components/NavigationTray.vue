@@ -94,7 +94,7 @@ const checkRoundLink = computed(() => {
       width: 100%;
 
       &.router-link-active {
-        background-color: $green;
+        background-color: $primary;
         color: #fff;
 
         .unicon {
@@ -103,7 +103,7 @@ const checkRoundLink = computed(() => {
       }
 
       .unicon {
-        fill: $green;
+        fill: $primary;
         margin-right: 4px;
       }
     }

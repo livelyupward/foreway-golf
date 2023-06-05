@@ -1,7 +1,7 @@
 html,
 body {
   -webkit-font-smoothing: antialiased;
-  background-color: #fff;
+  background-color: #f7f7f7;
   box-sizing: border-box;
   color: #333;
   font-family: "Noto Sans", sans-serif;
@@ -55,6 +55,7 @@ input {
 }
 
 .page-title {
+  color: $primary;
   font-size: 2.5rem;
   text-align: center;
 }

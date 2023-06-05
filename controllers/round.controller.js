@@ -152,7 +152,7 @@ export const getRecentRounds = async (req, res) => {
     console.log('REQ id: ', userId);
     const receivedRoundsForUser = await Round.findAll({
       where: { userId, closed: true },
-      include: ['courses'],
+      include: { all: true },
       limit: 5,
       order: [['updatedAt', 'DESC']],
     });

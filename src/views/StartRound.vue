@@ -8,7 +8,7 @@
       tees at
       {{ roundConfig.courseName }}
     </span>
-    <section class="start-round step-by-step" :class="`${stageIndex === 0 ? 'active' : ''}`">
+    <section class="start-round card" :class="`${stageIndex === 0 ? 'active' : ''}`">
       <h2 class="start-round_container-title">Course</h2>
       <div class="start-round_container" v-show="stageIndex === 0">
         <ul class="start-round_course-list">
@@ -217,8 +217,8 @@ const roundConfig: Ref<RoundSettings> = ref({
       }
 
       &.select {
-        background-color: $green;
-        border: 1px solid $green;
+        background-color: $primary;
+        border: 1px solid $primary;
         color: #fff;
       }
     }

@@ -157,8 +157,8 @@ interface Course {
       }
 
       &.save {
-        background-color: $green;
-        border: 1px solid $green;
+        background-color: $primary;
+        border: 1px solid $primary;
 
         &:disabled {
           background-color: #dddddd;
@@ -168,8 +168,9 @@ interface Course {
       }
 
       &.cancel {
-        background-color: #d32f2f;
-        border: 1px solid #d32f2f;
+        @include red-btn;
+        //background-color: #d32f2f;
+        //border: 1px solid #d32f2f;
       }
     }
   }
