@@ -56,7 +56,7 @@ const routes = [
   {
     name: 'Stats',
     path: '/my-golf',
-    component: () => import('./views/Stats.vue'),
+    component: () => import('./views/RoundViewer.vue'),
   },
   {
     name: 'Account',
