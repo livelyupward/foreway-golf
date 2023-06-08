@@ -20,6 +20,6 @@ export default (sequelize, Sequelize) => {
       penalty: Sequelize.BOOLEAN,
       penaltyStrokes: Sequelize.INTEGER,
     },
-    { timestamps: true }
+    { timestamps: true, paranoid: true }
   );
 };

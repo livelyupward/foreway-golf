@@ -15,6 +15,7 @@ export default async (db) => {
       about:
         'Hilldale Golf Club was built in 1970 on land that was once a sportsman’s club and owned by the famous retailer Marshall Field. Hilldale is a par 71 course that offers challenges to golfers of any kind. Despite your skill, you might use all the clubs in your bag. Water comes into play on 13 holes and be wary of the O.B. stakes.\n\nPrecise shot-making and proper club selection is required. Some holes at Hilldale Golf Course favor a fairway wood or long iron from the tee. Several holes also require positioning your shots for better angles to the green affording plenty of risk and reward opportunities to keep the gamblers happy. Hilldale is known for its great conditions and as “the best greens in the burbs.”',
       holeCount: 18,
+      par: 71,
       tees: ['white'],
       phoneNumber: '8473101100',
       webpage: 'https://www.hilldalegolf.com/',

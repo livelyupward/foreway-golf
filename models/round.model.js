@@ -22,6 +22,6 @@ export default (sequelize, Sequelize) => {
         required: false,
       },
     },
-    { timestamps: true }
+    { timestamps: true, paranoid: true }
   );
 };

@@ -29,6 +29,7 @@ export default (sequelize, Sequelize) => {
       holeCount: {
         type: Sequelize.INTEGER,
       },
+      par: Sequelize.INTEGER,
       tees: {
         type: Sequelize.JSON,
       },
@@ -44,6 +45,7 @@ export default (sequelize, Sequelize) => {
     },
     {
       timestamps: true,
+      paranoid: true,
     }
   );
 };

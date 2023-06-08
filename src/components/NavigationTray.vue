@@ -14,7 +14,7 @@
         </router-link>
       </li>
       <li class="nav-tray_link-list_link-container">
-        <router-link class="nav-tray_link-list_link" to="/my-golf">
+        <router-link class="nav-tray_link-list_link" to="/stats/my">
           <font-awesome-icon :icon="['fas', 'list-ol']" />
           Stats
         </router-link>

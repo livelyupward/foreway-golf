@@ -1,60 +1,47 @@
 <template>
-  <h1 class="foreway-header">Foreway Golf</h1>
-  <div v-if="getUser !== undefined" id="homepage">
-    <section>
-      <button class="homepage_resume-round_button" v-if="getUser.currentRound !== null" @click="resumeCurrentRound">
-        Resume round
-      </button>
-      <p v-else>
-        You have no currently active rounds of golf. Click the Round button in the menu on the bottom of the screen to
-        start one.
-      </p>
-    </section>
-    <section class="homepage_recent-rounds card">
-      <h2 class="homepage_recent-rounds_header card-header">Recent Rounds</h2>
-      <table class="homepage_recent-round_table" v-if="recentRounds.length">
-        <thead class="homepage_recent-round_table-head">
-          <tr class="homepage_recent-round_table-head_row">
-            <th class="homepage_recent-round_table-head_row-header date">Date</th>
-            <th class="homepage_recent-round_table-head_row-header course-name">Course</th>
-            <th class="homepage_recent-round_table-head_row-header score">Score</th>
-          </tr>
-        </thead>
-        <tbody class="homepage_recent-round_table-body">
-          <tr class="homepage_recent-round_table-body_row" v-for="recentRound in recentRounds">
-            <td class="homepage_recent-round_table-body_row-cell">
-              {{ new Date(recentRound.updatedAt).toLocaleDateString() }}
-            </td>
-            <td class="homepage_recent-round_table-body_row-cell">{{ recentRound.course.name }}</td>
-            <td class="homepage_recent-round_table-body_row-cell">{{ strokesTotalled(recentRound.scores) }}</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="homepage_recent-rounds_disclaimer" v-else>
-        Once you have recorded a round, your recent rounds will appear here.
-      </p>
-    </section>
+  <div id="home-page">
+    <h1 class="foreway-header">Foreway Golf</h1>
+    <div v-if="getUser !== undefined" id="homepage">
+      <section>
+        <button class="homepage_resume-round_button" v-if="getUser.currentRound !== null" @click="resumeCurrentRound">
+          Resume round
+        </button>
+        <p v-else>
+          You have no currently active rounds of golf. Click the Round button in the menu on the bottom of the screen to
+          start one.
+        </p>
+      </section>
+      <Suspense>
+        <RecentRounds :strokes-totalled="strokesTotalled" />
+        <template #fallback>Loading recent rounds...</template>
+      </Suspense>
+      <Suspense>
+        <LowestRounds :strokes-totalled="strokesTotalled" />
+        <template #fallback> Loading lowest rounds... </template>
+      </Suspense>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import LowestRounds from '../components/LowestRounds.vue';
+import RecentRounds from '../components/RecentRounds.vue';
 
 const router = useRouter();
 const store = mainStore();
 const { getRecentUserRounds } = store;
 const { getUser } = storeToRefs(store);
 
-const getRecentRounds = await getRecentUserRounds();
+const userRecentRounds = await getRecentUserRounds();
 
-const recentRounds = ref(getRecentRounds);
+const recentRounds = ref(userRecentRounds);
 
 function resumeCurrentRound() {
   if (getUser.value) {
-    console.log('GU: ', getUser.value);
     router.push(`/round/${getUser.value.currentRound}`);
   }
 }
@@ -122,6 +109,7 @@ function strokesTotalled(scoresArray: any) {
   @include rounded-corners;
   background-color: #fff;
   border: 1px solid #ddd;
+  margin-bottom: 1rem;
   padding: 10px;
 
   .card-header {

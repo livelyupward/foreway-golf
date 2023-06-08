@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, NavigationGuardNext, RouteLocationNormalized } from 'vue-router';
 import { mainStore } from './store';
 import isDebug from './plugins/debugConsole';
+import { storeToRefs } from 'pinia';
 
 async function checkAuth(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
   const store = mainStore();
@@ -44,6 +45,24 @@ const routes = [
     component: () => import('./views/Home.vue'),
   },
   {
+    path: '/round/view/:id',
+    component: () => import('./views/RoundViewer.vue'),
+    props: true,
+    beforeEnter: async (to: RouteLocationNormalized) => {
+      const store = mainStore();
+      const { getUser } = storeToRefs(store);
+      const paramId = to.params.id;
+      // @ts-ignore
+      const roundToBeViewed = await store.getRoundById(paramId);
+
+      /*
+      Make sure round belongs to user before navigating to the round
+      We could change this later if we want to share rounds with others
+       */
+      if (getUser.value && roundToBeViewed.round.userId !== getUser.value.id) return false;
+    },
+  },
+  {
     name: 'Current round',
     path: '/round/:id',
     component: () => import('./views/CurrentRound.vue'),
@@ -55,8 +74,8 @@ const routes = [
   },
   {
     name: 'Stats',
-    path: '/my-golf',
-    component: () => import('./views/RoundViewer.vue'),
+    path: '/stats/my',
+    component: () => import('./views/Stats.vue'),
   },
   {
     name: 'Account',

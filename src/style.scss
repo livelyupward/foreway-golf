@@ -32,8 +32,8 @@ p {
 }
 
 button {
-  border: 1px solid #ddd;
   @include rounded-corners;
+  border: 1px solid #ddd;
   font-family: "Noto Sans", sans-serif;
   font-size: 1rem;
   padding: 6px 12px;
@@ -45,8 +45,8 @@ svg {
 }
 
 input {
-  border: 1px solid #bbb;
   @include rounded-corners;
+  border: 1px solid #bbb;
   padding: 3px 6px;
 }
 
@@ -57,5 +57,11 @@ input {
 .page-title {
   color: $primary;
   font-size: 2.5rem;
-  text-align: center;
+  font-weight: 900;
+}
+
+.back-button {
+  align-items: center;
+  color: $primary;
+  display: flex;
 }

@@ -1,5 +1,7 @@
 <template>
-  <h1 class="stats-page_title title">The Stats view is currently in development.</h1>
+  <div id="stats-page">
+    <h1 class="stats-page_title page-title">My Stats</h1>
+  </div>
 </template>
 
 <script setup lang="ts"></script>

@@ -13,6 +13,7 @@ export default async (db) => {
       state: 'IL',
       zip: '60107',
       holeCount: 9,
+      par: 36,
       tees: ['blue', 'white', 'red'],
       phoneNumber: '6304831881',
       webpage: 'https://streamwoodoaksgolf.com/',
