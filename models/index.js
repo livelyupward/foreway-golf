@@ -37,6 +37,13 @@ db.holes.belongsTo(db.courses, {
   as: 'course',
 });
 
+// course and round relations
+db.courses.hasMany(db.rounds, { as: 'rounds' });
+db.rounds.belongsTo(db.courses, {
+  foreignKey: 'courseId',
+  as: 'course',
+});
+
 // round and score relations
 db.rounds.hasMany(db.scores, { as: 'scores' });
 db.scores.belongsTo(db.rounds, {

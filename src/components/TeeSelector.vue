@@ -15,7 +15,13 @@
           </li>
         </ul>
         <div class="tee-selector_button-group">
-          <button class="tee-selector_button save" @click="$emit('saveTeeAndClose', selectedTeeBox)">Save</button>
+          <button
+            class="tee-selector_button save"
+            @click="$emit('saveTeeAndClose', selectedTeeBox)"
+            :disabled="!selectedTeeBox"
+          >
+            Save
+          </button>
           <button class="tee-selector_button cancel" @click="$emit('closeSelector')">Cancel</button>
         </div>
       </div>
@@ -33,7 +39,7 @@ const emit = defineEmits(['closeSelector', 'saveTeeAndClose']);
 
 const selectedOption = ref();
 
-const selectedTeeBox = ref('');
+const selectedTeeBox = ref();
 function setTee(teeString: string): void {
   selectedTeeBox.value = teeString;
   selectedTeeBox.value = teeString;
@@ -151,13 +157,20 @@ interface Course {
       }
 
       &.save {
-        background-color: $green;
-        border: 1px solid $green;
+        background-color: $primary;
+        border: 1px solid $primary;
+
+        &:disabled {
+          background-color: #dddddd;
+          border-color: #dddddd;
+          color: #888888;
+        }
       }
 
       &.cancel {
-        background-color: #d32f2f;
-        border: 1px solid #d32f2f;
+        @include red-btn;
+        //background-color: #d32f2f;
+        //border: 1px solid #d32f2f;
       }
     }
   }

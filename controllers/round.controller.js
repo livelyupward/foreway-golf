@@ -46,11 +46,25 @@ export const findAll = (req, res) => {
     });
 };
 
+export const findAllForUser = (req, res) => {
+  const userId = req.params.id;
+
+  Round.findAll({ where: { userId }, include: { all: true } })
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => {
+      res.status(500).send({
+        message: err.message || 'Some error occurred while retrieving tutorials.',
+      });
+    });
+};
+
 // Find a single Round with an id
 export const findOne = (req, res) => {
   const id = req.params.id;
 
-  Round.findByPk(id, { include: ['scores'] })
+  Round.findByPk(id, { include: { all: true } })
     .then((data) => {
       if (data) {
         let sortedScoresArray = [];
@@ -151,7 +165,8 @@ export const getRecentRounds = async (req, res) => {
     const userId = req.params.id;
     console.log('REQ id: ', userId);
     const receivedRoundsForUser = await Round.findAll({
-      where: { userId },
+      where: { userId, closed: true },
+      include: { all: true },
       limit: 5,
       order: [['updatedAt', 'DESC']],
     });

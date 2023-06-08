@@ -13,6 +13,7 @@ export default async (db) => {
       state: 'IL',
       zip: '60102',
       holeCount: 18,
+      par: 71,
       tees: ['red'],
       phoneNumber: '8476584400',
       webpage: 'https://golfclubofil.com/',

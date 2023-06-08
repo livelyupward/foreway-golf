@@ -13,6 +13,7 @@ export default (sequelize, Sequelize) => {
     },
     {
       timestamps: true,
+      paranoid: true,
     }
   );
 };

@@ -8,28 +8,32 @@ import {
   getRecentRounds,
   deleteOne,
   deleteAll,
+  findAllForUser,
 } from '../controllers/round.controller.js';
 
 export default (app) => {
-  // Create a new Tutorial
+  // Create a new Round
   router.post('/', create);
 
-  // Retrieve all Tutorials
+  // Retrieve all Rounds
   router.get('/', findAll);
 
-  // Retrieve a single Tutorial with id
+  // Retrieve all user Rounds
+  router.get('/:id/all', findAllForUser);
+
+  // Retrieve a single Round with id
   router.get('/:id', findOne);
 
-  // Update a Tutorial with id
+  // Update a Round with id
   router.put('/:id', update);
 
   // Retrieve 5 recent items
   router.get('/:id/recent', getRecentRounds);
 
-  // Delete a Tutorial with id
+  // Delete a Round with id
   router.delete('/:id', deleteOne);
 
-  // Delete all Tutorials
+  // Delete all Rounds
   router.delete('/', deleteAll);
 
   app.use('/api/round', router);
