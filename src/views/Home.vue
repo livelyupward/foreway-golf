@@ -47,6 +47,9 @@ function resumeCurrentRound() {
 }
 
 function strokesTotalled(scoresArray: any) {
+  if (scoresArray === undefined)
+    throw new Error('Strokes array not found. Check your strokes being passed to strokesTotalled.');
+
   let scoreTotal = 0;
 
   for (let i = 0; i < scoresArray.length; i++) {

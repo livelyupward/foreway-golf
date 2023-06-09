@@ -1,7 +1,7 @@
 <template>
   <section class="homepage_recent-rounds card">
     <h2 class="homepage_recent-rounds_header card-header">Recent Rounds</h2>
-    <table class="homepage_recent-round_table" v-if="recentRounds.length">
+    <table class="homepage_recent-round_table" v-if="recentRounds.length && typeof strokesTotalled === 'function'">
       <thead class="homepage_recent-round_table-head">
         <tr class="homepage_recent-round_table-head_row">
           <th class="homepage_recent-round_table-head_row-header date">Date</th>
@@ -12,10 +12,12 @@
       <tbody class="homepage_recent-round_table-body">
         <tr class="homepage_recent-round_table-body_row" v-for="recentRound in recentRounds">
           <td class="homepage_recent-round_table-body_row-cell">
-            {{ new Date(recentRound.updatedAt).toLocaleDateString() }}
+            {{ makeDatePretty(recentRound.updatedAt) }}
           </td>
           <td class="homepage_recent-round_table-body_row-cell">
-            <router-link :to="`/round/view/${recentRound.id}`">{{ recentRound.course.name }}</router-link>
+            <router-link :to="`/round/view/${recentRound.id}`">
+              {{ recentRound.course ? recentRound.course.name : '' }}
+            </router-link>
           </td>
           <td class="homepage_recent-round_table-body_row-cell">{{ strokesTotalled(recentRound.scores) }}</td>
         </tr>
@@ -29,7 +31,7 @@
 
 <script setup lang="ts">
 import { mainStore, Round } from '../store';
-import { Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 
 const store = mainStore();
 const { getRecentUserRounds } = store;
@@ -41,6 +43,13 @@ const props = defineProps({
 const userRecentRounds = await getRecentUserRounds();
 
 const recentRounds: Ref<Round[]> = ref(userRecentRounds);
+
+function makeDatePretty(dateString: Date | undefined) {
+  if (dateString === undefined)
+    throw new Error('Date string is missing from recent round. Please ensure the recent round is not malformed.');
+
+  return dateString ? new Date(dateString).toLocaleDateString() : new Date();
+}
 </script>
 
 <style scoped></style>

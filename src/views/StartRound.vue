@@ -64,8 +64,8 @@
 
 <script setup lang="ts">
 import { computed, Ref, ref } from 'vue';
-import { mainStore } from '../store';
-import { useRoute, useRouter } from 'vue-router';
+import { mainStore, type Course } from '../store';
+import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { type RoundSettings } from '../store';
@@ -89,7 +89,7 @@ const courseInViewer = ref();
 const teeSelectorActivated = ref(false);
 
 const alphaSortedCourses = computed(() => {
-  return courses.sort(function (a, b) {
+  return courses.sort(function (a: Course, b: Course) {
     return a.name.localeCompare(b.name);
   });
 });
