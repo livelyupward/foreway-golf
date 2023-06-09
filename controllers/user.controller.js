@@ -50,12 +50,13 @@ export const findAll = (req, res) => {
 export const findOne = (req, res) => {
   const email = req.params.email;
   console.log('Email is ', email);
-  User.findOne({
+  User.findAll({
     where: {
-      email,
+      email: email,
     },
   })
     .then((data) => {
+      console.log('user data: ', data);
       if (data.length) {
         res.send(data);
       } else {
