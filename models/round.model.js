@@ -16,7 +16,12 @@ export default (sequelize, Sequelize) => {
       },
       groupId: Sequelize.INTEGER,
       closed: Sequelize.BOOLEAN,
+      finalScore: {
+        type: Sequelize.INTEGER,
+        default: null,
+        required: false,
+      },
     },
-    { timestamps: true }
+    { timestamps: true, paranoid: true }
   );
 };

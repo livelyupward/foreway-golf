@@ -18,6 +18,9 @@ import seedSettlersHill from './seeds/settlers-hill.seed.js';
 import seedHilldale from './seeds/hilldale.seed.js';
 import seedArlingtonLakes from './seeds/arlington-lakes-gc.seed.js';
 import seedTannaFarms from './seeds/tanna-farms.seed.js';
+import seedBartlettHills from './seeds/bartlett-hills.seed.js';
+import seedFoxRun from './seeds/fox-run.seed.js';
+import seedOrchardValley from './seeds/orchard-valley.seed.js';
 import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
@@ -44,16 +47,19 @@ app.use(Express.static('/public'));
 db.sequelize
   // .sync({ force: true })
   .sync()
-  .then(async () => {
-    // await seedGCI(db);
-    // await seedStreamwoodOaks(db);
-    // await seedSettlersHill(db);
-    // await seedDave(db);
-    // await seedHilldale(db);
-    // await seedArlingtonLakes(db);
-    // await seedTannaFarms(db);
-    // console.log('Seeds run successfully');
-  })
+  // .then(async () => {
+  //   await seedGCI(db);
+  //   await seedStreamwoodOaks(db);
+  //   await seedSettlersHill(db);
+  //   await seedDave(db);
+  //   await seedHilldale(db);
+  //   await seedArlingtonLakes(db);
+  //   await seedTannaFarms(db);
+  //   await seedBartlettHills(db);
+  //   await seedFoxRun(db);
+  //   await seedOrchardValley(db);
+  //   console.log('Seeds run successfully');
+  // })
   .then(() => {
     console.log('Drop and re-sync db.');
   })

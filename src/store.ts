@@ -186,19 +186,15 @@ export const mainStore = defineStore('main', () => {
         const userDbFetch: Response = await fetch(`/api/users/${cachedTokenResponse.email}`);
 
         if (userDbFetch.status === 404) return await router.push('/auth');
-        isDebug() && console.log('passed 404 check');
         const userDbResponse: object[] = await userDbFetch.json();
 
         await setUser(userDbResponse[0]);
-        isDebug() && console.log('passed setUser');
         if (getUser.value && getUser.value.currentRound) {
           isDebug() && console.log('current: ', getUser.value?.currentRound);
           const getRoundRequest: Response = await fetch(`/api/round/${getUser.value.currentRound}`);
           currentRound.value = await getRoundRequest.json();
         } else {
-          isDebug() && console.log('the problem!');
         }
-        isDebug() && console.log('passed the important if');
         // @ts-ignore
         return userDbResponse[0];
       } catch (error) {
@@ -277,6 +273,43 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function getAllUserRounds(userId: number | undefined) {
+    if (userId === undefined) return { rounds: [] };
+
+    try {
+      const allUserRoundsByIdRequest = await fetch(`/api/round/${userId}/all`);
+      const allUserRoundsByIdResponse = await allUserRoundsByIdRequest.json();
+
+      return { rounds: allUserRoundsByIdResponse };
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async function getRoundById(id: string | undefined) {
+    try {
+      const roundByIdRequest = await fetch(`/api/round/${id}`);
+      const roundByIdResponse = await roundByIdRequest.json();
+
+      return { round: roundByIdResponse };
+    } catch (error) {
+      return { error };
+    }
+  }
+
+  async function getLowestRounds(userId: number | undefined) {
+    if (userId === undefined) return { lowRounds: [] };
+
+    try {
+      const lowestRoundsByIdRequest = await fetch(`/api/round/${userId}/lowest`);
+      const lowestRoundsByIdResponse = await lowestRoundsByIdRequest.json();
+
+      return { lowRounds: lowestRoundsByIdResponse };
+    } catch (error) {
+      return { error };
+    }
+  }
+
   return {
     computedScoreModal,
     currentHoleInScoreModal,
@@ -297,6 +330,9 @@ export const mainStore = defineStore('main', () => {
     submitScore,
     submitEditedScore,
     closeRound,
+    getRoundById,
+    getLowestRounds,
+    getAllUserRounds,
   };
 });
 
@@ -307,6 +343,9 @@ export interface Round {
   closed: boolean;
   scores: Array<Score>;
   holes?: Array<Hole>;
+  updatedAt?: Date;
+  course?: Course;
+  totalStrokes?: number;
 }
 
 export interface Score {

@@ -13,6 +13,7 @@ export default async (db) => {
       state: 'IL',
       zip: '60510',
       holeCount: 18,
+      par: 71,
       tees: ['white'],
       phoneNumber: '6302321636',
       webpage: 'http://www.settlershill.com/index.htm',

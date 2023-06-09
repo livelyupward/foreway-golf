@@ -17,6 +17,7 @@ import {
   faUserMinus,
   faCircleQuestion,
   faPhoneVolume,
+  faCaretLeft,
   faDesktop,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
@@ -33,10 +34,11 @@ library.add(
   faUserGear,
   faFlag,
   faCircleCheck,
-  faTriangleExclamation,
   faUserMinus,
   faCircleQuestion,
   faPhoneVolume,
+  faCaretLeft,
+  faTriangleExclamation,
   faDesktop
 );
 

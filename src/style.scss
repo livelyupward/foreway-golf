@@ -1,7 +1,7 @@
 html,
 body {
   -webkit-font-smoothing: antialiased;
-  background-color: #fff;
+  background-color: #f7f7f7;
   box-sizing: border-box;
   color: #333;
   font-family: "Noto Sans", sans-serif;
@@ -23,13 +23,17 @@ h6 {
   line-height: 1;
 }
 
+h1.title {
+  line-height: 1.25;
+}
+
 p {
   line-height: 1.5;
 }
 
 button {
-  border: 1px solid #ddd;
   @include rounded-corners;
+  border: 1px solid #ddd;
   font-family: "Noto Sans", sans-serif;
   font-size: 1rem;
   padding: 6px 12px;
@@ -41,8 +45,8 @@ svg {
 }
 
 input {
-  border: 1px solid #bbb;
   @include rounded-corners;
+  border: 1px solid #bbb;
   padding: 3px 6px;
 }
 
@@ -51,6 +55,13 @@ input {
 }
 
 .page-title {
+  color: $primary;
   font-size: 2.5rem;
-  text-align: center;
+  font-weight: 900;
+}
+
+.back-button {
+  align-items: center;
+  color: $primary;
+  display: flex;
 }

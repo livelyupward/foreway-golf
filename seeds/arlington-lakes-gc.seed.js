@@ -15,6 +15,7 @@ export default async (db) => {
       about:
         "Arlington Lakes Golf Club's, 90-acres course offers something for every golfer.  The course features strategically placed; fescue edged bunkers that bring a natural look to the course.  Living up to its name, water comes into play on 13 of the 18 holes.  You will find its design will truly test your skills as a golfer.",
       holeCount: 18,
+      par: 68,
       tees: ['white'],
       phoneNumber: '8475773030',
       webpage: 'https://www.ahpd.org/golf/arlington-lakes-golf-club/',

@@ -95,7 +95,9 @@ interface CourseInfo {
     }
 
     .course-viewer_modal-title {
+      color: $primary;
       font-size: 2rem;
+      font-weight: 900;
       margin: 0;
       padding: 15px;
       text-align: center;

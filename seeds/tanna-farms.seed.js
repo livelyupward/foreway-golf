@@ -15,6 +15,7 @@ export default async (db) => {
       about:
         'Tanna Farms offers a fantastic experience for golfers of every level. An array of tee placements renders the course friendly to golfers of all abilities. So tackle two jaw-dropping par 5s, from the back tees if you dare; test your wiles on a par 3 that requires dart-throwing precision to stick your shot on a postage-stamp-sized green. Relish every wonderful hole in between. And save your wits for a sequence of final holes that will demand every shot in your repertoire.',
       holeCount: 18,
+      par: 71,
       tees: ['white'],
       phoneNumber: '6302324300',
       webpage: 'https://www.tannafarms.com/',
