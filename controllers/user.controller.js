@@ -50,9 +50,9 @@ export const findAll = (req, res) => {
 export const findOne = (req, res) => {
   const email = req.params.email;
   console.log('Email is ', email);
-  User.findAll({
+  User.findOne({
     where: {
-      email: email,
+      email,
     },
   })
     .then((data) => {
@@ -67,6 +67,7 @@ export const findOne = (req, res) => {
     .catch((err) => {
       res.status(500).send({
         message: 'Error retrieving User with email=' + email,
+        error: err,
       });
     });
 };
