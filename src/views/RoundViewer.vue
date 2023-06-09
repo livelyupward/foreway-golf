@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { mainStore } from '../store';
+import { mainStore, type Score } from '../store';
 import { storeToRefs } from 'pinia';
 import { computed, ComputedRef } from 'vue';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -135,10 +135,11 @@ const scoreAgainstPar = computed(() => {
   }
 });
 
-function calculateScores(scoresArray) {
+function calculateScores(scoresArray: Score[]) {
   let startingTotal = 0;
 
   for (let j = 0; j < scoresArray.length; j++) {
+    // @ts-ignore
     startingTotal += scoresArray[j].strokes;
   }
 

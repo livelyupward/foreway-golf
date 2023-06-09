@@ -45,21 +45,21 @@ app.use(
 app.use(Express.static('/public'));
 
 db.sequelize
-  // .sync({ force: true })
-  .sync()
-  // .then(async () => {
-  //   await seedGCI(db);
-  //   await seedStreamwoodOaks(db);
-  //   await seedSettlersHill(db);
-  //   await seedDave(db);
-  //   await seedHilldale(db);
-  //   await seedArlingtonLakes(db);
-  //   await seedTannaFarms(db);
-  //   await seedBartlettHills(db);
-  //   await seedFoxRun(db);
-  //   await seedOrchardValley(db);
-  //   console.log('Seeds run successfully');
-  // })
+  .sync({ force: true })
+  // .sync()
+  .then(async () => {
+    await seedGCI(db);
+    await seedStreamwoodOaks(db);
+    await seedSettlersHill(db);
+    await seedDave(db);
+    await seedHilldale(db);
+    await seedArlingtonLakes(db);
+    await seedTannaFarms(db);
+    await seedBartlettHills(db);
+    await seedFoxRun(db);
+    await seedOrchardValley(db);
+    console.log('Seeds run successfully');
+  })
   .then(() => {
     console.log('Drop and re-sync db.');
   })
