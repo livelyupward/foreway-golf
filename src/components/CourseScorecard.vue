@@ -33,7 +33,7 @@
 
           <tr
             v-if="getCurrentCourse.holeCount > 9"
-            v-for="(hole, index) in props.holes.slice(9, 18)"
+            v-for="(hole, index) in props.holes.slice(9)"
             class="scorecard-table_row"
           >
             <th class="scorecard-table_row-header">{{ hole.number }}</th>
@@ -130,7 +130,7 @@ const backNineScoreTotal: ComputedRef<Back9Total> = computed(() => {
     backParTotal += back9Holes[i].par;
     if (getCurrentRound.value.scores[i + 9] && getCurrentRound.value.scores[i + 9].strokes !== null) {
       // @ts-ignore
-      back9Total += getCurrentRound.value.scores[i + 8].strokes;
+      back9Total += getCurrentRound.value.scores[i + 9].strokes;
     }
   }
 
