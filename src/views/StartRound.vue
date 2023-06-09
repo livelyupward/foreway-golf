@@ -9,7 +9,7 @@
       {{ roundConfig.courseName }}
     </span>
     <section class="start-round card" :class="`${stageIndex === 0 ? 'active' : ''}`">
-      <h2 class="start-round_container-title">Course</h2>
+      <h2 class="start-round_container-title card-header">Course</h2>
       <div class="start-round_container" v-show="stageIndex === 0">
         <ul class="start-round_course-list">
           <li v-for="(course, index) in alphaSortedCourses" class="start-round_course-item">

@@ -20,6 +20,7 @@ import seedArlingtonLakes from './seeds/arlington-lakes-gc.seed.js';
 import seedTannaFarms from './seeds/tanna-farms.seed.js';
 import seedBartlettHills from './seeds/bartlett-hills.seed.js';
 import seedFoxRun from './seeds/fox-run.seed.js';
+import seedOrchardValley from './seeds/orchard-valley.seed.js';
 import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
@@ -56,6 +57,7 @@ db.sequelize
   //   await seedTannaFarms(db);
   //   await seedBartlettHills(db);
   //   await seedFoxRun(db);
+  //   await seedOrchardValley(db);
   //   console.log('Seeds run successfully');
   // })
   .then(() => {

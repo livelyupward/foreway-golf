@@ -113,6 +113,7 @@ function strokesTotalled(scoresArray: any) {
   padding: 10px;
 
   .card-header {
+    font-size: 1.75rem;
     margin-bottom: 1rem;
     margin-top: 0;
   }

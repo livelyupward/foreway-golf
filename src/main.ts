@@ -34,11 +34,11 @@ library.add(
   faUserGear,
   faFlag,
   faCircleCheck,
-  faTriangleExclamation,
   faUserMinus,
   faCircleQuestion,
   faPhoneVolume,
   faCaretLeft,
+  faTriangleExclamation,
   faDesktop
 );
 

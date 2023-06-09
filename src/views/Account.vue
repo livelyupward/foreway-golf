@@ -1,5 +1,11 @@
 <template>
-  <h1 class="account-page_title title">The Account view is currently in development.</h1>
+  <div id="account-page">
+    <h1 class="account-page_title page-title">My Account</h1>
+    <p>
+      <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
+      Page is under development
+    </p>
+  </div>
 </template>
 
 <script setup lang="ts"></script>
