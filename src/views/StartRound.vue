@@ -12,7 +12,7 @@
       <h2 class="start-round_container-title">Course</h2>
       <div class="start-round_container" v-show="stageIndex === 0">
         <ul class="start-round_course-list">
-          <li v-for="(course, index) in courses" class="start-round_course-item">
+          <li v-for="(course, index) in alphaSortedCourses" class="start-round_course-item">
             <span class="start-round_course-item_name">{{ course.name }}</span>
             <button class="start-round_course-item_button info" @click="activateCourseViewer(index)">
               <font-awesome-icon :icon="['fas', 'circle-question']"></font-awesome-icon>
@@ -43,27 +43,27 @@
     >
       Start Round
     </button>
+    <Teleport to="body">
+      <CourseViewer
+        v-if="courseViewerActivated"
+        @set-course="selectCourse"
+        @close-viewer="courseViewerActivated = false"
+        :course-info="activeCourse"
+      />
+    </Teleport>
+    <Teleport to="body">
+      <TeeSelector
+        v-if="teeSelectorActivated && roundConfig.courseName"
+        :course-info="activeCourse"
+        @close-selector="closeModals"
+        @save-tee-and-close="setTeeFromModal"
+      ></TeeSelector>
+    </Teleport>
   </div>
-  <Teleport to="body">
-    <CourseViewer
-      v-if="courseViewerActivated"
-      @set-course="selectCourse"
-      @close-viewer="courseViewerActivated = false"
-      :course-info="activeCourse"
-    />
-  </Teleport>
-  <Teleport to="body">
-    <TeeSelector
-      v-if="teeSelectorActivated && roundConfig.courseName"
-      :course-info="activeCourse"
-      @close-selector="closeModals"
-      @save-tee-and-close="setTeeFromModal"
-    ></TeeSelector>
-  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { Ref, ref } from 'vue';
+import { computed, Ref, ref } from 'vue';
 import { mainStore } from '../store';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
@@ -73,7 +73,6 @@ import CourseViewer from '../components/CourseViewer.vue';
 import TeeSelector from '../components/TeeSelector.vue';
 
 const router = useRouter();
-const route = useRoute();
 const store = mainStore();
 const { createNewRound, getAllCourses } = store;
 const { getUser } = storeToRefs(store);
@@ -88,6 +87,12 @@ const stageIndex = ref(0);
 const courseViewerActivated = ref(false);
 const courseInViewer = ref();
 const teeSelectorActivated = ref(false);
+
+const alphaSortedCourses = computed(() => {
+  return courses.sort(function (a, b) {
+    return a.name.localeCompare(b.name);
+  });
+});
 
 function selectCourse(index: number): void {
   const courseSelected = courseInViewer.value || courses[index];

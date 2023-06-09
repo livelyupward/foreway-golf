@@ -1,7 +1,7 @@
 <template>
   <section class="homepage_best-rounds card">
     <h2 class="homepage_recent-best_header card-header">Lowest Rounds</h2>
-    <table class="homepage_recent-round_table" v-if="lowestRounds.length">
+    <table class="homepage_recent-round_table" v-if="lowestRounds.length && lowestRounds.length > 5">
       <thead class="homepage_recent-round_table-head">
         <tr class="homepage_recent-round_table-head_row">
           <th class="homepage_recent-round_table-head_row-header date">Date</th>
@@ -21,6 +21,9 @@
         </tr>
       </tbody>
     </table>
+    <p class="homepage_recent-round_disclaimer" v-else>
+      This will show your lowest rounds once you've played 6 or more rounds.
+    </p>
   </section>
 </template>
 
@@ -55,4 +58,8 @@ const lowestRounds: ComputedRef<Round[]> = computed(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.homepage_recent-round_disclaimer {
+  margin-bottom: 0;
+}
+</style>
