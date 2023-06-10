@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody class="homepage_recent-round_table-body">
-        <tr class="homepage_recent-round_table-body_row" v-for="lowRound in lowestRounds">
+        <tr class="homepage_recent-round_table-body_row" v-for="lowRound in lowestRounds" :key="lowRound.id">
           <td class="homepage_recent-round_table-body_row-cell">
             {{ makeDatePretty(lowRound.updatedAt) }}
           </td>

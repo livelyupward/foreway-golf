@@ -310,6 +310,25 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function changeRoundTotalSetting(newValue: boolean) {
+    try {
+      if (getUser.value === undefined) throw new Error('No user is present before preferences changed.');
+
+      const roundSettingChangeRequest = await fetch(`/api/users/${getUser.value.id}/round-total`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...getUser.value, showRoundTotals: newValue }),
+      });
+      const roundSettingChangeResponse = await roundSettingChangeRequest.json();
+
+      return { user: roundSettingChangeResponse };
+    } catch (error) {
+      return { error };
+    }
+  }
+
   return {
     computedScoreModal,
     currentHoleInScoreModal,
@@ -333,6 +352,7 @@ export const mainStore = defineStore('main', () => {
     getRoundById,
     getLowestRounds,
     getAllUserRounds,
+    changeRoundTotalSetting,
   };
 });
 
@@ -370,13 +390,14 @@ interface EditedScore extends Score {
   userId: number;
 }
 
-interface User {
+export interface User {
   id: number;
   name: string;
   email: string;
   currentRound: number | null;
   createdAt: string;
   updatedAt: string;
+  showRoundTotals: boolean;
 }
 
 export interface Hole {

@@ -2,29 +2,32 @@
   <div id="home-page">
     <h1 class="foreway-header">Foreway Golf</h1>
     <div v-if="getUser !== undefined" id="homepage">
-      <section>
+      <section class="homepage_resume-round_wrapper">
         <button class="homepage_resume-round_button" v-if="getUser.currentRound !== null" @click="resumeCurrentRound">
-          Resume round
+          Resume current round
         </button>
-        <p v-else>
+        <p class="homepage_resume-round_disclaimer" v-else>
           You have no currently active rounds of golf. Click the Round button in the menu on the bottom of the screen to
           start one.
         </p>
       </section>
       <Suspense>
         <RecentRounds :strokes-totalled="strokesTotalled" />
-        <template #fallback>Loading recent rounds...</template>
+        <template #fallback>
+          <p>Loading recent rounds...</p>
+        </template>
       </Suspense>
       <Suspense>
         <LowestRounds :strokes-totalled="strokesTotalled" />
-        <template #fallback> Loading lowest rounds... </template>
+        <template #fallback>
+          <p>Loading lowest rounds...</p>
+        </template>
       </Suspense>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
@@ -33,12 +36,7 @@ import RecentRounds from '../components/RecentRounds.vue';
 
 const router = useRouter();
 const store = mainStore();
-const { getRecentUserRounds } = store;
 const { getUser } = storeToRefs(store);
-
-const userRecentRounds = await getRecentUserRounds();
-
-const recentRounds = ref(userRecentRounds);
 
 function resumeCurrentRound() {
   if (getUser.value) {
@@ -75,6 +73,7 @@ function strokesTotalled(scoresArray: any) {
 
 .homepage_resume-round_button {
   @include green-btn;
+  margin-bottom: 1rem;
 }
 
 .homepage_recent-round_table {

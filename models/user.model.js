@@ -11,6 +11,7 @@ export default (sequelize, Sequelize) => {
       currentRound: {
         type: Sequelize.INTEGER,
       },
+      showRoundTotals: Sequelize.BOOLEAN,
     },
     {
       timestamps: true,

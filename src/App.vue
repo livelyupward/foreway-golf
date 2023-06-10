@@ -1,21 +1,24 @@
 <template>
-  <Suspense>
-    <div id="app-container">
-      <main id="main-panel">
-        <router-view v-slot="{ Component }">
-          <Transition name="fade" mode="out-in">
-            <component :is="Component"></component>
-          </Transition>
-        </router-view>
-      </main>
-      <NavigationTray />
-    </div>
-    <template #fallback> Loading... </template>
-  </Suspense>
+  <MiddleMan>
+    <Suspense>
+      <div id="app-container">
+        <main id="main-panel">
+          <router-view v-slot="{ Component }">
+            <Transition name="fade" mode="out-in">
+              <component :is="Component"></component>
+            </Transition>
+          </router-view>
+        </main>
+        <NavigationTray />
+      </div>
+      <template #fallback> Loading... </template>
+    </Suspense>
+  </MiddleMan>
 </template>
 
 <script setup lang="ts">
 import NavigationTray from './components/NavigationTray.vue';
+import MiddleMan from './components/providers/MiddleMan.vue';
 </script>
 
 <style lang="scss">

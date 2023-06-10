@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody class="homepage_recent-round_table-body">
-        <tr class="homepage_recent-round_table-body_row" v-for="recentRound in recentRounds">
+        <tr class="homepage_recent-round_table-body_row" v-for="recentRound in recentRounds" :key="recentRound.id">
           <td class="homepage_recent-round_table-body_row-cell">
             {{ makeDatePretty(recentRound.updatedAt) }}
           </td>

@@ -65,4 +65,11 @@ db.scores.belongsTo(db.users, {
   as: 'user',
 });
 
+// user and round relations
+db.users.hasMany(db.rounds, { as: 'round' });
+db.rounds.belongsTo(db.users, {
+  foreignKey: 'userId',
+  as: 'user',
+});
+
 export default db;

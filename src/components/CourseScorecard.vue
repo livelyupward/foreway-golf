@@ -25,7 +25,7 @@
               }}</span>
             </td>
           </tr>
-          <tr>
+          <tr v-if="getUser.showRoundTotals">
             <td class="scorecard-table_row-total" colspan="2">Front</td>
             <td class="scorecard-table_row-total_par">{{ frontNineScoreTotal.frontParTotal }}</td>
             <td>{{ frontNineScoreTotal.front9Total }}</td>
@@ -34,6 +34,7 @@
           <tr
             v-if="getCurrentCourse.holeCount > 9"
             v-for="(hole, index) in props.holes.slice(9)"
+            :key="hole.id"
             class="scorecard-table_row"
           >
             <th class="scorecard-table_row-header">{{ hole.number }}</th>
@@ -49,12 +50,12 @@
               }}</span>
             </td>
           </tr>
-          <tr v-if="getCurrentCourse.holeCount > 9">
+          <tr v-if="getCurrentCourse.holeCount > 9 && getUser.showRoundTotals">
             <td class="scorecard-table_row-total" colspan="2">Back</td>
             <td class="scorecard-table_row-total_par">{{ backNineScoreTotal.backParTotal }}</td>
             <td>{{ backNineScoreTotal.back9Total }}</td>
           </tr>
-          <tr v-if="getCurrentCourse.holeCount > 9">
+          <tr v-if="getCurrentCourse.holeCount > 9 && getUser.showRoundTotals">
             <td class="scorecard-table_row-total final-row" colspan="2">Total</td>
             <td class="scorecard-table_row-total_par">
               {{ frontNineScoreTotal.frontParTotal + backNineScoreTotal.backParTotal }}
@@ -74,7 +75,7 @@ import type { Hole } from '../store';
 import { computed, ComputedRef } from 'vue';
 
 const store = mainStore();
-const { getCurrentRound, getCurrentCourse } = storeToRefs(store);
+const { getCurrentRound, getCurrentCourse, getUser } = storeToRefs(store);
 
 const props = defineProps<HoleProp>();
 const emit = defineEmits(['clickScore']);
