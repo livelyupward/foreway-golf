@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import { Ref, ref, watch, inject } from 'vue';
-import { mainStore } from '../store';
+import { mainStore, type MiddleMan } from '../store';
 import { storeToRefs } from 'pinia';
 
 const store = mainStore();
@@ -30,7 +30,7 @@ const { changeRoundTotalSetting, setUser } = store;
 const { getUser } = storeToRefs(store);
 const displayRoundTotals: Ref<boolean> = ref(getUser.value ? getUser.value.showRoundTotals : false);
 
-const message = inject('message');
+const message = inject('message') as MiddleMan;
 
 watch(displayRoundTotals, async (newValue, oldValue) => {
   if (newValue !== oldValue) {

@@ -1,5 +1,5 @@
 <template>
-  <div id="course-scorecard" v-if="holes?.length && getCurrentCourse">
+  <div id="course-scorecard" v-if="holes?.length && getCurrentCourse && getUser">
     <div class="scorecard-table_container">
       <table class="scorecard-table">
         <thead>

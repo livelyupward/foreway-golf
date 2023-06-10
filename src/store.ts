@@ -452,3 +452,8 @@ export interface Toggles {
   hazard: boolean;
   penalty: boolean;
 }
+
+export interface MiddleMan {
+  success: (messageToShowInFunc: string) => void;
+  reject: (messageToShowInFunc: string) => void;
+}
