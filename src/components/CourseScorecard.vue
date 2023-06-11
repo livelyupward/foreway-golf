@@ -6,9 +6,9 @@
           <tr class="scorecard-table_row heading">
             <th class="scorecard-table_row-header">Hole</th>
             <th class="scorecard-table_row-header">Yards</th>
+            <th class="scorecard-table_row-header">Par</th>
             <th class="scorecard-table_row-header">GIR</th>
             <th class="scorecard-table_row-header">FW</th>
-            <th class="scorecard-table_row-header">Par</th>
             <th class="scorecard-table_row-header">Score</th>
           </tr>
         </thead>
@@ -16,13 +16,21 @@
           <tr v-for="(hole, index) in props.holes.slice(0, 9)" class="scorecard-table_row">
             <th class="scorecard-table_row-header">{{ hole.number }}</th>
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
-            <td class="scorecard-table_row-item">
-              {{ getCurrentRound.scores[index] && getCurrentRound.scores[index].gir ? 'Y' : '' }}
-            </td>
-            <td class="scorecard-table_row-item">
-              {{ getCurrentRound.scores[index] && getCurrentRound.scores[index].fairway ? 'Y' : '' }}
-            </td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
+            <td
+              class="scorecard-table_row-item"
+              v-if="getCurrentRound.scores[index] && getCurrentRound.scores[index].gir"
+            >
+              <font-awesome-icon :icon="['fas', 'check']" />
+            </td>
+            <td class="scorecard-table_row-item" v-else></td>
+            <td
+              class="scorecard-table_row-item"
+              v-if="getCurrentRound.scores[index] && getCurrentRound.scores[index].fairway"
+            >
+              <font-awesome-icon :icon="['fas', 'check']" />
+            </td>
+            <td class="scorecard-table_row-item" v-else></td>
             <td
               @click="activateScoreFormFromScorecard(hole)"
               class="scorecard-table_row-item score"
@@ -48,13 +56,21 @@
           >
             <th class="scorecard-table_row-header">{{ hole.number }}</th>
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
-            <td class="scorecard-table_row-item">
-              {{ getCurrentRound.scores[index + 9] && getCurrentRound.scores[index].gir ? 'Y' : '' }}
-            </td>
-            <td class="scorecard-table_row-item">
-              {{ getCurrentRound.scores[index + 9] && getCurrentRound.scores[index].fairway ? 'Y' : '' }}
-            </td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
+            <td
+              class="scorecard-table_row-item"
+              v-if="getCurrentRound.scores[index + 9] && getCurrentRound.scores[index + 9].gir"
+            >
+              <font-awesome-icon :icon="['fas', 'check']" />
+            </td>
+            <td class="scorecard-table_row-item" v-else></td>
+            <td
+              class="scorecard-table_row-item"
+              v-if="getCurrentRound.scores[index + 9] && getCurrentRound.scores[index + 9].fairway"
+            >
+              <font-awesome-icon :icon="['fas', 'check']" />
+            </td>
+            <td class="scorecard-table_row-item" v-else></td>
             <td
               @click="activateScoreFormFromScorecard(hole)"
               class="scorecard-table_row-item score"

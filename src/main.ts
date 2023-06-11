@@ -14,6 +14,7 @@ import {
   faUserGear,
   faFlag,
   faTriangleExclamation,
+  faCheck,
   faUserMinus,
   faCircleQuestion,
   faPhoneVolume,
@@ -39,6 +40,7 @@ library.add(
   faPhoneVolume,
   faCaretLeft,
   faTriangleExclamation,
+  faCheck,
   faDesktop
 );
 
