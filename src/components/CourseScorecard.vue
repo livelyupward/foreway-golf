@@ -6,6 +6,8 @@
           <tr class="scorecard-table_row heading">
             <th class="scorecard-table_row-header">Hole</th>
             <th class="scorecard-table_row-header">Yards</th>
+            <th class="scorecard-table_row-header">GIR</th>
+            <th class="scorecard-table_row-header">FW</th>
             <th class="scorecard-table_row-header">Par</th>
             <th class="scorecard-table_row-header">Score</th>
           </tr>
@@ -14,21 +16,28 @@
           <tr v-for="(hole, index) in props.holes.slice(0, 9)" class="scorecard-table_row">
             <th class="scorecard-table_row-header">{{ hole.number }}</th>
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
+            <td class="scorecard-table_row-item">
+              {{ getCurrentRound.scores[index] && getCurrentRound.scores[index].gir ? 'Y' : '' }}
+            </td>
+            <td class="scorecard-table_row-item">
+              {{ getCurrentRound.scores[index] && getCurrentRound.scores[index].fairway ? 'Y' : '' }}
+            </td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
             <td
               @click="activateScoreFormFromScorecard(hole)"
               class="scorecard-table_row-item score"
               :class="strokeCalculate(getCurrentRound.scores[index]?.strokes, hole.par)"
             >
-              <span class="scorecard-table_row-item_span">{{
-                getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : ''
-              }}</span>
+              <span class="scorecard-table_row-item_span">
+                {{ getCurrentRound.scores[index] ? getCurrentRound.scores[index].strokes : '' }}
+              </span>
             </td>
           </tr>
           <tr v-if="getUser.showRoundTotals">
             <td class="scorecard-table_row-total" colspan="2">Front</td>
             <td class="scorecard-table_row-total_par">{{ frontNineScoreTotal.frontParTotal }}</td>
             <td>{{ frontNineScoreTotal.front9Total }}</td>
+            `
           </tr>
 
           <tr
@@ -39,15 +48,21 @@
           >
             <th class="scorecard-table_row-header">{{ hole.number }}</th>
             <td class="scorecard-table_row-item">{{ hole.yardage }}</td>
+            <td class="scorecard-table_row-item">
+              {{ getCurrentRound.scores[index + 9] && getCurrentRound.scores[index].gir ? 'Y' : '' }}
+            </td>
+            <td class="scorecard-table_row-item">
+              {{ getCurrentRound.scores[index + 9] && getCurrentRound.scores[index].fairway ? 'Y' : '' }}
+            </td>
             <td class="scorecard-table_row-item">{{ hole.par }}</td>
             <td
               @click="activateScoreFormFromScorecard(hole)"
               class="scorecard-table_row-item score"
               :class="strokeCalculate(getCurrentRound.scores[index + 9]?.strokes, hole.par)"
             >
-              <span class="scorecard-table_row-item_span">{{
-                getCurrentRound.scores[index + 9] ? getCurrentRound.scores[index + 9].strokes : ''
-              }}</span>
+              <span class="scorecard-table_row-item_span">
+                {{ getCurrentRound.scores[index + 9] ? getCurrentRound.scores[index + 9].strokes : '' }}
+              </span>
             </td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9 && getUser.showRoundTotals">
@@ -155,6 +170,7 @@ interface Front9Total {
 .scorecard-table {
   @include rounded-corners;
   border-spacing: 0;
+  padding-bottom: 0.375rem;
   text-align: center;
   width: 100%;
 
@@ -200,6 +216,15 @@ interface Front9Total {
     &:not(:last-of-type) {
       border-bottom: none;
       border-right: none;
+    }
+  }
+
+  tbody {
+    tr:last-child {
+      th,
+      td {
+        border-bottom: 1px solid #bbb;
+      }
     }
   }
 }
@@ -254,8 +279,10 @@ interface Front9Total {
 
     &.heading {
       th {
-        color: #18a058;
+        background-color: $primary;
+        color: $white;
         font-weight: 700;
+        padding: 0.25rem 0.375rem;
       }
     }
 

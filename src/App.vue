@@ -1,6 +1,6 @@
 <template>
-  <MiddleMan>
-    <Suspense>
+  <Suspense>
+    <MiddleMan>
       <div id="app-container">
         <main id="main-panel">
           <router-view v-slot="{ Component }">
@@ -12,8 +12,8 @@
         <NavigationTray />
       </div>
       <template #fallback> Loading... </template>
-    </Suspense>
-  </MiddleMan>
+    </MiddleMan>
+  </Suspense>
 </template>
 
 <script setup lang="ts">

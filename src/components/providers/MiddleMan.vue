@@ -1,8 +1,8 @@
 <template>
   <slot></slot>
-  <Transition name="scaler">
-    <Teleport to="body" v-if="modalActivated">
-      <div class="middleman-stage">
+  <Teleport to="body">
+    <Transition name="modal">
+      <div class="middleman-stage" v-if="modalActivated">
         <div class="middleman-content">
           <div class="middleman-content_frame success" v-if="messageType === 'success'">
             <p class="middleman-content_text">{{ messageText }}</p>
@@ -12,8 +12,8 @@
           </div>
         </div>
       </div>
-    </Teleport>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -82,16 +82,25 @@ provide('message', message());
     padding: 0.125rem 0.625rem;
     text-align: center;
     width: 75%;
+
+    &.reject {
+      border-color: $red;
+      color: $red;
+    }
   }
 }
 
-.scaler-enter-active,
-.scaler-leave-active {
-  transition: opacity 0.5s ease;
+.modal-enter-from {
+  opacity: 0;
 }
 
-.scaler-enter-from,
-.scaler-leave-to {
+.modal-leave-to {
   opacity: 0;
+}
+
+.modal-enter-from .modal-container,
+.modal-leave-to .modal-container {
+  -webkit-transform: scale(1.1);
+  transform: scale(1.1);
 }
 </style>

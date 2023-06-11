@@ -57,9 +57,13 @@ const lowestRounds: ComputedRef<Round[]> = computed(() => {
     round.totalStrokes = interimTotal;
   });
 
-  return userAllRounds.value.rounds.sort(function (a: Round, b: Round) {
-    return (a.totalStrokes ? a.totalStrokes : 0) - (b.totalStrokes ? b.totalStrokes : 0);
-  });
+  const roundWithTotals = userAllRounds.value.rounds
+    .sort(function (a: Round, b: Round) {
+      return (a.totalStrokes ? a.totalStrokes : 0) - (b.totalStrokes ? b.totalStrokes : 0);
+    })
+    .slice(0, 5);
+
+  return roundWithTotals.filter((round: Round) => round.totalStrokes && round.totalStrokes > 0);
 });
 
 function makeDatePretty(dateString: Date | undefined) {
