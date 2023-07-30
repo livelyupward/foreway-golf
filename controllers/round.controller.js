@@ -129,7 +129,7 @@ export const deleteOne = (req, res) => {
     .then((num) => {
       if (num === 1) {
         res.send({
-          message: 'Round was deleted successfully!',
+          message: 'Round was deleted successfully.',
         });
       } else {
         res.send({
@@ -151,7 +151,7 @@ export const deleteAll = (req, res) => {
     truncate: false,
   })
     .then((nums) => {
-      res.send({ message: `${nums} Rounds were deleted successfully!` });
+      res.send({ message: `${nums} Rounds were deleted successfully.` });
     })
     .catch((err) => {
       res.status(500).send({

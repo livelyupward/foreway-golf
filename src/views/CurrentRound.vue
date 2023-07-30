@@ -8,7 +8,8 @@
       <!--      <a class="current-round_invite-button" href="sms:123&body=hello">Invite players</a>-->
     </div>
     <CourseScorecard @click-score="openModalForHole" :holes="course.holes" />
-    <button class="current-round_end-round" @click="closeModalIsOpen = true">Close Round</button>
+    <button class="current-round_end-round" @click="closeModalIsOpen = true">End & Submit Round</button>
+    <button class="current-round_cancel-round" @click="deleteRoundModalIsOpen = true">Delete Round</button>
     <Teleport to="body">
       <ScoreForm
         v-if="scoreFormOpen && scoreFormHoleInfo"
@@ -19,6 +20,11 @@
         @score-submitted="closeModalWithButton"
       />
       <CloseModal :is-closing="closeModalIsOpen" @close-round="endRound" @close-modal="closeModalIsOpen = false" />
+      <DeleteRoundModal
+        :is-closing="deleteRoundModalIsOpen"
+        @delete-round="deleteRound"
+        @close-modal="deleteRoundModalIsOpen = false"
+      />
     </Teleport>
   </div>
 </template>
@@ -31,10 +37,11 @@ import { storeToRefs } from 'pinia';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
 import CloseModal from '../components/CloseModal.vue';
+import DeleteRoundModal from '../components/DeleteRoundModal.vue';
 
 const router = useRouter();
 const store = mainStore();
-const { closeRound, getCourse, authAndGetUserFromDB } = store;
+const { closeRound, deleteRoundFromScorecard, getCourse, authAndGetUserFromDB } = store;
 const { getUser, getCurrentRound } = storeToRefs(store);
 
 const message = inject('message') as MiddleMan;
@@ -48,6 +55,7 @@ const scoreFormOpen = ref(false);
 const scoreFormHoleInfo = ref();
 const existingScoreOnCard = ref();
 const closeModalIsOpen = ref(false);
+const deleteRoundModalIsOpen = ref(false);
 
 const friendlyCreatedDate = computed(() => {
   // @ts-ignore
@@ -66,6 +74,17 @@ async function endRound() {
   } catch (error) {
     console.error(error);
     message.reject('Round could not be closed. Please try again');
+  }
+}
+
+async function deleteRound() {
+  try {
+    await deleteRoundFromScorecard();
+    await router.push('/');
+    message.success('Round deleted successfully');
+  } catch (error) {
+    console.error(error);
+    message.reject('Round could not be deleted. Please try again');
   }
 }
 
@@ -178,7 +197,7 @@ function closeModalWithButton() {
 }
 
 .current-round_end-round {
-  @include red-btn;
+  @include blue-btn;
   display: block;
   margin-top: 15px;
   text-align: center;
@@ -187,6 +206,14 @@ function closeModalWithButton() {
   span {
     justify-content: center;
   }
+}
+
+.current-round_cancel-round {
+  @include red-btn;
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+  width: 100%;
 }
 
 .score-form_container,

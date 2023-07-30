@@ -7,8 +7,8 @@
           Resume current round
         </button>
         <p class="homepage_resume-round_disclaimer" v-else>
-          You have no currently active rounds of golf. Click the Round button in the menu on the bottom of the screen to
-          start one.
+          You have no active rounds of golf in progress. To begin a round, simply click on the Round button located in
+          the bottom menu of the screen.
         </p>
       </section>
       <Suspense>

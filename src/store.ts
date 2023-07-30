@@ -273,6 +273,43 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function deleteRoundFromScorecard() {
+    if (getUser.value !== undefined && getCurrentRound.value !== null) {
+      try {
+        // take current round and make null for current user
+        user.value !== undefined && user.value.currentRound !== null ? (user.value.currentRound = null) : null;
+
+        const updateUserRoundRequest: Response = await fetch(`/api/users/${getUser.value.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...user.value, currentRound: null }),
+        });
+        const updateUserRoundResponse: Promise<any> = updateUserRoundRequest.json();
+
+        const deleteCurrentRoundRequest: Response = await fetch(`/api/round/${getCurrentRound.value.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...getCurrentRound.value, closed: true }),
+        });
+        const deleteCurrentRoundResponse: Promise<any> = deleteCurrentRoundRequest.json();
+
+        return {
+          message: 'Round deleted successfully.',
+          round: deleteCurrentRoundResponse,
+          user: updateUserRoundResponse,
+        };
+      } catch (error) {
+        return { error };
+      }
+    } else {
+      return { error: 'Could not find an active round to delete.' };
+    }
+  }
+
   async function getAllUserRounds(userId: number | undefined) {
     if (userId === undefined) return { rounds: [] };
 
@@ -349,6 +386,7 @@ export const mainStore = defineStore('main', () => {
     submitScore,
     submitEditedScore,
     closeRound,
+    deleteRoundFromScorecard,
     getRoundById,
     getLowestRounds,
     getAllUserRounds,
