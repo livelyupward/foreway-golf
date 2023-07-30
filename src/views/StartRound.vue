@@ -63,14 +63,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, Ref, ref } from 'vue';
-import { mainStore, type Course } from '../store';
+import { computed, inject, Ref, ref } from 'vue';
+import { mainStore, type Course, MiddleMan } from '../store';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { type RoundSettings } from '../store';
 import CourseViewer from '../components/CourseViewer.vue';
 import TeeSelector from '../components/TeeSelector.vue';
+
+const message = inject('message') as MiddleMan;
 
 const router = useRouter();
 const store = mainStore();
@@ -137,8 +139,12 @@ function closeModals() {
 async function submitNewRoundRequest(roundConfig: RoundSettings) {
   const newRoundResponse: any = await createNewRound(roundConfig);
 
-  if (newRoundResponse.errors) return 'errors were found';
+  if (newRoundResponse.errors) {
+    message.reject('Error creating a new round. Please try again.');
+    return 'errors were found';
+  }
 
+  message.success('New round started successfully');
   return router.push(`/round/${newRoundResponse.round.id}`);
 }
 

@@ -2,7 +2,7 @@
   <section id="auth-view">
     <div class="auth-view_container">
       <h1>Login with your Google account</h1>
-      <GoogleLogin :callback="googleAuthCallback" />
+      <GoogleLogin :callback="googleAuthCallback" prompt auto-login />
     </div>
   </section>
 </template>

@@ -273,6 +273,43 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function deleteRoundFromScorecard() {
+    if (getUser.value !== undefined && getCurrentRound.value !== null) {
+      try {
+        // take current round and make null for current user
+        user.value !== undefined && user.value.currentRound !== null ? (user.value.currentRound = null) : null;
+
+        const updateUserRoundRequest: Response = await fetch(`/api/users/${getUser.value.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...user.value, currentRound: null }),
+        });
+        const updateUserRoundResponse: Promise<any> = updateUserRoundRequest.json();
+
+        const deleteCurrentRoundRequest: Response = await fetch(`/api/round/${getCurrentRound.value.id}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...getCurrentRound.value, closed: true }),
+        });
+        const deleteCurrentRoundResponse: Promise<any> = deleteCurrentRoundRequest.json();
+
+        return {
+          message: 'Round deleted successfully.',
+          round: deleteCurrentRoundResponse,
+          user: updateUserRoundResponse,
+        };
+      } catch (error) {
+        return { error };
+      }
+    } else {
+      return { error: 'Could not find an active round to delete.' };
+    }
+  }
+
   async function getAllUserRounds(userId: number | undefined) {
     if (userId === undefined) return { rounds: [] };
 
@@ -310,6 +347,25 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function changeRoundTotalSetting(newValue: boolean) {
+    try {
+      if (getUser.value === undefined) throw new Error('No user is present before preferences changed.');
+
+      const roundSettingChangeRequest = await fetch(`/api/users/${getUser.value.id}/round-total`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ ...getUser.value, showRoundTotals: newValue }),
+      });
+      const roundSettingChangeResponse = await roundSettingChangeRequest.json();
+
+      return { user: roundSettingChangeResponse };
+    } catch (error) {
+      return { error };
+    }
+  }
+
   return {
     computedScoreModal,
     currentHoleInScoreModal,
@@ -330,9 +386,11 @@ export const mainStore = defineStore('main', () => {
     submitScore,
     submitEditedScore,
     closeRound,
+    deleteRoundFromScorecard,
     getRoundById,
     getLowestRounds,
     getAllUserRounds,
+    changeRoundTotalSetting,
   };
 });
 
@@ -370,13 +428,14 @@ interface EditedScore extends Score {
   userId: number;
 }
 
-interface User {
+export interface User {
   id: number;
   name: string;
   email: string;
   currentRound: number | null;
   createdAt: string;
   updatedAt: string;
+  showRoundTotals: boolean;
 }
 
 export interface Hole {
@@ -430,4 +489,9 @@ export interface Toggles {
   fairwayHit: boolean;
   hazard: boolean;
   penalty: boolean;
+}
+
+export interface MiddleMan {
+  success: (messageToShowInFunc: string) => void;
+  reject: (messageToShowInFunc: string) => void;
 }

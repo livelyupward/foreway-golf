@@ -54,9 +54,9 @@ export const findOne = (req, res) => {
     where: {
       email: email,
     },
+    include: ['round'],
   })
     .then((data) => {
-      console.log('user data: ', data);
       if (data.length) {
         res.send(data);
       } else {
@@ -168,5 +168,25 @@ export const deleteAll = (req, res) => {
       res.status(500).send({
         message: err.message || 'Some error occurred while removing all tutorials.',
       });
+    });
+};
+
+export const updateRoundTotalPreference = (req, res) => {
+  const userId = req.params.id;
+
+  User.update(
+    { showRoundTotals: req.body.showRoundTotals },
+    {
+      where: {
+        id: userId,
+      },
+    }
+  )
+    .then((response) => {
+      console.log('New setting: ', response);
+      res.status(200).send({ response });
+    })
+    .catch((error) => {
+      res.status(400).send({ error });
     });
 };

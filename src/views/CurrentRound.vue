@@ -2,13 +2,14 @@
   <div id="current-round" v-if="course && getUser">
     <h1 class="current-round_title">{{ course.name }}</h1>
     <div class="current-round_info">
-      <p class="current-round_info-date">Date: {{ friendlyCreatedDate }}</p>
+      <p class="current-round_info-date">Round Date: {{ friendlyCreatedDate }}</p>
     </div>
     <div class="current-round_invite-wrapper">
-      <a class="current-round_invite-button" href="sms:123&body=hello">Invite players</a>
+      <!--      <a class="current-round_invite-button" href="sms:123&body=hello">Invite players</a>-->
     </div>
     <CourseScorecard @click-score="openModalForHole" :holes="course.holes" />
-    <button class="current-round_end-round" @click="closeModalIsOpen = true">Close Round</button>
+    <button class="current-round_end-round" @click="closeModalIsOpen = true">End & Submit Round</button>
+    <button class="current-round_cancel-round" @click="deleteRoundModalIsOpen = true">Delete Round</button>
     <Teleport to="body">
       <ScoreForm
         v-if="scoreFormOpen && scoreFormHoleInfo"
@@ -19,23 +20,31 @@
         @score-submitted="closeModalWithButton"
       />
       <CloseModal :is-closing="closeModalIsOpen" @close-round="endRound" @close-modal="closeModalIsOpen = false" />
+      <DeleteRoundModal
+        :is-closing="deleteRoundModalIsOpen"
+        @delete-round="deleteRound"
+        @close-modal="deleteRoundModalIsOpen = false"
+      />
     </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
-import { Hole, mainStore } from '../store';
-import { computed, ref } from 'vue';
+import { computed, inject, ref } from 'vue';
+import { Hole, mainStore, type MiddleMan } from '../store';
+import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import CourseScorecard from '../components/CourseScorecard.vue';
 import ScoreForm from '../components/ScoreForm.vue';
 import CloseModal from '../components/CloseModal.vue';
-import { useRouter } from 'vue-router';
+import DeleteRoundModal from '../components/DeleteRoundModal.vue';
 
 const router = useRouter();
 const store = mainStore();
-const { closeRound, getCourse, authAndGetUserFromDB } = store;
+const { closeRound, deleteRoundFromScorecard, getCourse, authAndGetUserFromDB } = store;
 const { getUser, getCurrentRound } = storeToRefs(store);
+
+const message = inject('message') as MiddleMan;
 
 if (getCurrentRound.value.courseId === undefined) await authAndGetUserFromDB();
 
@@ -46,8 +55,7 @@ const scoreFormOpen = ref(false);
 const scoreFormHoleInfo = ref();
 const existingScoreOnCard = ref();
 const closeModalIsOpen = ref(false);
-
-// isDebug() && console.log('currentRound getter in current round: ', getCurrentRound.value);
+const deleteRoundModalIsOpen = ref(false);
 
 const friendlyCreatedDate = computed(() => {
   // @ts-ignore
@@ -62,10 +70,21 @@ async function endRound() {
   try {
     await closeRound();
     await router.push('/');
-    // message.success('Round closed successfully');
+    message.success('Round closed successfully');
   } catch (error) {
     console.error(error);
-    // message.error('Round could not be closed -- please try again');
+    message.reject('Round could not be closed. Please try again');
+  }
+}
+
+async function deleteRound() {
+  try {
+    await deleteRoundFromScorecard();
+    await router.push('/');
+    message.success('Round deleted successfully');
+  } catch (error) {
+    console.error(error);
+    message.reject('Round could not be deleted. Please try again');
   }
 }
 
@@ -83,10 +102,6 @@ function closeModalWithButton() {
   scoreFormHoleInfo.value = undefined;
   scoreFormOpen.value = false;
 }
-
-function refreshScores() {
-  // console.log();
-}
 </script>
 
 <style lang="scss">
@@ -95,7 +110,7 @@ function refreshScores() {
 }
 
 .current-round_info-date {
-  margin-top: 0;
+  margin-top: 0.375rem;
 }
 
 .current-round_invite-wrapper {
@@ -182,7 +197,7 @@ function refreshScores() {
 }
 
 .current-round_end-round {
-  @include red-btn;
+  @include blue-btn;
   display: block;
   margin-top: 15px;
   text-align: center;
@@ -191,6 +206,14 @@ function refreshScores() {
   span {
     justify-content: center;
   }
+}
+
+.current-round_cancel-round {
+  @include red-btn;
+  display: block;
+  margin-top: 15px;
+  text-align: center;
+  width: 100%;
 }
 
 .score-form_container,

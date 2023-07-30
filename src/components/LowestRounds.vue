@@ -13,7 +13,7 @@
         </tr>
       </thead>
       <tbody class="homepage_recent-round_table-body">
-        <tr class="homepage_recent-round_table-body_row" v-for="lowRound in lowestRounds">
+        <tr class="homepage_recent-round_table-body_row" v-for="lowRound in lowestRounds" :key="lowRound.id">
           <td class="homepage_recent-round_table-body_row-cell">
             {{ makeDatePretty(lowRound.updatedAt) }}
           </td>
@@ -57,9 +57,13 @@ const lowestRounds: ComputedRef<Round[]> = computed(() => {
     round.totalStrokes = interimTotal;
   });
 
-  return userAllRounds.value.rounds.sort(function (a: Round, b: Round) {
-    return (a.totalStrokes ? a.totalStrokes : 0) - (b.totalStrokes ? b.totalStrokes : 0);
-  });
+  const roundWithTotals = userAllRounds.value.rounds
+    .sort(function (a: Round, b: Round) {
+      return (a.totalStrokes ? a.totalStrokes : 0) - (b.totalStrokes ? b.totalStrokes : 0);
+    })
+    .slice(0, 5);
+
+  return roundWithTotals.filter((round: Round) => round.totalStrokes && round.totalStrokes > 0);
 });
 
 function makeDatePretty(dateString: Date | undefined) {

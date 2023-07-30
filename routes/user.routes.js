@@ -1,24 +1,35 @@
 import Express from 'express';
 const router = Express.Router();
-import { create, findOne, findAll, update, deleteOne, deleteAll } from '../controllers/user.controller.js';
+import {
+  create,
+  findOne,
+  findAll,
+  update,
+  deleteOne,
+  deleteAll,
+  updateRoundTotalPreference,
+} from '../controllers/user.controller.js';
 
 export default (app) => {
-  // Create a new Tutorial
+  // Create a new User
   router.post('/', create);
 
-  // Retrieve all Tutorials
+  // Retrieve all Users
   router.get('/', findAll);
 
-  // Retrieve a single Tutorial with id
+  // Retrieve a single User with id
   router.get('/:email', findOne);
 
-  // Update a Tutorial with id
+  // Update a User with id
   router.put('/:id', update);
 
-  // Delete a Tutorial with id
+  // Update a User roundTotal setting
+  router.put('/:id/round-total', updateRoundTotalPreference);
+
+  // Delete a User with id
   router.delete('/:id', deleteOne);
 
-  // Delete all Tutorials
+  // Delete all Users
   router.delete('/', deleteAll);
 
   app.use('/api/users', router);
