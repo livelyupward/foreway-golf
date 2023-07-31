@@ -44,6 +44,8 @@
           <tr v-if="getUser.showRoundTotals">
             <td class="scorecard-table_row-total" colspan="2">Front</td>
             <td class="scorecard-table_row-total_par">{{ frontNineScoreTotal.frontParTotal }}</td>
+            <td class="scorecard-table_placeholder"></td>
+            <td class="scorecard-table_placeholder"></td>
             <td>{{ frontNineScoreTotal.front9Total }}</td>
             `
           </tr>
@@ -84,6 +86,8 @@
           <tr v-if="getCurrentCourse.holeCount > 9 && getUser.showRoundTotals">
             <td class="scorecard-table_row-total" colspan="2">Back</td>
             <td class="scorecard-table_row-total_par">{{ backNineScoreTotal.backParTotal }}</td>
+            <td class="scorecard-table_placeholder"></td>
+            <td class="scorecard-table_placeholder"></td>
             <td>{{ backNineScoreTotal.back9Total }}</td>
           </tr>
           <tr v-if="getCurrentCourse.holeCount > 9 && getUser.showRoundTotals">
@@ -91,6 +95,8 @@
             <td class="scorecard-table_row-total_par">
               {{ frontNineScoreTotal.frontParTotal + backNineScoreTotal.backParTotal }}
             </td>
+            <td class="scorecard-table_placeholder"></td>
+            <td class="scorecard-table_placeholder"></td>
             <td class="final-row">{{ roundTotal }}</td>
           </tr>
         </tbody>
@@ -241,6 +247,10 @@ interface Front9Total {
       td {
         border-bottom: 1px solid #bbb;
       }
+    }
+
+    .scorecard-table_placeholder {
+      background-color: $grey;
     }
   }
 }
