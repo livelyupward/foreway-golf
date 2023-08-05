@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import db from '../models/index.js';
 const Round = db.rounds;
 
@@ -172,6 +173,23 @@ export const getRecentRounds = async (req, res) => {
     });
 
     res.status(200).send(receivedRoundsForUser);
+  } catch (error) {
+    res.status(400).send({ error });
+  }
+};
+
+export const getYearStats = async (req, res) => {
+  try {
+    const receivedRoundsForStats = await Round.findAll({
+      where: {
+        closed: true,
+        deletedAt: null,
+      },
+      include: { all: true },
+      order: [['createdAt', 'DESC']],
+    });
+
+    res.status(200).send(receivedRoundsForStats);
   } catch (error) {
     res.status(400).send({ error });
   }

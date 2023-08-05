@@ -230,6 +230,9 @@ export const mainStore = defineStore('main', () => {
   async function getCourse(courseId: number) {
     try {
       const courseFetch: Response = await fetch(`/api/courses/${courseId}?holes=true`);
+      if (courseFetch.status === 404) {
+        return { status: 404 };
+      }
       const course: Course = await courseFetch.json();
 
       currentCourse.value = course;
@@ -366,6 +369,24 @@ export const mainStore = defineStore('main', () => {
     }
   }
 
+  async function getThisYearsStats() {
+    if (getUser.value === undefined) throw new Error('Cannot find user id for stats request.');
+
+    const yearStatsRequest = await fetch(`/api/round/stats/${getUser.value.id}`);
+    if (!yearStatsRequest.ok) throw new Error('Year stats could not be fetched.');
+
+    const yearStatsResponse = await yearStatsRequest.json();
+
+    console.log('stats: ', yearStatsResponse);
+
+    const currentYear = new Date().getUTCFullYear();
+    return yearStatsResponse.filter((obj: Object) => {
+      // @ts-ignore
+      const createdAtYear = new Date(obj.createdAt).getUTCFullYear();
+      return createdAtYear === currentYear;
+    });
+  }
+
   return {
     computedScoreModal,
     currentHoleInScoreModal,
@@ -375,6 +396,7 @@ export const mainStore = defineStore('main', () => {
     getRecentUserRounds,
     getAllCourses,
     getCourse,
+    getThisYearsStats,
     authAndGetUserFromDB,
     openScoreModal,
     closeScoreModal,

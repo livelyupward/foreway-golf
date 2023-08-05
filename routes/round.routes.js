@@ -9,6 +9,7 @@ import {
   deleteOne,
   deleteAll,
   findAllForUser,
+  getYearStats,
 } from '../controllers/round.controller.js';
 
 export default (app) => {
@@ -23,6 +24,9 @@ export default (app) => {
 
   // Retrieve a single Round with id
   router.get('/:id', findOne);
+
+  // Retrieve stats for year
+  router.get('/stats/:id', getYearStats);
 
   // Update a Round with id
   router.put('/:id', update);
