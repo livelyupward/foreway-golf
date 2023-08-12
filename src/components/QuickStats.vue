@@ -27,7 +27,36 @@ const { getThisYearsStats } = mainStore();
 const yearStats = await getThisYearsStats();
 
 const playerHandicap = computed(() => {
-  if (yearStats.length < 8) return 'N/A';
+  let rounds: any = [];
+  let roundsSorted = null;
+  let totalStrokes = 0;
+  let roundCount = 0;
+
+  if (rounds.length < 8) {
+    roundsSorted = rounds.sort();
+  } else {
+    roundsSorted = rounds.sort().slice(0, 8);
+  }
+
+  if (roundsSorted.length < 8) {
+    return 'N/A';
+  } else {
+    yearStats.forEach((round: any) => {
+      let roundStrokes = 0;
+      if (round.scores.length === 18) {
+        ++roundCount;
+        round.scores.forEach((score: any) => {
+          roundStrokes += parseInt(score.strokes);
+          totalStrokes += parseInt(score.strokes);
+        });
+
+        rounds.push(roundStrokes - round.course.par);
+      }
+      roundStrokes = 0;
+    });
+  }
+
+  return roundsSorted.reduce((a: number, b: number) => a + b, 0) / roundsSorted.length;
 });
 
 const averageScore = computed(() => {
