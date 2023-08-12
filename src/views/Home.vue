@@ -106,22 +106,4 @@ function strokesTotalled(scoresArray: any) {
     }
   }
 }
-
-.card {
-  @include rounded-corners;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  margin-bottom: 1rem;
-  padding: 10px;
-
-  .card-header {
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
-    margin-top: 0;
-  }
-
-  .homepage_recent-rounds_disclaimer {
-    margin-bottom: 0;
-  }
-}
 </style>

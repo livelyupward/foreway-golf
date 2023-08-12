@@ -31,6 +31,7 @@
             <span class="score-form_toggle-button_text">GIR</span>
           </div>
           <div
+            v-show="parseInt(selectedHole.par) > 3"
             class="score-form_toggle-button fh"
             :class="`${scoreValues.toggles.fairwayHit ? 'checked' : ''}`"
             @click="toggleValue('fairwayHit')"
