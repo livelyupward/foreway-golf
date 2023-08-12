@@ -23,7 +23,6 @@ import {
   faDesktop,
 } from '@fortawesome/free-solid-svg-icons';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
-// import * as process from 'process';
 
 const app = createApp(App);
 

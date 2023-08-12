@@ -1,13 +1,19 @@
 <template>
   <div class="foreway-stats" v-if="yearStats">
     <span class="foreway-stats_row">
-      Handicap: {{ playerHandicap }}
+      <span class="foreway-stats-highlight">Handicap: </span> {{ playerHandicap }}
       <span class="foreway-stats-info" v-if="playerHandicap === 'N/A'">
         <font-awesome-icon :icon="['fas', 'circle-info']" />
       </span>
     </span>
-    <span class="foreway-stats_row">Scoring average: {{ averageScore }}</span>
-    <span class="foreway-stats_row">Putts/hole: {{ averagePutts }}</span>
+    <span class="foreway-stats_row">
+      <span class="foreway-stats-highlight">Scoring average: </span>
+      {{ averageScore }}
+    </span>
+    <span class="foreway-stats_row">
+      <span class="foreway-stats-highlight">Putts/hole: </span>
+      {{ averagePutts }}
+    </span>
     <!--    <span class="foreway-stats_row">GIR %: 31</span>-->
     <!--    <span class="foreway-stats_row">Fairway %: 42</span>-->
   </div>
@@ -73,6 +79,12 @@ const averagePutts = computed(() => {
 
   &:not(:first-of-type):not(:last-of-type) {
     margin: 10px 0;
+  }
+
+  .foreway-stats-highlight {
+    color: $primary;
+    font-weight: 700;
+    margin-right: 5px;
   }
 }
 
