@@ -38,7 +38,7 @@ const playerHandicap = computed(() => {
     roundsSorted = rounds.sort().slice(0, 8);
   }
 
-  if (yearStats.length < 8) {
+  if (roundsSorted.length < 8) {
     return 'N/A';
   } else {
     yearStats.forEach((round: any) => {
