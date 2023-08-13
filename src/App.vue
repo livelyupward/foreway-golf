@@ -28,7 +28,8 @@ import MiddleMan from './components/providers/MiddleMan.vue';
 
 #main-panel {
   @include nav-spacer;
-  min-height: calc(100vh - 70px); // 50px for tray height and 20 for top and bottom padding
+  // 60px for tray height and 20 for top and bottom padding and some extra love
+  min-height: calc(100vh - 85px);
   padding: 30px;
   position: relative;
 
@@ -39,9 +40,6 @@ import MiddleMan from './components/providers/MiddleMan.vue';
   .homepage-title {
     margin-top: 0;
   }
-}
-
-#navigation-tray {
 }
 
 h1 {
