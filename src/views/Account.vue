@@ -1,20 +1,56 @@
 <template>
   <div id="account-page" v-if="getUser">
     <h1 class="account-page_title page-title">My Account</h1>
-    <div class="account-page_settings card">
-      <h2 class="account-page_settings-header card-header">Preferences</h2>
-      <div class="account-page_settings-item">
-        <p class="account-page_settings-item_text">Show mid-round totals in scorecard</p>
-        <div class="account-page_settings_flex-container">
-          <div class="account-page_settings_radio-group">
-            <input name="round-totals" type="radio" v-model="displayRoundTotals" :value="true" />
-            <label for="">Yes</label>
-          </div>
-          <div class="account-page_settings_radio-group">
-            <input name="round-totals" type="radio" v-model="displayRoundTotals" :value="false" />
-            <label for="">No</label>
+    <div class="card tabs">
+      <div class="card-tabs_tab-list">
+        <button id="friends" @click="activateTab" :class="activeTab === 'friends' ? 'active' : ''">Friends</button>
+        <button id="preferences" @click="activateTab" :class="activeTab === 'preferences' ? 'active' : ''">
+          Preferences
+        </button>
+      </div>
+      <div class="card-tabs_tab-content">
+        <div v-show="activeTab === 'friends'" class="card-tabs_tab-content-item">
+          <div class="account-page_settings-item">
+            <ul v-if="friends.length > 0" class="account-page_friends-list">
+              <li v-for="friend in friends" class="account-page_friends-list_item">
+                <span class="friends-list_player-name">{{ friend.name }}</span>
+                <!-- <span class="friends-list_player-favicon">
+                  <font-awesome-icon
+                    class="friends-list_player-favicon_icon favorite"
+                    v-if="friend.isUserFavorite"
+                    :icon="['fas', 'star']"
+                  />
+                  <font-awesome-icon
+                    class="friends-list_player-favicon_icon non-favorite"
+                    v-else
+                    :icon="['far', 'star']"
+                  />
+                </span> -->
+              </li>
+            </ul>
           </div>
         </div>
+        <div v-show="activeTab === 'preferences'" class="card-tabs_tab-content-item">
+          <div class="account-page_settings-item">
+            <p class="account-page_settings-item_text">Show mid-round totals in scorecard</p>
+            <div class="account-page_settings_flex-container">
+              <div class="account-page_settings_radio-group">
+                <input name="round-totals" type="radio" v-model="displayRoundTotals" :value="true" />
+                <label for="">Yes</label>
+              </div>
+              <div class="account-page_settings_radio-group">
+                <input name="round-totals" type="radio" v-model="displayRoundTotals" :value="false" />
+                <label for="">No</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="account-page_friends-list_invite-section">
+        <button @click="activateFriendModal" class="account-page_friends-list_invite-section_invite-button">
+          <font-awesome-icon :icon="['fas', 'users-medical']" />
+          Add friend
+        </button>
       </div>
     </div>
   </div>
@@ -29,6 +65,7 @@ const store = mainStore();
 const { changeRoundTotalSetting, setUser } = store;
 const { getUser } = storeToRefs(store);
 const displayRoundTotals: Ref<boolean> = ref(getUser.value ? getUser.value.showRoundTotals : false);
+const activeTab = ref('friends');
 
 const message = inject('message') as MiddleMan;
 
@@ -39,6 +76,42 @@ watch(displayRoundTotals, async (newValue, oldValue) => {
     message.success('Preference changed successfully');
   }
 });
+
+function activateTab(event: any) {
+  if (event.target === null) {
+    message.reject('Something went wrong. Try again.');
+    throw new Error('No active tab found.');
+  }
+
+  const type = event.target.id;
+
+  activeTab.value = type;
+}
+
+function activateFriendModal() {
+  console.log('FRIENDS');
+}
+
+const friends = [
+  {
+    name: 'Dave Grammas',
+    email: 'dgrammas85@gmail.com',
+    userId: 2,
+    isUserFavorite: false,
+  },
+  {
+    name: 'Matt Grammas',
+    email: 'mgstud@gmail.com',
+    userId: 3,
+    isUserFavorite: false,
+  },
+  {
+    name: 'Jenn Schrepel',
+    email: 'jschrepel19@gmail.com',
+    userId: 6,
+    isUserFavorite: true,
+  },
+];
 </script>
 
 <style lang="scss" scoped>
@@ -55,5 +128,84 @@ watch(displayRoundTotals, async (newValue, oldValue) => {
       margin-right: 1rem;
     }
   }
+}
+
+.card.tabs {
+  padding: 0;
+}
+
+.card-tabs_tab-content {
+  padding: 0.875rem;
+}
+
+.card-tabs_tab-list {
+  display: flex;
+  width: 100%;
+
+  button {
+    background-color: #fff;
+    border: 1px solid $primary;
+    flex-basis: 50%;
+
+    &.active {
+      background-color: $primary;
+      color: #fff;
+    }
+
+    &:first-of-type {
+      border-radius: 10px 0 0 0;
+    }
+
+    &:last-of-type {
+      border-radius: 0 10px 0 0;
+      border-left: none;
+    }
+  }
+}
+
+.account-page_friends-list {
+  list-style-type: none;
+  margin: 0;
+  padding-left: 0;
+
+  .account-page_friends-list_item {
+    padding-bottom: 10px;
+    margin-top: 10px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    &:last-of-type {
+      padding-bottom: 0;
+    }
+
+    &:not(:last-of-type) {
+      border-bottom: 1px solid #dedede;
+    }
+
+    &:not(:first-of-type):not(:last-of-type) {
+      margin: 10px 0;
+    }
+
+    .friends-list_player-favicon_icon {
+      &.non-favorite {
+        color: #ddd;
+      }
+
+      &.favorite {
+        color: gold;
+      }
+    }
+  }
+}
+
+.account-page_friends-list_invite-section_invite-button {
+  background-color: lighten($color: $primary, $amount: 10%);
+  border: none;
+  border-radius: 0 0 10px 10px;
+  color: #fff;
+  padding: 10px 0;
+  width: 100%;
 }
 </style>

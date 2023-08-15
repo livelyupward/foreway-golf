@@ -20,9 +20,10 @@ import {
   faCircleInfo,
   faPhoneVolume,
   faCaretLeft,
+  faStar,
   faDesktop,
 } from '@fortawesome/free-solid-svg-icons';
-import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { faStar as farStar, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 const app = createApp(App);
 
@@ -42,7 +43,9 @@ library.add(
   faCaretLeft,
   faTriangleExclamation,
   faCheck,
-  faDesktop
+  faDesktop,
+  faStar,
+  farStar
 );
 
 // if (process.env.NODE_ENV === 'production') {

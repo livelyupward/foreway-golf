@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@fortawesome/fontawesome-pro': ^6.4.2
   '@fortawesome/fontawesome-svg-core': ^6.4.0
   '@fortawesome/free-brands-svg-icons': ^6.4.0
   '@fortawesome/free-regular-svg-icons': ^6.4.0
@@ -33,6 +34,7 @@ specifiers:
   vue3-google-login: ^2.0.15
 
 dependencies:
+  '@fortawesome/fontawesome-pro': 6.4.2
   '@fortawesome/fontawesome-svg-core': 6.4.0
   '@fortawesome/free-brands-svg-icons': 6.4.0
   '@fortawesome/free-regular-svg-icons': 6.4.0
@@ -291,6 +293,12 @@ packages:
 
   /@fortawesome/fontawesome-common-types/6.4.0:
     resolution: {integrity: sha512-HNii132xfomg5QVZw0HwXXpN22s7VBHQBv9CeOu9tfJnhsWQNd2lmTNi8CSrnw5B+5YOmzu1UoPAyxaXsJ6RgQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dev: false
+
+  /@fortawesome/fontawesome-pro/6.4.2:
+    resolution: {integrity: sha512-b7VtzrgoASuCbnWJ1A17Sw3wemaFGukyBk0Y2ks/rgcnhlJ1uzdyv2uM3QbEaq9OgyZAKGJD1Tli6qHRI68zSQ==, tarball: '@fortawesome/fontawesome-pro/-/6.4.2/fontawesome-pro-6.4.2.tgz'}
     engines: {node: '>=6'}
     requiresBuild: true
     dev: false
