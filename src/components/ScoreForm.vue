@@ -8,17 +8,23 @@
         <div class="score-form_hole-info"></div>
         <div class="form-group-inline full-width">
           <label class="form-label strokes" for="score">Strokes</label>
-          <input
+          <button>-</button>
+          <span>4</span>
+          <!-- <input
             class="form-input center-content"
             id="score"
             type="tel"
             v-model.number="scoreValues.strokes"
             required
-          />
+          /> -->
+          <button>+</button>
         </div>
         <div class="form-group-inline full-width">
           <label class="form-label putts" for="putts">Putts</label>
-          <input class="form-input center-content" id="putts" type="tel" v-model.number="scoreValues.putts" />
+          <button>-</button>
+          <span>2</span>
+          <!-- <input class="form-input center-content" id="putts" type="tel" v-model.number="scoreValues.putts" /> -->
+          <button>+</button>
         </div>
 
         <div class="score-form_toggle-button-group">

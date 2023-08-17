@@ -54,7 +54,7 @@ export const findOne = (req, res) => {
     where: {
       email: email,
     },
-    include: ['round'],
+    include: { all: true },
   })
     .then((data) => {
       if (data.length) {

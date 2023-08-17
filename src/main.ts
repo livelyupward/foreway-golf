@@ -22,6 +22,7 @@ import {
   faCaretLeft,
   faStar,
   faDesktop,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as farStar, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
@@ -45,7 +46,8 @@ library.add(
   faCheck,
   faDesktop,
   faStar,
-  farStar
+  farStar,
+  faSpinner
 );
 
 // if (process.env.NODE_ENV === 'production') {

@@ -1,21 +1,22 @@
 export default (sequelize, Sequelize) => {
   return sequelize.define(
-    'user',
+    'friend',
     {
-      name: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
-      currentRound: {
+      user_id: {
         type: Sequelize.INTEGER,
         references: {
-          model: 'round',
+          model: 'user',
           key: 'id',
         },
       },
-      showRoundTotals: Sequelize.BOOLEAN,
+      friend_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: 'user',
+          key: 'id',
+        },
+      },
+      status: Sequelize.STRING,
     },
     {
       timestamps: true,

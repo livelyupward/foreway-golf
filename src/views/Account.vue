@@ -29,6 +29,12 @@
               </li>
             </ul>
           </div>
+          <div class="account-page_friends-list_invite-section">
+            <button @click="activateFriendModal" class="account-page_friends-list_invite-section_invite-button">
+              <font-awesome-icon :icon="['fas', 'users-medical']" />
+              Add friend
+            </button>
+          </div>
         </div>
         <div v-show="activeTab === 'preferences'" class="card-tabs_tab-content-item">
           <div class="account-page_settings-item">
@@ -46,13 +52,10 @@
           </div>
         </div>
       </div>
-      <div class="account-page_friends-list_invite-section">
-        <button @click="activateFriendModal" class="account-page_friends-list_invite-section_invite-button">
-          <font-awesome-icon :icon="['fas', 'users-medical']" />
-          Add friend
-        </button>
-      </div>
     </div>
+    <Teleport v-if="friendModalActivated" to="body">
+      <AddFriendModal />
+    </Teleport>
   </div>
 </template>
 
@@ -60,6 +63,7 @@
 import { Ref, ref, watch, inject } from 'vue';
 import { mainStore, type MiddleMan } from '../store';
 import { storeToRefs } from 'pinia';
+import AddFriendModal from '../components/AddFriendModal.vue';
 
 const store = mainStore();
 const { changeRoundTotalSetting, setUser } = store;
@@ -68,6 +72,8 @@ const displayRoundTotals: Ref<boolean> = ref(getUser.value ? getUser.value.showR
 const activeTab = ref('friends');
 
 const message = inject('message') as MiddleMan;
+
+const friendModalActivated = ref(true);
 
 watch(displayRoundTotals, async (newValue, oldValue) => {
   if (newValue !== oldValue) {
@@ -88,9 +94,7 @@ function activateTab(event: any) {
   activeTab.value = type;
 }
 
-function activateFriendModal() {
-  console.log('FRIENDS');
-}
+function activateFriendModal() {}
 
 const friends = [
   {
@@ -134,10 +138,6 @@ const friends = [
   padding: 0;
 }
 
-.card-tabs_tab-content {
-  padding: 0.875rem;
-}
-
 .card-tabs_tab-list {
   display: flex;
   width: 100%;
@@ -161,6 +161,10 @@ const friends = [
       border-left: none;
     }
   }
+}
+
+.account-page_settings-item {
+  padding: 0.875rem;
 }
 
 .account-page_friends-list {
@@ -202,7 +206,7 @@ const friends = [
 
 .account-page_friends-list_invite-section_invite-button {
   background-color: lighten($color: $primary, $amount: 10%);
-  border: none;
+  border: 1px solid lighten($color: $primary, $amount: 10%);
   border-radius: 0 0 10px 10px;
   color: #fff;
   padding: 10px 0;

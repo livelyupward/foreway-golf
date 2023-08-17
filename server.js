@@ -25,6 +25,7 @@ import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
 import scoreRoutes from './routes/score.routes.js';
+import friendRoutes from './routes/score.routes.js';
 
 const app = Express();
 const port = 4000;
@@ -97,6 +98,7 @@ courseRoutes(app);
 userRoutes(app);
 roundRoutes(app);
 scoreRoutes(app);
+friendRoutes(app);
 
 app.listen(port, () => {
   console.log(`Server running at port ${port}`);
