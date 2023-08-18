@@ -18,7 +18,7 @@ export const friendStore = defineStore('friend', () => {
         body: JSON.stringify({ userId, friendEmail }),
       });
 
-      if (!friendRequest.ok) throw new Error('Sending friend request failed.');
+      if (!friendRequest.ok) return friendRequest;
 
       const friendResponse = await friendRequest.json();
 

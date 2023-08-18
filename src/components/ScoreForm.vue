@@ -1,41 +1,46 @@
 <template>
   <div class="score-form_container" v-if="selectedHole">
     <div class="score-form_modal">
-      <form class="score-form_form" @submit.prevent>
+      <div class="score-form_modal-header">
         <h2 class="score-form_hole page-title">Hole {{ selectedHole.number }}</h2>
-        <small>Par {{ selectedHole.par }}</small>
-        <hr />
+        <small class="score-form_par-label">Par {{ selectedHole.par }}</small>
+      </div>
+      <form class="score-form_form" @submit.prevent>
         <div class="score-form_hole-info"></div>
         <div class="form-group-inline full-width">
           <label class="form-label strokes" for="score">Strokes</label>
-          <button>-</button>
-          <span>4</span>
-          <!-- <input
-            class="form-input center-content"
-            id="score"
-            type="tel"
-            v-model.number="scoreValues.strokes"
-            required
-          /> -->
-          <button>+</button>
+          <button
+            @click="() => (scoreValues.strokes ? --scoreValues.strokes : '')"
+            class="score-form_strokes-button decrease"
+          >
+            <font-awesome-icon class="score-form_icon-button" :icon="['fas', 'circle-minus']" />
+          </button>
+          <span class="score-form_value">{{ scoreValues.strokes }}</span>
+          <button
+            @click="() => (scoreValues.strokes ? ++scoreValues.strokes : '')"
+            class="score-form_strokes-button increase"
+          >
+            <font-awesome-icon class="score-form_icon-button" :icon="['fas', 'circle-plus']" />
+          </button>
         </div>
         <div class="form-group-inline full-width">
           <label class="form-label putts" for="putts">Putts</label>
-          <button>-</button>
-          <span>2</span>
-          <!-- <input class="form-input center-content" id="putts" type="tel" v-model.number="scoreValues.putts" /> -->
-          <button>+</button>
+          <button
+            @click="() => (scoreValues.putts ? --scoreValues.putts : '')"
+            class="score-form_putts-button decrease"
+          >
+            <font-awesome-icon class="score-form_icon-button" :icon="['fas', 'circle-minus']" />
+          </button>
+          <span class="score-form_value">{{ scoreValues.putts }}</span>
+          <button
+            @click="() => (scoreValues.putts ? ++scoreValues.putts : '')"
+            class="score-form_putts-button increase"
+          >
+            <font-awesome-icon class="score-form_icon-button" :icon="['fas', 'circle-plus']" />
+          </button>
         </div>
 
         <div class="score-form_toggle-button-group">
-          <div
-            class="score-form_toggle-button gir"
-            :class="`${scoreValues.toggles.greenInReg ? 'checked' : ''}`"
-            @click="toggleValue('greenInReg')"
-          >
-            <font-awesome-icon :icon="['fas', 'flag']" />
-            <span class="score-form_toggle-button_text">GIR</span>
-          </div>
           <div
             v-show="parseInt(selectedHole.par) > 3"
             class="score-form_toggle-button fh"
@@ -45,6 +50,15 @@
             <font-awesome-icon :icon="['far', 'circle-check']" />
             <span class="score-form_toggle-button_text">Fairway</span>
           </div>
+          <div
+            class="score-form_toggle-button gir"
+            :class="`${scoreValues.toggles.greenInReg ? 'checked' : ''}`"
+            @click="toggleValue('greenInReg')"
+          >
+            <font-awesome-icon :icon="['fas', 'flag']" />
+            <span class="score-form_toggle-button_text">GIR</span>
+          </div>
+
           <div
             class="score-form_toggle-button hazard"
             :class="`${scoreValues.toggles.hazard ? 'checked' : ''}`"
@@ -85,7 +99,7 @@ import { storeToRefs } from 'pinia';
 
 const store = mainStore();
 const { submitScore, submitEditedScore } = store;
-const { getUser, getCurrentRound } = storeToRefs(store);
+const { getUser, getCurrentRound, getCurrentCourse } = storeToRefs(store);
 
 const emit = defineEmits(['closeForm', 'scoreSubmitted']);
 const props = defineProps({
@@ -94,8 +108,8 @@ const props = defineProps({
 });
 
 const scoreValues: Ref<ScoreForSubmit> = ref({
-  strokes: undefined,
-  putts: undefined,
+  strokes: props.selectedHole ? props.selectedHole.par : undefined,
+  putts: 2,
   toggles: {
     greenInReg: false,
     fairwayHit: false,
@@ -162,14 +176,64 @@ async function saveScoreForHole() {
 </script>
 
 <style lang="scss">
+.score-form_container,
+.close-round_container {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.65);
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+  left: 0;
+  padding: 10px;
+  position: fixed;
+  right: 0;
+  top: 0;
+}
+
+.score-form_strokes-button,
+.score-form_putts-button {
+  background: none;
+  border: none;
+  color: $primary;
+  font-size: 1.5rem;
+  padding: 0;
+}
+.score-form_icon-button {
+  background: none;
+  border: none;
+  color: $primary;
+  font-size: 2rem;
+  padding: 0;
+}
+
 .score-form_hole {
-  margin: 0 0 1rem;
+  color: #fff;
+  margin: 0 0 0.375rem;
 }
 
 .score-form_modal {
   @include rounded-corners;
   background-color: #fff;
-  padding: 10px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+  .score-form_modal-header {
+    background-color: $primary;
+    border: 1px solid $primary;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .score-form_par-label {
+    font-size: 1rem;
+  }
+
+  .score-form_form {
+    padding: 20px;
+  }
 }
 
 .hole-score_form-card {
@@ -183,9 +247,6 @@ async function saveScoreForHole() {
   }
 
   label {
-    &.n-form-item-label {
-    }
-
     span {
       font-size: 16px;
     }
@@ -198,9 +259,15 @@ async function saveScoreForHole() {
 }
 
 .form-group-inline {
+  align-items: center;
   display: flex;
   margin: 0 auto 15px;
   width: 70%;
+
+  .score-form_value {
+    font-size: 1.75rem;
+    margin: 0 1rem;
+  }
 
   input {
     width: 20%;

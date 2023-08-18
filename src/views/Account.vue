@@ -1,7 +1,7 @@
 <template>
   <div id="account-page" v-if="getUser">
     <h1 class="account-page_title page-title">My Account</h1>
-    <div class="card tabs">
+    <div class="account-page_card card tabs">
       <div class="card-tabs_tab-list">
         <button id="friends" @click="activateTab" :class="activeTab === 'friends' ? 'active' : ''">Friends</button>
         <button id="preferences" @click="activateTab" :class="activeTab === 'preferences' ? 'active' : ''">
@@ -31,7 +31,7 @@
           </div>
           <div class="account-page_friends-list_invite-section">
             <button @click="activateFriendModal" class="account-page_friends-list_invite-section_invite-button">
-              <font-awesome-icon :icon="['fas', 'users-medical']" />
+              <font-awesome-icon class="account-page_friends-list_friend-icon" :icon="['fas', 'users']" />
               Add friend
             </button>
           </div>
@@ -54,7 +54,7 @@
       </div>
     </div>
     <Teleport v-if="friendModalActivated" to="body">
-      <AddFriendModal />
+      <AddFriendModal @close-friend-modal="friendModalActivated = false" />
     </Teleport>
   </div>
 </template>
@@ -73,7 +73,7 @@ const activeTab = ref('friends');
 
 const message = inject('message') as MiddleMan;
 
-const friendModalActivated = ref(true);
+const friendModalActivated = ref(false);
 
 watch(displayRoundTotals, async (newValue, oldValue) => {
   if (newValue !== oldValue) {
@@ -94,7 +94,9 @@ function activateTab(event: any) {
   activeTab.value = type;
 }
 
-function activateFriendModal() {}
+function activateFriendModal() {
+  friendModalActivated.value = true;
+}
 
 const friends = [
   {
@@ -118,7 +120,7 @@ const friends = [
 ];
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .account-page_settings-item_text {
   margin-bottom: 0.5rem;
 }
@@ -211,5 +213,13 @@ const friends = [
   color: #fff;
   padding: 10px 0;
   width: 100%;
+}
+
+.account-page_friends-list_friend-icon {
+  margin-right: 6px;
+}
+
+.account-page_card {
+  @include sm-shadow;
 }
 </style>

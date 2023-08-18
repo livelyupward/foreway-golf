@@ -215,17 +215,4 @@ function closeModalWithButton() {
   text-align: center;
   width: 100%;
 }
-
-.score-form_container,
-.close-round_container {
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.75);
-  bottom: 0;
-  display: flex;
-  left: 0;
-  padding: 10px;
-  position: fixed;
-  right: 0;
-  top: 0;
-}
 </style>

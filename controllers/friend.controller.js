@@ -5,6 +5,7 @@ const { Op } = db.Sequelize;
 
 // Create and Save a new Course
 export const newRequest = async (req, res) => {
+  console.dir(req.body);
   // Validate request
   if (!req.body.userId || !req.body.friendEmail) {
     return res.status(400).send({
@@ -16,6 +17,7 @@ export const newRequest = async (req, res) => {
 
   if (!userFoundByEmail) {
     return res.status(404).send({
+      status: 404,
       error: `No user found for email ${req.body.friendEmail}`,
     });
   }

@@ -25,7 +25,7 @@ import courseRoutes from './routes/course.routes.js';
 import userRoutes from './routes/user.routes.js';
 import roundRoutes from './routes/round.routes.js';
 import scoreRoutes from './routes/score.routes.js';
-import friendRoutes from './routes/score.routes.js';
+import friendRoutes from './routes/friend.routes.js';
 
 const app = Express();
 const port = 4000;

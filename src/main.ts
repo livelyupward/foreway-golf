@@ -23,6 +23,11 @@ import {
   faStar,
   faDesktop,
   faSpinner,
+  faPaperPlane,
+  faCirclePlus,
+  faCircleMinus,
+  faCircleXmark,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { faStar as farStar, faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
@@ -47,6 +52,11 @@ library.add(
   faDesktop,
   faStar,
   farStar,
+  faCirclePlus,
+  faCircleMinus,
+  faUsers,
+  faPaperPlane,
+  faCircleXmark,
   faSpinner
 );
 
