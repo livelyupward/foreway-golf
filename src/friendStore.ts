@@ -28,8 +28,25 @@ export const friendStore = defineStore('friend', () => {
     }
   }
 
+  async function getFriendRequests(userId: string) {
+    try {
+      const friendRequestsRequest = await fetch(`http://localhost:4000/api/friends/requests/${userId}`);
+
+      if (!friendRequestsRequest.ok) {
+        return { status: friendRequestsRequest.status, error: friendRequestsRequest.error };
+      }
+
+      const friendRequestsResponse = await friendRequestsRequest.json();
+
+      return friendRequestsResponse;
+    } catch (error) {
+      return error;
+    }
+  }
+
   return {
     getFriends,
     sendFriendInvite,
+    getFriendRequests,
   };
 });

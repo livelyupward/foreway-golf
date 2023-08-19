@@ -2,14 +2,14 @@ export default (sequelize, Sequelize) => {
   return sequelize.define(
     'friend',
     {
-      user_id: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'user',
           key: 'id',
         },
       },
-      friend_id: {
+      friendId: {
         type: Sequelize.INTEGER,
         references: {
           model: 'user',
