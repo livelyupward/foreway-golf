@@ -33,7 +33,7 @@ export const friendStore = defineStore('friend', () => {
       const friendRequestsRequest = await fetch(`http://localhost:4000/api/friends/requests/${userId}`);
 
       if (!friendRequestsRequest.ok) {
-        return { status: friendRequestsRequest.status, error: friendRequestsRequest.error };
+        return { status: friendRequestsRequest.status, error: friendRequestsRequest };
       }
 
       const friendRequestsResponse = await friendRequestsRequest.json();

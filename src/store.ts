@@ -458,6 +458,7 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   showRoundTotals: boolean;
+  round: Round[] | null;
 }
 
 export interface Hole {
