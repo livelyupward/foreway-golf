@@ -30,6 +30,7 @@
 import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { type Round } from '../store';
 import LowestRounds from '../components/LowestRounds.vue';
 import RecentRounds from '../components/RecentRounds.vue';
 import ResumeRoundCard from '../components/ResumeRoundCard.vue';
@@ -38,11 +39,12 @@ const router = useRouter();
 const store = mainStore();
 const { getUser } = storeToRefs(store);
 
-const currentRoundObject = getUser.value
-  ? getUser.value.round.filter((round) => {
-      return round.id === getUser.value.currentRound;
-    })
-  : null;
+const currentRoundObject =
+  getUser.value && getUser.value.round
+    ? getUser.value.round.filter((round: Round) => {
+        return getUser.value && round.id === getUser.value.currentRound;
+      })
+    : null;
 
 function strokesTotalled(scoresArray: any) {
   if (scoresArray === undefined)
