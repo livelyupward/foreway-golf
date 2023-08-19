@@ -74,11 +74,10 @@ db.rounds.belongsTo(db.users, {
   as: 'user',
 });
 
-// db.users.hasMany(db.friends, { as: 'friend' });
-// db.friends.belongsTo(db.users, {
-//   foreignKey: 'userId',
-//   as: 'sendingUser',
-// });
+db.friends.belongsTo(db.users, {
+  foreignKey: 'userId',
+  as: 'sendingUser',
+});
 
 db.friends.belongsTo(db.users, {
   foreignKey: 'friendId',

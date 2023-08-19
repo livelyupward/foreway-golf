@@ -44,9 +44,28 @@ export const friendStore = defineStore('friend', () => {
     }
   }
 
+  async function denyFriendRequest(requestId: string) {
+    try {
+      const denyRequest = await fetch(`http://localhost:4000/api/friends/requests/deny/${requestId}`, {
+        method: 'DELETE',
+      });
+
+      if (!denyRequest.ok) {
+        return { status: denyRequest.status, error: denyRequest };
+      }
+
+      const denyResponse = await denyRequest.json();
+
+      return denyResponse;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return {
     getFriends,
     sendFriendInvite,
     getFriendRequests,
+    denyFriendRequest,
   };
 });

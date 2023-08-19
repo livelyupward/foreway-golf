@@ -11,18 +11,28 @@
         <hr />
         <h3 class="requests-list_title">Pending requests</h3>
         <ul v-if="friendRequests.requestsForMe.length" class="requests_friends-list">
-          <li v-for="request in friendRequests.requestsForMe" class="friends_friends-list_item">
+          <li v-for="request in friendRequests.requestsForMe" class="requests_friends-list_item">
             <span class="requests-list_player-name">{{ request.receivingUser.name }}</span>
             <span class="requests-list_action-group">
-              <button>Cancel</button>
+              <button class="requests-list_action-button bad" @click="denyFriendRequest(request.id)">
+                <font-awesome-icon :icon="['fas', 'ban']" />
+                <!-- Cancel -->
+              </button>
             </span>
           </li>
         </ul>
         <ul v-if="friendRequests.requestsFromFriends.length" class="requests_friends-list">
-          <li v-for="request in friendRequests.requestsFromFriends" class="friends_friends-list_item">
+          <li v-for="request in friendRequests.requestsFromFriends" class="requests_friends-list_item">
             <span class="requests-list_player-name">{{ request.receivingUser.name }}</span>
             <span class="requests-list_action-group">
-              <button>Cancel</button>
+              <button class="requests-list_action-button good">
+                <font-awesome-icon :icon="['fas', 'check']" />
+                <!-- Approve -->
+              </button>
+              <button class="requests-list_action-button bad">
+                <font-awesome-icon :icon="['fas', 'ban']" />
+                <!-- Deny -->
+              </button>
             </span>
           </li>
         </ul>
@@ -42,7 +52,7 @@ import { ref } from 'vue';
 import { friendStore } from '../friendStore';
 
 const store = friendStore();
-const { getFriendRequests } = store;
+const { getFriendRequests, denyFriendRequest } = store;
 const props = defineProps<{
   friends: any;
   user: any;
@@ -97,6 +107,44 @@ const friendRequests = await getFriendRequests(props.user.id);
         color: gold;
       }
     }
+  }
+}
+
+.requests_friends-list {
+  padding-left: 0;
+}
+
+.requests_friends-list_item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  &:not(:last-of-type) {
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+.requests-list_action-group {
+  display: flex;
+}
+
+.requests-list_action-button {
+  @include rounded-corners;
+  align-items: center;
+  display: flex;
+
+  // svg {
+  //   margin-right: 8px;
+  // }
+
+  &.bad {
+    background-color: $red;
+    color: #fff;
+  }
+
+  &.good {
+    background-color: $green;
+    color: #fff;
   }
 }
 

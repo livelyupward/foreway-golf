@@ -39,6 +39,7 @@ export const checkPendingRequests = async (req, res) => {
     const requestsForMe = await Friend.findAll({
       where: {
         userId: userId,
+        status: 'pending',
       },
       include: { all: true },
     });
@@ -51,6 +52,18 @@ export const checkPendingRequests = async (req, res) => {
     });
 
     res.status(200).send({ requestsForMe, requestsFromFriends });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+export const denyFriendRequest = async (req, res) => {
+  const requestId = req.params.id;
+
+  try {
+    const denyRequest = await Friend.destroy({ where: { id: requestId } });
+
+    res.status(200).send(denyRequest);
   } catch (error) {
     res.status(500).send(error);
   }
