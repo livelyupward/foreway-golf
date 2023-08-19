@@ -23,12 +23,14 @@ import courseModel from './course.model.js';
 import roundModel from './round.model.js';
 import scoreModel from './score.model.js';
 import userModel from './user.model.js';
+import friendModel from './friend.model.js';
 
 db.holes = holeModel(sequelize, Sequelize);
 db.courses = courseModel(sequelize, Sequelize);
 db.rounds = roundModel(sequelize, Sequelize);
 db.scores = scoreModel(sequelize, Sequelize);
 db.users = userModel(sequelize, Sequelize);
+db.friends = friendModel(sequelize, Sequelize);
 
 // course and hole relations
 db.courses.hasMany(db.holes, { as: 'holes' });
@@ -70,6 +72,21 @@ db.users.hasMany(db.rounds, { as: 'round' });
 db.rounds.belongsTo(db.users, {
   foreignKey: 'userId',
   as: 'user',
+});
+
+db.friends.belongsTo(db.users, {
+  foreignKey: 'userId',
+  as: 'sendingUser',
+});
+
+db.friends.belongsTo(db.users, {
+  foreignKey: 'friendId',
+  as: 'receivingUser',
+});
+
+db.rounds.belongsTo(db.users, {
+  foreignKey: 'id',
+  as: 'currentRound',
 });
 
 export default db;
