@@ -70,6 +70,24 @@ export const friendStore = defineStore('friend', () => {
     }
   }
 
+  async function acceptFriendRequest(requestId: number) {
+    try {
+      const approveRequest = await fetch(`http://localhost:4000/api/friends/requests/approve/${requestId}`, {
+        method: 'PUT',
+      });
+
+      if (!approveRequest.ok) {
+        return { status: approveRequest.status, error: approveRequest };
+      }
+
+      const approveResponse = await approveRequest.json();
+
+      return approveResponse;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function denyFriendRequest(requestId: number) {
     try {
       const denyRequest = await fetch(`http://localhost:4000/api/friends/requests/deny/${requestId}`, {
@@ -94,6 +112,7 @@ export const friendStore = defineStore('friend', () => {
     getFriendsList,
     sendFriendInvite,
     getFriendRequests,
+    acceptFriendRequest,
     denyFriendRequest,
   };
 });

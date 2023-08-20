@@ -31,8 +31,8 @@
 import { ref, inject } from 'vue';
 import { mainStore, type MiddleMan } from '../store';
 import { storeToRefs } from 'pinia';
-import AddFriendModal from '../components/AddFriendModal.vue';
-import FriendsCard from '../components/FriendsCard.vue';
+import AddFriendModal from '../components/friends/AddFriendModal.vue';
+import FriendsCard from '../components/friends/FriendsCard.vue';
 import PreferencesCard from '../components/PreferencesCard.vue';
 import { friendStore as useFriendStore } from '../friendStore';
 

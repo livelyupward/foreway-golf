@@ -4,9 +4,7 @@
       <div id="app-container">
         <main id="main-panel">
           <router-view v-slot="{ Component }">
-            <Transition name="fade" mode="out-in">
-              <component :is="Component"></component>
-            </Transition>
+            <component :is="Component"></component>
           </router-view>
         </main>
         <NavigationTray />
@@ -17,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import NavigationTray from './components/NavigationTray.vue';
+import NavigationTray from './components/navigation/NavigationTray.vue';
 import MiddleMan from './components/providers/MiddleMan.vue';
 </script>
 

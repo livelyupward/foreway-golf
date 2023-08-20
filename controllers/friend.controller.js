@@ -68,11 +68,26 @@ export const checkPendingRequests = async (req, res) => {
     const requestsFromFriends = await Friend.findAll({
       where: {
         friendId: userId,
+        status: 'pending',
       },
       include: { all: true },
     });
 
     res.status(200).send({ requestsForMe, requestsFromFriends });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+};
+
+export const approveFriendRequest = async (req, res) => {
+  const requestId = req.params.id;
+
+  try {
+    const originalRequest = await Friend.findOne({ where: { id: requestId } });
+    originalRequest.status = 'accepted';
+    const savedRequestEdit = await originalRequest.save();
+
+    res.status(200).send(savedRequestEdit);
   } catch (error) {
     res.status(500).send(error);
   }

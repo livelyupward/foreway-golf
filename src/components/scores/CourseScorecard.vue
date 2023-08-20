@@ -106,9 +106,9 @@
 </template>
 
 <script setup lang="ts">
-import { mainStore } from '../store';
+import { mainStore } from '../../store';
 import { storeToRefs } from 'pinia';
-import type { Hole } from '../store';
+import type { Hole } from '../../store';
 import { computed, ComputedRef } from 'vue';
 
 const store = mainStore();

@@ -25,20 +25,20 @@
             <span class="requests-list_action-group">
               <button class="requests-list_action-button bad" @click="denyFriendRequestAndRefresh(request.id)">
                 <font-awesome-icon :icon="['fas', 'ban']" />
-                <!-- Cancel -->
+                <!-- Deny -->
               </button>
             </span>
           </li>
         </ul>
         <ul v-if="getFriendRequestsGetter.requestsFromFriends.length" class="requests_friends-list">
           <li v-for="request in getFriendRequestsGetter.requestsFromFriends" class="requests_friends-list_item">
-            <span class="requests-list_player-name">{{ request.receivingUser.name }}</span>
+            <span class="requests-list_player-name">{{ request.sendingUser.name }}</span>
             <span class="requests-list_action-group">
-              <button class="requests-list_action-button good">
+              <button class="requests-list_action-button good" @click="acceptFriendRequestAndRefresh(request.id)">
                 <font-awesome-icon :icon="['fas', 'check']" />
                 <!-- Approve -->
               </button>
-              <button class="requests-list_action-button bad">
+              <button class="requests-list_action-button bad" @click="denyFriendRequestAndRefresh(request.id)">
                 <font-awesome-icon :icon="['fas', 'ban']" />
                 <!-- Deny -->
               </button>
@@ -58,13 +58,13 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
-import { friendStore } from '../friendStore';
-import { MiddleMan } from '../store';
+import { friendStore } from '../../friendStore';
+import { MiddleMan } from '../../store';
 import { inject } from 'vue';
 
 const message = inject('message') as MiddleMan;
 const store = friendStore();
-const { getFriendRequests, denyFriendRequest } = store;
+const { getFriendRequests, denyFriendRequest, acceptFriendRequest, getFriendsList } = store;
 const { getFriendRequestsGetter } = storeToRefs(store);
 const props = defineProps<{
   friends: any;
@@ -74,6 +74,12 @@ const props = defineProps<{
 const emit = defineEmits(['activateFriendModal']);
 
 await getFriendRequests(props.user.id);
+
+async function acceptFriendRequestAndRefresh(requestId: number) {
+  await acceptFriendRequest(requestId);
+  await getFriendRequests(props.user.id);
+  await getFriendsList(props.user.id);
+}
 
 async function denyFriendRequestAndRefresh(userId: number) {
   await denyFriendRequest(userId);

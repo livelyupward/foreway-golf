@@ -36,8 +36,8 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { friendStore as useFriendStore } from '../friendStore';
-import { mainStore, MiddleMan } from '../store';
+import { friendStore as useFriendStore } from '../../friendStore';
+import { mainStore, MiddleMan } from '../../store';
 
 const message = inject('message') as MiddleMan;
 const store = mainStore();

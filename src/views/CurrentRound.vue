@@ -34,10 +34,10 @@ import { computed, inject, ref } from 'vue';
 import { Hole, mainStore, type MiddleMan } from '../store';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import CourseScorecard from '../components/CourseScorecard.vue';
-import ScoreForm from '../components/ScoreForm.vue';
-import CloseModal from '../components/CloseModal.vue';
-import DeleteRoundModal from '../components/DeleteRoundModal.vue';
+import CourseScorecard from '../components/scores/CourseScorecard.vue';
+import ScoreForm from '../components/scores/ScoreForm.vue';
+import CloseModal from '../components/rounds/CloseRoundModal.vue';
+import DeleteRoundModal from '../components/rounds/DeleteRoundModal.vue';
 
 const router = useRouter();
 const store = mainStore();
