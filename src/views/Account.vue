@@ -9,12 +9,15 @@
         </button>
       </div>
       <div class="card-tabs_tab-content">
-        <FriendsCard
-          v-show="activeTab === 'friends'"
-          :friends="friends"
-          :user="getUser"
-          @activate-friend-modal="activateFriendModal"
-        />
+        <Suspense>
+          <FriendsCard
+            v-show="activeTab === 'friends'"
+            :friends="getFriends"
+            :user="getUser"
+            @activate-friend-modal="activateFriendModal"
+          />
+          <template #fallback>Loading friends...</template>
+        </Suspense>
         <PreferencesCard v-show="activeTab === 'preferences'" />
       </div>
     </div>
@@ -31,10 +34,16 @@ import { storeToRefs } from 'pinia';
 import AddFriendModal from '../components/AddFriendModal.vue';
 import FriendsCard from '../components/FriendsCard.vue';
 import PreferencesCard from '../components/PreferencesCard.vue';
+import { friendStore as useFriendStore } from '../friendStore';
 
 const store = mainStore();
+const friendStore = useFriendStore();
 const { getUser } = storeToRefs(store);
+const { getFriends } = storeToRefs(friendStore);
+const { getFriendsList } = friendStore;
 const message = inject('message') as MiddleMan;
+
+getUser.value ? await getFriendsList(getUser.value.id) : null;
 
 const activeTab = ref('friends');
 const friendModalActivated = ref(false);
@@ -51,27 +60,6 @@ function activateTab(event: any) {
 function activateFriendModal() {
   friendModalActivated.value = true;
 }
-
-const friends = [
-  {
-    name: 'Dave Grammas',
-    email: 'dgrammas85@gmail.com',
-    userId: 2,
-    isUserFavorite: false,
-  },
-  {
-    name: 'Matt Grammas',
-    email: 'mgstud@gmail.com',
-    userId: 3,
-    isUserFavorite: false,
-  },
-  {
-    name: 'Jenn Schrepel',
-    email: 'jschrepel19@gmail.com',
-    userId: 6,
-    isUserFavorite: true,
-  },
-];
 </script>
 
 <style lang="scss">

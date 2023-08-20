@@ -2,8 +2,29 @@ import db from '../models/index.js';
 const Friend = db.friends;
 const User = db.users;
 const { Sequelize } = db.Sequelize;
+const Op = Sequelize.Op;
 
-// Create and Save a new Course
+export const getFriendsForUser = async (req, res) => {
+  const userId = req.params.id;
+  console.log('id: ', userId);
+  if (!userId) return res.status(400).send({ error: 'No user id provided.' });
+
+  try {
+    const userFriends = await Friend.findAll({
+      where: {
+        [Op.or]: [{ userId }, { friendId: userId }],
+        status: 'accepted',
+      },
+      include: ['sendingUser', 'receivingUser'],
+    });
+
+    res.status(200).send(userFriends);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send(error);
+  }
+};
+
 export const newRequest = async (req, res) => {
   console.dir(req.body);
   // Validate request
@@ -61,9 +82,9 @@ export const denyFriendRequest = async (req, res) => {
   const requestId = req.params.id;
 
   try {
-    const denyRequest = await Friend.destroy({ where: { id: requestId } });
+    await Friend.destroy({ where: { id: requestId } });
 
-    res.status(200).send(denyRequest);
+    res.status(200).send({ message: 'Request deleted successfully.' });
   } catch (error) {
     res.status(500).send(error);
   }

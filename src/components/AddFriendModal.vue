@@ -34,15 +34,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { friendStore as useFriendStore } from '../friendStore';
-import { mainStore } from '../store';
+import { mainStore, MiddleMan } from '../store';
 
+const message = inject('message') as MiddleMan;
 const store = mainStore();
 const { getUser } = storeToRefs(store);
 const friendStore = useFriendStore();
-// const { friends } = storeToRefs(friendStore);
 const emit = defineEmits(['closeFriendModal']);
 
 const friendFormLoading = ref(false);
@@ -61,13 +61,17 @@ async function sendFriendInvite() {
           errorMessage.value = '';
         }, 2000);
       }
+
+      friendStore.getFriendRequests(getUser.value?.id);
+
+      friendFormLoading.value = false;
+      emit('closeFriendModal');
+      message.success('Friend request sent successfully');
       console.log(submitFriendInvite.status);
     } catch (error) {
       console.error(error);
     }
   }
-
-  friendFormLoading.value = false;
 }
 </script>
 

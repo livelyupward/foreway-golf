@@ -4,25 +4,34 @@
       <h3 class="friends-list_title">Friends list</h3>
       <ul v-if="props.friends.length > 0" class="friends_friends-list">
         <li v-for="friend in props.friends" class="friends_friends-list_item">
-          <span class="friends-list_player-name">{{ friend.name }}</span>
+          <span class="friends-list_player-name">{{
+            friend.receivingUser.email !== props.user.email ? friend.receivingUser.name : friend.sendingUser.name
+          }}</span>
         </li>
       </ul>
-      <template v-if="friendRequests.requestsForMe.length || friendRequests.requestsFromFriends.length">
+      <template
+        v-if="
+          getFriendRequestsGetter &&
+          getFriendRequestsGetter.requestsForMe &&
+          getFriendRequestsGetter.requestsFromFriends &&
+          (getFriendRequestsGetter.requestsForMe.length || getFriendRequestsGetter.requestsFromFriends.length)
+        "
+      >
         <hr />
         <h3 class="requests-list_title">Pending requests</h3>
-        <ul v-if="friendRequests.requestsForMe.length" class="requests_friends-list">
-          <li v-for="request in friendRequests.requestsForMe" class="requests_friends-list_item">
+        <ul v-if="getFriendRequestsGetter.requestsForMe.length" class="requests_friends-list">
+          <li v-for="request in getFriendRequestsGetter.requestsForMe" class="requests_friends-list_item">
             <span class="requests-list_player-name">{{ request.receivingUser.name }}</span>
             <span class="requests-list_action-group">
-              <button class="requests-list_action-button bad" @click="denyFriendRequest(request.id)">
+              <button class="requests-list_action-button bad" @click="denyFriendRequestAndRefresh(request.id)">
                 <font-awesome-icon :icon="['fas', 'ban']" />
                 <!-- Cancel -->
               </button>
             </span>
           </li>
         </ul>
-        <ul v-if="friendRequests.requestsFromFriends.length" class="requests_friends-list">
-          <li v-for="request in friendRequests.requestsFromFriends" class="requests_friends-list_item">
+        <ul v-if="getFriendRequestsGetter.requestsFromFriends.length" class="requests_friends-list">
+          <li v-for="request in getFriendRequestsGetter.requestsFromFriends" class="requests_friends-list_item">
             <span class="requests-list_player-name">{{ request.receivingUser.name }}</span>
             <span class="requests-list_action-group">
               <button class="requests-list_action-button good">
@@ -48,11 +57,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { friendStore } from '../friendStore';
+import { MiddleMan } from '../store';
+import { inject } from 'vue';
 
+const message = inject('message') as MiddleMan;
 const store = friendStore();
 const { getFriendRequests, denyFriendRequest } = store;
+const { getFriendRequestsGetter } = storeToRefs(store);
 const props = defineProps<{
   friends: any;
   user: any;
@@ -60,7 +73,13 @@ const props = defineProps<{
 
 const emit = defineEmits(['activateFriendModal']);
 
-const friendRequests = await getFriendRequests(props.user.id);
+await getFriendRequests(props.user.id);
+
+async function denyFriendRequestAndRefresh(userId: number) {
+  await denyFriendRequest(userId);
+  message.success('Friend request denied');
+  await getFriendRequests(props.user.id);
+}
 </script>
 
 <style lang="scss" scoped>
