@@ -93,8 +93,8 @@
 
 <script setup lang="ts">
 import { ref, Ref } from 'vue';
-import { mainStore } from '../store';
-import { type ScoreForSubmit } from '../store';
+import { mainStore } from '../../store';
+import { type ScoreForSubmit } from '../../store';
 import { storeToRefs } from 'pinia';
 
 const store = mainStore();

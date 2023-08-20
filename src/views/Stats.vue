@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import QuickStats from '../components/QuickStats.vue';
+import QuickStats from '../components/stats/QuickStats.vue';
 </script>
 
 <style lang="scss" scoped>

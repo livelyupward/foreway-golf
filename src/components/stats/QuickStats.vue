@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { mainStore } from '../store';
+import { mainStore } from '../../store';
 const { getThisYearsStats } = mainStore();
 
 const yearStats = await getThisYearsStats();

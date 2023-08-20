@@ -31,9 +31,9 @@ import { mainStore } from '../store';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { type Round } from '../store';
-import LowestRounds from '../components/LowestRounds.vue';
-import RecentRounds from '../components/RecentRounds.vue';
-import ResumeRoundCard from '../components/ResumeRoundCard.vue';
+import LowestRounds from '../components/rounds/LowestRounds.vue';
+import RecentRounds from '../components/rounds/RecentRounds.vue';
+import ResumeRoundCard from '../components/rounds/ResumeRoundCard.vue';
 
 const router = useRouter();
 const store = mainStore();

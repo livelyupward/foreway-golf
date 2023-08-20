@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
-import { mainStore } from '../store';
+import { mainStore } from '../../store';
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 

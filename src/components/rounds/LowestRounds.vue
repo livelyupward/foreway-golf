@@ -34,7 +34,7 @@
 
 <script setup lang="ts">
 import { computed, ComputedRef, ref } from 'vue';
-import { mainStore, Round, Score } from '../store';
+import { mainStore, Round, Score } from '../../store';
 import { storeToRefs } from 'pinia';
 
 const store = mainStore();

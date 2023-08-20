@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { mainStore, Round } from '../store';
+import { mainStore, Round } from '../../store';
 import { computed, Ref, ref } from 'vue';
 
 const store = mainStore();
