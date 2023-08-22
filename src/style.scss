@@ -32,7 +32,6 @@ p {
 }
 
 button {
-  @include rounded-corners;
   border: 1px solid #ddd;
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
@@ -46,7 +45,6 @@ svg {
 }
 
 input {
-  @include rounded-corners;
   border: 1px solid #bbb;
   box-sizing: border-box;
   font-size: 1rem;
@@ -72,15 +70,11 @@ input {
 }
 
 .card {
-  @include rounded-corners;
   background-color: #fff;
-  border: 1px solid #ddd;
   margin-bottom: 1rem;
-  padding: 10px;
 
   .card-header {
     font-size: 1.75rem;
-    margin-bottom: 1rem;
     margin-top: 0;
   }
 

@@ -190,7 +190,6 @@ interface Front9Total {
 
 <style lang="scss">
 .scorecard-table {
-  @include rounded-corners;
   border-spacing: 0;
   padding-bottom: 0.375rem;
   text-align: center;

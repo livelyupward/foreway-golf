@@ -58,7 +58,6 @@ function resumeCurrentRound() {
 
     header {
       background-color: $primary;
-      border-radius: 10px 10px 0 0;
       color: #fff;
       padding: 0.875rem;
 
@@ -69,13 +68,18 @@ function resumeCurrentRound() {
     }
 
     .homepage_resume-round_container-body {
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
       padding: 0 0.875rem;
+
+      p {
+        margin: 0;
+        padding: 1em 0;
+      }
     }
 
     footer {
       button {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
         margin: 0;
         width: 100%;
       }

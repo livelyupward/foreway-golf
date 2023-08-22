@@ -2,13 +2,7 @@
   <div class="card-tabs_tab-content-item">
     <div class="friends_settings-item">
       <h3 class="friends-list_title">Friends list</h3>
-      <ul v-if="props.friends.length > 0" class="friends_friends-list">
-        <li v-for="friend in props.friends" class="friends_friends-list_item">
-          <span class="friends-list_player-name">{{
-            friend.receivingUser.email !== props.user.email ? friend.receivingUser.name : friend.sendingUser.name
-          }}</span>
-        </li>
-      </ul>
+      <FriendsList v-if="props.friends.length > 0" :friends="props.friends" :user="props.user" />
       <template
         v-if="
           getFriendRequestsGetter &&
@@ -19,33 +13,17 @@
       >
         <hr />
         <h3 class="requests-list_title">Pending requests</h3>
-        <ul v-if="getFriendRequestsGetter.requestsForMe.length" class="requests_friends-list">
-          <li v-for="request in getFriendRequestsGetter.requestsForMe" class="requests_friends-list_item">
-            <span class="requests-list_player-name">{{ request.receivingUser.name }}</span>
-            <span class="requests-list_action-group">
-              <button class="requests-list_action-button bad" @click="denyFriendRequestAndRefresh(request.id)">
-                <font-awesome-icon :icon="['fas', 'ban']" />
-                <!-- Deny -->
-              </button>
-            </span>
-          </li>
-        </ul>
-        <ul v-if="getFriendRequestsGetter.requestsFromFriends.length" class="requests_friends-list">
-          <li v-for="request in getFriendRequestsGetter.requestsFromFriends" class="requests_friends-list_item">
-            <span class="requests-list_player-name">{{ request.sendingUser.name }}</span>
-            <span class="requests-list_action-group">
-              <button class="requests-list_action-button good" @click="acceptFriendRequestAndRefresh(request.id)">
-                <font-awesome-icon :icon="['fas', 'check']" />
-                <!-- Approve -->
-              </button>
-              <button class="requests-list_action-button bad" @click="denyFriendRequestAndRefresh(request.id)">
-                <font-awesome-icon :icon="['fas', 'ban']" />
-                <!-- Deny -->
-              </button>
-            </span>
-          </li>
-        </ul>
+        <RequestsForMe
+          v-if="getFriendRequestsGetter.requestsForMe.length"
+          :deny-request="denyFriendRequestAndRefresh"
+        />
+        <RequestsFromFriends
+          v-if="getFriendRequestsGetter.requestsFromFriends.length"
+          :deny-request="denyFriendRequestAndRefresh"
+          :accept-request="acceptFriendRequestAndRefresh"
+        />
       </template>
+      <p v-else class="friends_friends-list_disclaimer">No friends. Start inviting!</p>
     </div>
     <div class="friends_friends-list_invite-section">
       <button @click="emit('activateFriendModal')" class="friends_friends-list_invite-section_invite-button">
@@ -61,6 +39,9 @@ import { storeToRefs } from 'pinia';
 import { friendStore } from '../../friendStore';
 import { MiddleMan } from '../../store';
 import { inject } from 'vue';
+import FriendsList from './FriendsList.vue';
+import RequestsForMe from './RequestsForMe.vue';
+import RequestsFromFriends from './RequestsFromFriends.vue';
 
 const message = inject('message') as MiddleMan;
 const store = friendStore();
@@ -90,6 +71,8 @@ async function denyFriendRequestAndRefresh(userId: number) {
 
 <style lang="scss" scoped>
 .friends_settings-item {
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
   padding: 0.875rem;
 }
 
@@ -136,6 +119,8 @@ async function denyFriendRequestAndRefresh(userId: number) {
 }
 
 .requests_friends-list {
+  margin-bottom: 0;
+  margin-top: 0;
   padding-left: 0;
 }
 
@@ -147,6 +132,10 @@ async function denyFriendRequestAndRefresh(userId: number) {
   &:not(:last-of-type) {
     border-bottom: 1px solid #ddd;
   }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
 }
 
 .requests-list_action-group {
@@ -154,7 +143,6 @@ async function denyFriendRequestAndRefresh(userId: number) {
 }
 
 .requests-list_action-button {
-  @include rounded-corners;
   align-items: center;
   display: flex;
 
@@ -176,7 +164,6 @@ async function denyFriendRequestAndRefresh(userId: number) {
 .friends_friends-list_invite-section_invite-button {
   background-color: lighten($color: $primary, $amount: 10%);
   border: 1px solid lighten($color: $primary, $amount: 10%);
-  border-radius: 0 0 10px 10px;
   color: #fff;
   padding: 10px 0;
   width: 100%;
@@ -184,5 +171,9 @@ async function denyFriendRequestAndRefresh(userId: number) {
 
 .friends_friends-list_friend-icon {
   margin-right: 6px;
+}
+
+.friends_friends-list_disclaimer {
+  margin-bottom: 0;
 }
 </style>

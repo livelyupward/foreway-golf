@@ -166,7 +166,6 @@ const roundConfig: Ref<RoundSettings> = ref({
 .step-by-step {
   background-color: #fff;
   border: 1px solid #ddd;
-  @include rounded-corners;
   margin-bottom: 15px;
   padding: 10px;
 }
@@ -239,7 +238,6 @@ const roundConfig: Ref<RoundSettings> = ref({
 .selected-course {
   background-color: #fff;
   border: 1px solid #ddd;
-  @include rounded-corners;
   display: block;
   font-weight: 700;
   margin-bottom: 15px;

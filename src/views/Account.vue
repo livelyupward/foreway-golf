@@ -81,18 +81,9 @@ function activateFriendModal() {
       color: #fff;
     }
 
-    &:first-of-type {
-      border-radius: 10px 0 0 0;
-    }
-
     &:last-of-type {
-      border-radius: 0 10px 0 0;
       border-left: none;
     }
   }
-}
-
-.account-page_card {
-  @include sm-shadow;
 }
 </style>

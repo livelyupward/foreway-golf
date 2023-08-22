@@ -117,7 +117,7 @@ export const friendStore = defineStore('friend', () => {
   };
 });
 
-interface Friendship {
+export interface Friendship {
   id: number;
   userId: number;
   friendId: number;
