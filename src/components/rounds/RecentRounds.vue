@@ -52,4 +52,11 @@ function makeDatePretty(dateString: Date | undefined) {
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped>
+.homepage_recent-rounds_header {
+  border: 1px solid #ddd;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding: 10px;
+}
+</style>

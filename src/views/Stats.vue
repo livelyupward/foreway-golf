@@ -30,10 +30,6 @@ import QuickStats from '../components/stats/QuickStats.vue';
 }
 
 .card-header {
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  margin: -10px -10px 1rem;
-
   .header-buttons {
     border-bottom: 1px solid $primary;
     display: flex;
@@ -51,12 +47,16 @@ import QuickStats from '../components/stats/QuickStats.vue';
       &.active {
         background-color: $primary;
         border-radius: 0;
-        border-top-left-radius: 10px;
         color: $white;
         font-weight: 700;
         text-decoration: underline;
       }
     }
   }
+}
+
+.foreway-stats {
+  border: 1px solid #ddd;
+  padding: 10px;
 }
 </style>

@@ -79,7 +79,6 @@ function strokesTotalled(scoresArray: any) {
 }
 
 .homepage_recent-round_table {
-  border-radius: 10px;
   border: 1px solid #ddd;
   font-size: 0.875rem;
   width: 100%;

@@ -86,7 +86,6 @@ async function sendFriendInvite() {
   top: 0;
 
   .add-friend_modal {
-    @include rounded-corners;
     background-color: #fff;
     padding: 0.875rem;
     position: relative;

@@ -13,8 +13,6 @@
 
 <style lang="scss" scoped>
 .stat-nugget {
-  @include sm-shadow;
-  @include rounded-corners;
   background-color: $white;
   border: 1px solid $primary;
   display: flex;

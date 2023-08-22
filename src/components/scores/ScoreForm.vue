@@ -181,7 +181,6 @@ async function saveScoreForHole() {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.65);
   bottom: 0;
-
   display: flex;
   justify-content: center;
   left: 0;
@@ -213,15 +212,12 @@ async function saveScoreForHole() {
 }
 
 .score-form_modal {
-  @include rounded-corners;
   background-color: #fff;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 
   .score-form_modal-header {
     background-color: $primary;
     border: 1px solid $primary;
-    border-top-right-radius: 10px;
-    border-top-left-radius: 10px;
     color: #fff;
     padding: 20px;
     text-align: center;
@@ -345,24 +341,17 @@ async function saveScoreForHole() {
 
 .score-form_submit-button,
 .score-form_cancel-button {
-  //border-radius: 4px;
-  //color: #fff;
   font-size: 1.75rem;
   margin: 10px 0 0;
-  //padding: 5px 0;
   width: 100%;
 }
 
 .score-form_cancel-button {
   @include red-btn;
-  //background-color: #d32f2f;
-  //border: 1px solid #d32f2f;
 }
 
 .score-form_submit-button {
   @include green-btn;
-  //background-color: cadetblue;
-  //border: 1px solid cadetblue;
 }
 
 .bounce-enter-active {

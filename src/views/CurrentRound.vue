@@ -118,7 +118,6 @@ function closeModalWithButton() {
 
   .current-round_invite-button {
     @include grey-btn;
-    border-radius: 10px;
     box-sizing: border-box;
     display: block;
     padding: 6px 12px;
@@ -133,7 +132,6 @@ function closeModalWithButton() {
 
   .score-input {
     border: 1px solid #ddd;
-    border-radius: 6px;
     box-sizing: border-box;
     display: block;
     font-size: 48px;

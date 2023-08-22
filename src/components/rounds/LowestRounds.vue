@@ -1,32 +1,32 @@
 <template>
   <section class="homepage_best-rounds card">
-    <h2 class="homepage_recent-best_header card-header">Lowest Rounds</h2>
+    <h2 class="homepage_best-best_header card-header">Lowest Rounds</h2>
     <table
-      class="homepage_recent-round_table"
+      class="homepage_best-round_table"
       v-if="lowestRounds.length && lowestRounds.length > 5 && typeof strokesTotalled === 'function'"
     >
-      <thead class="homepage_recent-round_table-head">
-        <tr class="homepage_recent-round_table-head_row">
-          <th class="homepage_recent-round_table-head_row-header date">Date</th>
-          <th class="homepage_recent-round_table-head_row-header course-name">Course</th>
-          <th class="homepage_recent-round_table-head_row-header score">Score</th>
+      <thead class="homepage_best-round_table-head">
+        <tr class="homepage_best-round_table-head_row">
+          <th class="homepage_best-round_table-head_row-header date">Date</th>
+          <th class="homepage_best-round_table-head_row-header course-name">Course</th>
+          <th class="homepage_best-round_table-head_row-header score">Score</th>
         </tr>
       </thead>
-      <tbody class="homepage_recent-round_table-body">
-        <tr class="homepage_recent-round_table-body_row" v-for="lowRound in lowestRounds" :key="lowRound.id">
-          <td class="homepage_recent-round_table-body_row-cell">
+      <tbody class="homepage_best-round_table-body">
+        <tr class="homepage_best-round_table-body_row" v-for="lowRound in lowestRounds" :key="lowRound.id">
+          <td class="homepage_best-round_table-body_row-cell">
             {{ makeDatePretty(lowRound.updatedAt) }}
           </td>
-          <td class="homepage_recent-round_table-body_row-cell">
+          <td class="homepage_best-round_table-body_row-cell">
             <router-link :to="`/round/view/${lowRound.id}`">
               {{ lowRound.course ? lowRound.course.name : '' }}
             </router-link>
           </td>
-          <td class="homepage_recent-round_table-body_row-cell">{{ strokesTotalled(lowRound.scores) }}</td>
+          <td class="homepage_best-round_table-body_row-cell">{{ strokesTotalled(lowRound.scores) }}</td>
         </tr>
       </tbody>
     </table>
-    <p class="homepage_recent-round_disclaimer" v-else>
+    <p class="homepage_best-round_disclaimer" v-else>
       This will show your lowest rounds once you've played 6 or more rounds.
     </p>
   </section>
@@ -74,8 +74,19 @@ function makeDatePretty(dateString: Date | undefined) {
 }
 </script>
 
-<style scoped>
-.homepage_recent-round_disclaimer {
+<style lang="scss" scoped>
+.homepage_best-rounds {
+  border: 1px solid #ddd;
   margin-bottom: 0;
+}
+
+.homepage_best-best_header {
+  margin-bottom: 0;
+  padding: 10px;
+}
+
+.homepage_best-round_disclaimer {
+  margin-top: 0;
+  padding: 10px;
 }
 </style>

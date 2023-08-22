@@ -66,7 +66,6 @@ interface Course {
 
   .tee-selector_modal {
     background-color: #fff;
-    @include rounded-corners;
     margin: 0 auto;
     max-height: 85%;
     overflow-y: auto;
@@ -79,7 +78,6 @@ interface Course {
     }
 
     .tee-selector_selection-container {
-      @include rounded-corners;
       list-style-type: none;
       padding-left: 0;
 
@@ -128,15 +126,8 @@ interface Course {
           font-weight: 700;
         }
 
-        &:first-of-type {
-          border-top-right-radius: 15px;
-          border-top-left-radius: 15px;
-        }
-
         &:last-of-type {
           border-bottom: 1px solid #ddd;
-          border-bottom-right-radius: 15px;
-          border-bottom-left-radius: 15px;
           margin-bottom: 0;
         }
       }
