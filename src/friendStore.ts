@@ -16,7 +16,7 @@ export const friendStore = defineStore('friend', () => {
 
   async function getFriendsList(userId: number) {
     try {
-      const getFriendsListRequest = await fetch(`http://localhost:4000/api/friends/${userId}`);
+      const getFriendsListRequest = await fetch(`/api/friends/${userId}`);
 
       if (!getFriendsListRequest.ok) {
         return { getFriendsListRequest, status: getFriendsListRequest.status };
@@ -34,7 +34,7 @@ export const friendStore = defineStore('friend', () => {
 
   async function sendFriendInvite(userId: number, friendEmail: string) {
     try {
-      const friendRequest = await fetch(`http://localhost:4000/api/friends/invite`, {
+      const friendRequest = await fetch(`/api/friends/invite`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export const friendStore = defineStore('friend', () => {
 
   async function getFriendRequests(userId: number) {
     try {
-      const friendRequestsRequest = await fetch(`http://localhost:4000/api/friends/requests/${userId}`);
+      const friendRequestsRequest = await fetch(`/api/friends/requests/${userId}`);
 
       if (!friendRequestsRequest.ok) {
         return { status: friendRequestsRequest.status, error: friendRequestsRequest };
@@ -72,7 +72,7 @@ export const friendStore = defineStore('friend', () => {
 
   async function acceptFriendRequest(requestId: number) {
     try {
-      const approveRequest = await fetch(`http://localhost:4000/api/friends/requests/approve/${requestId}`, {
+      const approveRequest = await fetch(`/api/friends/requests/approve/${requestId}`, {
         method: 'PUT',
       });
 
@@ -90,7 +90,7 @@ export const friendStore = defineStore('friend', () => {
 
   async function denyFriendRequest(requestId: number) {
     try {
-      const denyRequest = await fetch(`http://localhost:4000/api/friends/requests/deny/${requestId}`, {
+      const denyRequest = await fetch(`/api/friends/requests/deny/${requestId}`, {
         method: 'DELETE',
       });
 
