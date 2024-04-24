@@ -19,10 +19,10 @@ specifiers:
   express-session: ^1.17.3
   google-auth-library: ^8.7.0
   jsonwebtoken: ^9.0.0
-  mysql2: ^3.2.0
+  mysql2: '>=3.9.7'
   pinia: ^2.0.33
   sass: ^1.59.3
-  sequelize: 6.11.0
+  sequelize: '>=6.29.0'
   sequelize-cli: ^6.6.1
   typescript: ^4.9.3
   vite: ^4.2.0
@@ -49,7 +49,7 @@ dependencies:
   jsonwebtoken: 9.0.2
   mysql2: 3.9.7
   pinia: 2.1.7_aes3fauwbfivrkpj5pl2vrsku4
-  sequelize: 6.11.0_mysql2@3.9.7
+  sequelize: 6.37.3_mysql2@3.9.7
   vue: 3.4.24_typescript@4.9.5
   vue-router: 4.3.2_vue@3.4.24
   vue3-google-login: 2.0.26_vue@3.4.24
@@ -601,10 +601,24 @@ packages:
     resolution: {integrity: sha512-Wj71sXE4Q4AkGdG9Tvq1u/fquNz9EdG4LIJMwVVII7ashjD/8cf8fyIfJAjRr6YcsXnSE8cOGQPq1gqeR8z+3w==}
     dev: true
 
+  /@types/debug/4.1.12:
+    resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
+    dependencies:
+      '@types/ms': 0.7.34
+    dev: false
+
+  /@types/ms/0.7.34:
+    resolution: {integrity: sha512-nG96G3Wp6acyAgJqGasjODb+acrI7KltPiRxzHPXnP3NgI28bpQDRv53olbqGXbfcgF5aiiHmO3xpwEpS5Ld9g==}
+    dev: false
+
   /@types/node/20.12.7:
     resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
     dependencies:
       undici-types: 5.26.5
+
+  /@types/validator/13.11.9:
+    resolution: {integrity: sha512-FCTsikRozryfayPuiI46QzH3fnrOoctTjvOYZkho9BTFLCOZ2rgZJHMOVgCOfttjPJcgOx52EpkY0CMfy87MIw==}
+    dev: false
 
   /@vitejs/plugin-vue/4.6.2_vite@4.5.3+vue@3.4.24:
     resolution: {integrity: sha512-kqf7SGFoG+80aZG6Pf+gsZIVvGSCKE98JbiWqcCV9cThtg91Jav0yvYFC9Zb+jKetNGF6ZKeoaxgZfND21fWKw==}
@@ -820,10 +834,6 @@ packages:
     resolution: {integrity: sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==}
     engines: {node: '>=12'}
     dev: true
-
-  /any-promise/1.3.0:
-    resolution: {integrity: sha512-7UvmKalWRt1wgjL1RrGxoSJW/0QZFIegpeGvZG9kjp8vrRu55XTHbwnqq2GpXm9uLbcuhxm3IqX9OB4MZR1b2A==}
-    dev: false
 
   /anymatch/3.1.3:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
@@ -1687,8 +1697,8 @@ packages:
     resolution: {integrity: sha512-8eabxkth9gZatlwl5TBuJnCsoTADlL6ftEr7A4qgdaTsPyreilDSnUk57SO+jfKcNtxPa22U5KK6DSeAYhpBJw==}
     dev: true
 
-  /inflection/1.13.1:
-    resolution: {integrity: sha512-dldYtl2WlN0QDkIDtg8+xFwOS2Tbmp12t1cHa5/YClU6ZQjTFm7B66UcVbh9NQB+HvT5BAd2t5+yKsBkw5pcqA==}
+  /inflection/1.13.4:
+    resolution: {integrity: sha512-6I/HUDeYFfuNCVS3td055BaXBwKYuzw7K3ExVMStBowKo9oOAMJIXIHvdyR3iboTCp1b+1i5DSkIZTcwIktuDw==}
     engines: {'0': node >= 0.4.0}
     dev: false
 
@@ -2341,10 +2351,8 @@ packages:
       supports-preserve-symlinks-flag: 1.0.0
     dev: true
 
-  /retry-as-promised/3.2.0:
-    resolution: {integrity: sha512-CybGs60B7oYU/qSQ6kuaFmRd9sTZ6oXSc0toqePvV74Ac6/IFZSI1ReFQmtCN+uvW1Mtqdwpvt/LGOiCBAY2Mg==}
-    dependencies:
-      any-promise: 1.3.0
+  /retry-as-promised/7.0.4:
+    resolution: {integrity: sha512-XgmCoxKWkDofwH8WddD0w85ZfqYz+ZHlr5yo+3YUCfycWawU56T5ckWXsScsj5B8tqUcIG67DxXByo3VUgiAdA==}
     dev: false
 
   /rollup/3.29.4:
@@ -2425,46 +2433,57 @@ packages:
       yargs: 16.2.0
     dev: true
 
-  /sequelize-pool/6.1.0:
-    resolution: {integrity: sha512-4YwEw3ZgK/tY/so+GfnSgXkdwIJJ1I32uZJztIEgZeAO6HMgj64OzySbWLgxj+tXhZCJnzRfkY9gINw8Ft8ZMg==}
+  /sequelize-pool/7.1.0:
+    resolution: {integrity: sha512-G9c0qlIWQSK29pR/5U2JF5dDQeqqHRragoyahj/Nx4KOOQ3CPPfzxnfqFPCSB7x5UgjOgnZ61nSxz+fjDpRlJg==}
     engines: {node: '>= 10.0.0'}
     dev: false
 
-  /sequelize/6.11.0_mysql2@3.9.7:
-    resolution: {integrity: sha512-+j3N5lr+FR1eicMRGR3bRsGOl9HMY0UGb2PyB2i1yZ64XBgsz3xejMH0UD45LcUitj40soDGIa9CyvZG0dfzKg==}
+  /sequelize/6.37.3_mysql2@3.9.7:
+    resolution: {integrity: sha512-V2FTqYpdZjPy3VQrZvjTPnOoLm0KudCRXfGWp48QwhyPPp2yW8z0p0sCYZd/em847Tl2dVxJJ1DR+hF+O77T7A==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
+      ibm_db: '*'
       mariadb: '*'
       mysql2: '*'
+      oracledb: '*'
       pg: '*'
       pg-hstore: '*'
+      snowflake-sdk: '*'
       sqlite3: '*'
       tedious: '*'
     peerDependenciesMeta:
+      ibm_db:
+        optional: true
       mariadb:
         optional: true
       mysql2:
         optional: true
+      oracledb:
+        optional: true
       pg:
         optional: true
       pg-hstore:
+        optional: true
+      snowflake-sdk:
         optional: true
       sqlite3:
         optional: true
       tedious:
         optional: true
     dependencies:
+      '@types/debug': 4.1.12
+      '@types/validator': 13.11.9
       debug: 4.3.4
       dottie: 2.0.6
-      inflection: 1.13.1
+      inflection: 1.13.4
       lodash: 4.17.21
       moment: 2.30.1
       moment-timezone: 0.5.45
       mysql2: 3.9.7
       pg-connection-string: 2.6.4
-      retry-as-promised: 3.2.0
+      retry-as-promised: 7.0.4
       semver: 7.6.0
-      sequelize-pool: 6.1.0
+      sequelize-pool: 7.1.0
       toposort-class: 1.0.1
       uuid: 8.3.2
       validator: 13.11.0

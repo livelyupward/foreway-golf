@@ -26,9 +26,9 @@
     "express-session": "^1.17.3",
     "google-auth-library": "^8.7.0",
     "jsonwebtoken": "^9.0.0",
-    "mysql2": "^3.2.0",
+    "mysql2": ">=3.9.7",
     "pinia": "^2.0.33",
-    "sequelize": "6.11.0",
+    "sequelize": ">=6.29.0",
     "vue": "^3.2.47",
     "vue-router": "4",
     "vue3-google-login": "^2.0.15"
